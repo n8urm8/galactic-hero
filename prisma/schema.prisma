@@ -55,6 +55,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    currentShip   PlayerShip?
 }
 
 model VerificationToken {
@@ -63,4 +64,11 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model PlayerShip {
+    id  String @id @default(cuid())
+    userId      String  @unique
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
 }

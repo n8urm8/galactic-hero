@@ -2,30 +2,36 @@ import Phaser from "phaser";
 import Player from '../sprites/player'
 import '../sprites/player'
 import { EnemyShip } from "../sprites/enemy";
-const HEIGHT = 640
-const WIDTH = 800
+import { EventEmitter } from "~/utils/events";
+import { IWaveEnemy } from "~/utils/enemies";
+
 export default class GameScene extends Phaser.Scene {
 
-    private player?: Phaser.Physics.Arcade.Sprite;
-    private enemies?: Phaser.GameObjects.Group;
+    private player!: Phaser.Physics.Arcade.Sprite;
+    private enemies!: Phaser.GameObjects.Group;
+    private emitter=EventEmitter.getInstance();
+    private enemiesToLoad!: IWaveEnemy[]
 
     constructor() {
       super("GameScene");
-      //this.player;
     }
     
     create() {
-        this.add.image(200, 200, 'nebulaBackground');
-        this.add.image(400, 200, 'starsBackground');
-        this.player = this.add.player(WIDTH/2, HEIGHT/1.2, 'player')
-        this.enemies = this.add.group({
-            classType: EnemyShip,
-            runChildUpdate: true,
+        let { width, height } = this.game.canvas;
+        this.emitter.on('enemyLoaded', this.loadEnemies, this)
+
+        this.add.image(width/2, height/2, 'nebulaBackground');
+        this.add.image(width/2, height/2, 'starsBackground');
+        // ui
+        const startWaveBtn = this.add.image(84, height-32, 'uiAssets', 0).setInteractive({ useHandCursor: true }).once('pointerdown', () => {
+            console.log('clicked start wave!')
+            this.emitter.emit('startWave', { width })
+            this.scene.run('WaveScene', { loadedEnemies: this.enemiesToLoad })
         })
-        for(let i = 0; i < 5; i++) {
-            this.enemies.get(WIDTH/4+i*100, -50, 'baddie1')
-            this.enemies.add(new EnemyShip(this, WIDTH/4+i*100, -50, 'baddie1', 100, 300, this.player.x, this.player.y ))
-        }
+        startWaveBtn.scaleY = 3
+        startWaveBtn.scaleX = 9
+        this.add.text(startWaveBtn.x, startWaveBtn.y, 'Start Wave').setOrigin(0.5)
+
 
     } 
     
@@ -33,12 +39,13 @@ export default class GameScene extends Phaser.Scene {
         
     }
     
-    hitEnemy() {
-
+    loadEnemies = (data: any) => {
+        console.log('loadEnemies: ', data)
+        this.enemiesToLoad = data
     }
-    
-    playerHit() {
 
+    public getEnemies = () => {
+      return  
     }
     
   }

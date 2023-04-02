@@ -14,15 +14,15 @@ const Home: NextPage = () => {
   const [myGame, setMyGame] = useState<GameType>()
   const router = useRouter()
 
-  useEffect( () => {
-       initPhaser()
-  }, [])
+  // useEffect( () => {
+  //      initPhaser()
+  // }, [])
 
-  async function initPhaser() {
-      const Phaser = await import('phaser')
-      const phaserGame = new Phaser.Game({...config, parent: 'game'})
-      setMyGame(phaserGame)
-  }
+  // async function initPhaser() {
+  //     const Phaser = await import('phaser')
+  //     const phaserGame = new Phaser.Game({...config, parent: 'game'})
+  //     setMyGame(phaserGame)
+  // }
   return (
     <>
       <Head>

@@ -1,124 +1,88 @@
 import Phaser from "phaser";
-
-const HEIGHT = 640
-const WIDTH = 800
-
-// export class Baddie1Group extends Phaser.Physics.Arcade.Group {
-//     constructor (scene: Phaser.Scene) {
-//       super(scene.physics.world, scene);
-//       // initialise the group
-//       this.createMultiple({
-//         classType: Baddie1,
-//         key: 'baddie1', // this is always required
-//         frameQuantity: 5,
-//         active: false,
-//         visible:false,
-//       });
-//       this.launchTimer;
-//       this.launchDelay = 1000;
-//     }
-  
-//     launchEnemy() {
-//       const enemy = this.getFirstDead(false);
-//       if (enemy) {
-//         const startY = Phaser.Math.Between(0, HEIGHT);
-//         enemy.enableBody(true, WIDTH + enemy.displayWidth, startY, true, true)
-//         enemy.body.velocity.y = startY > HEIGHT/2 ? Phaser.Math.Between(-200, 0) : Phaser.Math.Between(0, 200);
-//         enemy.body.velocity.x = -Phaser.Math.Between(Baddie1.SPEED-50, Baddie1.SPEED+50);        
-//         enemy.body.setDragY(50); // if useDamping is false, this is the absolute draft in pixels per second
-//       }
-//       this.launcher = this.scene.time.delayedCall(Phaser.Math.Between(this.launchDelay, this.launchDelay + 1000), this.launchEnemy, [], this);
-//     }
-    
-//     removeAll() {
-//       this.children.each(function (item, index) {
-//         item.remove();
-//       });
-//     }
-
-// }
+import WaveScene from "../scenes/WaveScene";
+import { Bullets } from "./bullet";
+import Player from "./player";
   
 export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
 
     private shootTimer: number;
-    private targetX: number;
-    private targetY: number;
     private bulletRange: number;
+    private bullets: Bullets;
+    private player!: Player
+    private health = 10;
+    static SHOOT_DELAY = 300;
 
-    constructor(scene: Phaser.Scene, 
+    constructor(scene: WaveScene, 
         startX: number, 
         startY: number, 
         sprite: string,
         velocity: number,
         bulletRange: number,
-        targetX: number,
-        targetY: number,) {
-      super(scene, startX, startY, sprite );
-      this.scene = scene;
-      scene.add.existing(this);
-      scene.physics.add.existing(this);
-      //this.points = 10;
-      this.shootTimer = 0;
-      this.setScale(.25, .25)
+        player: Player) {
+      super(scene, startX, startY, sprite )
+      this.scene = scene
+      let { width, height } = scene.game.canvas;
+      scene.add.existing(this)
+      scene.physics.add.existing(this)
+      this.body.pushable = false
+      //this.points = 10
+      this.shootTimer = 0
+      this.displayWidth = width/20
+      this.scaleY = this.scaleX
       this.setVelocityY(velocity)
-      this.targetX = targetX;
-      this.targetY = targetY;
-      this.bulletRange = bulletRange;
-      console.log(targetX, targetY)
+      this.bulletRange = bulletRange
+      this.bullets = new Bullets(scene, 100, 300, true) 
+      this.player = player
+      this.scene.physics.add.collider(this.player, this.bullets, this.damagePlayer)
     }
-    
-    static SPEED = 250;
-    static SHOOT_DELAY = 1000;
-    
-    preUpdate(time: number, delta: number) {
-        super.preUpdate(time, delta); 
-        
- 
-
-        this.shootTimer += delta;
-        if (this.shootTimer > EnemyShip.SHOOT_DELAY) {
-            this.shootTimer = 0;
-            this.shoot();
-        }
-        //  Kill enemies once they go off screen
   
-    }
-    // 400 533
-    // 200 310| 300 252 | 400 235 | 500 252 | 600 310
     update(time: number, delta: number) {
+      let targetX = this.player.x
+      let targetY = this.player.y
        // stop when in shooting range of target
-       if(Phaser.Math.Distance.Between(this.x, this.y, this.targetX, this.targetY) < this.bulletRange) {
+       if(Phaser.Math.Distance.Between(this.x, this.y, targetX, targetY) < this.bulletRange) {
             this.setVelocityY(0)
             let rotation: number;
-            if (this.x < this.targetX) {
-                //console.log('less than',this.targetX, this.targetY, this.x, this.y)
-                rotation = Phaser.Math.Angle.Between(this.y, this.x, this.targetY, this.targetX) * -1
-            } else if (this.x > this.targetX) {
-                //console.log('greater than',this.targetX, this.targetY, this.x, this.y)
-                rotation = Phaser.Math.Angle.Between(this.y, this.x, this.targetY, this.targetX) * -1
+            if (this.x < targetX) {
+                rotation = Phaser.Math.Angle.Between(this.y, this.x, targetY, targetX) * -1
+            } else if (this.x > targetX) {
+                rotation = Phaser.Math.Angle.Between(this.y, this.x, targetY, targetX) * -1
             } else {
                 rotation = 0
             }
 
-            //console.log('ship:', this.x, this.y)
-            //const rotation = angle(this.targetX, this.targetY, this.x, this.y)
-            // //console.log(Phaser.Math.Angle.Between(this.targetX, this.targetY, this.x, this.y, ))
-            // const vector = new Phaser.Math.Vector2(this.targetX - this.x, this.targetY - this.y)
-            // const rotation = Phaser.Math.Angle.Between(this.targetX, this.x, this.targetY, this.y)
-            // //console.log(rotation, vector.angle())
             this.setRotation(rotation)
 
+            this.shootTimer += delta;
+            if (this.shootTimer > EnemyShip.SHOOT_DELAY) {
+                this.shootTimer = 0;
+                this.bullets.fireBullet(this, targetX, targetY, false)
+            }
+            
         }
     }
-    
-    remove() {
-      this.disableBody(true, true)
+
+    setPlayer = (player: Player) => {
+      this.player = player
+    }
+
+    damagePlayer = (obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) => {
+      
+      //console.log('damaged player:', this.player)
+      this.bullets.killAndHide(obj2)
+        // calculate damage to player
+      this.player.takeDamage(1)
       
     }
-   
-    shoot() {
-   
+    
+    takeDamage = (power: number) => {
+      this.health -= power;
+      if (this.health <= 0){
+        this.disableBody(true, true)
+      }
+      //console.log('enemy hp:', this.health)
     }
+   
   }
 
   function angle(cx:number, cy:number, ex:number, ey:number) {
