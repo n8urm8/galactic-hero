@@ -13,9 +13,9 @@ const Game = () => {
     const enemyLoad: any = api.waveInfo.getWaveEnemies.useQuery({ width: width })
     
     const loadEnemy = (data:any) =>{
-        console.log('got start wave event', data)
+        //console.log('got start wave event', data)
         setWidth(data.width)
-        console.log('enemies to send:', enemyLoad.data)
+        //console.log('enemies to send:', enemyLoad.data)
         emitter.emit('enemyLoaded', enemyLoad.data)
     }
     emitter.on('startWave', loadEnemy)
@@ -46,7 +46,7 @@ const Game = () => {
                 },
                 scale: {
                     mode: Phaser.Scale.NONE,
-                   
+                    autoCenter: Phaser.Scale.CENTER_BOTH,
                 }
             })
             setGame(phaserGame)
@@ -70,7 +70,7 @@ const Game = () => {
     })
 
     return (
-        <div className="w-full">
+        <div className="w-full h-full">
             <div id='game-content' key='game-content' className="">
 
             </div>

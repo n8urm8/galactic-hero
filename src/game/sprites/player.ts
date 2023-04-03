@@ -1,4 +1,5 @@
 import Phaser, { Physics } from "phaser";
+import { HealthBar } from "../objects/healthBar";
 import { Bullets } from "./bullet";
 import { EnemyShip } from "./enemy";
 
@@ -12,13 +13,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     private shootTimer: number = 0;
     private shootDelay: number;
     private bulletRange: number = 600;
-    private health = 10;
+    private health = 1000;
     private enemy?: EnemyShip;
+    private healthBar: HealthBar
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
         super(scene, x, y, texture, frame)
         this.bullets = new Bullets(scene, 100, 300)
         this.shootDelay = 300;
+        this.healthBar = new HealthBar(scene, x-40, y+55, this.health)
     }
 
     create() {
@@ -45,11 +48,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     damageEnemy = (obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) => {  
         this.bullets.killAndHide(obj2)
         // calculate damage to enemy
-        this.enemy?.takeDamage(1)
+        this.enemy?.takeDamage(10)
     }
 
     takeDamage = (power: number) => {
         this.health -= power
+        this.healthBar.decrease(power)
         if (this.health <= 0){
           this.disableBody(true, true)
         }
@@ -64,6 +68,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     getCurrentEnemy() {
         return this.enemy
     }
+
+    updateHealth = () => {
+
+    }
 }
 
 Phaser.GameObjects.GameObjectFactory.register('player', function(this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, texture: string, frame?: string | number){
@@ -74,9 +82,10 @@ Phaser.GameObjects.GameObjectFactory.register('player', function(this: Phaser.Ga
     this.updateList.add(sprite)
 
     this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.STATIC_BODY)
-    sprite.displayWidth = width/8
+    sprite.displayWidth = 75
     sprite.scaleY = sprite.scaleX
-    sprite.body.setCircle(sprite.width/2)
+    sprite.body.setCircle(sprite.displayWidth/1.5)
+    sprite.body.setOffset(sprite.displayWidth/6, sprite.displayWidth/3)
 
 
     return sprite

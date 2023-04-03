@@ -24,7 +24,7 @@ export default class GameScene extends Phaser.Scene {
         this.add.image(width/2, height/2, 'starsBackground');
         // ui
         const startWaveBtn = this.add.image(84, height-32, 'uiAssets', 0).setInteractive({ useHandCursor: true }).once('pointerdown', () => {
-            console.log('clicked start wave!')
+            //console.log('clicked start wave!')
             this.emitter.emit('startWave', { width })
             this.scene.run('WaveScene', { loadedEnemies: this.enemiesToLoad })
         })
@@ -40,7 +40,7 @@ export default class GameScene extends Phaser.Scene {
     }
     
     loadEnemies = (data: any) => {
-        console.log('loadEnemies: ', data)
+        //console.log('loadEnemies: ', data)
         this.enemiesToLoad = data
     }
 

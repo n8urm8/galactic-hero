@@ -6,21 +6,18 @@ import { api } from "~/utils/api";
 import { EventEmitter } from "~/utils/events";
 import { IWaveEnemy } from "~/utils/enemies";
 
-// const loadEnemy = async (width: number) =>{
-//     const enemyLoad = await api.waveInfo.getWaveEnemies.useQuery({ width: 1000 })
-//     return enemyLoad
-// }
+// Create wave complete and game over events
+// need wave completion scene before going back to game scene
 
 export default class WaveScene extends Phaser.Scene {
 
     private player!: Player;
     private enemies!: Phaser.GameObjects.Group;
     private enemiesToLoad!: IWaveEnemy[]
-    private emitter;
+    private emitter = EventEmitter.getInstance();
 
     constructor(loadedEnemies: IWaveEnemy[]) {
       super("WaveScene");
-      this.emitter=EventEmitter.getInstance();
     }
 
     init(data: any) {
@@ -48,7 +45,7 @@ export default class WaveScene extends Phaser.Scene {
 
         this.enemiesToLoad && this.enemiesToLoad.forEach((enemy: IWaveEnemy) => {
             for (let i=0; i < enemy.amount; i++){
-                this.enemies.add(new EnemyShip(this, enemy.startX[i]!, enemy.startY, enemy.sprite, enemy.velocity, enemy.bulletRange, this.player))
+                this.enemies.add(new EnemyShip(this, enemy.health, enemy.startX[i]!, enemy.startY, enemy.sprite, enemy.velocity, enemy.bulletRange, enemy.shootDelay, enemy.bulletSpeed, enemy.bulletDamage, this.player))
             }
         })
         
@@ -88,9 +85,6 @@ export default class WaveScene extends Phaser.Scene {
         this.scene.run('GameScene')
     }
 
-    // loadEnemies = (data: any) => {
-    //     console.log('loadEnemies: ', data)
-    //     this.enemiesToLoad = data
-    // }
+    
     
   }
