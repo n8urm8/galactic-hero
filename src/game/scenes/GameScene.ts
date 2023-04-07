@@ -23,13 +23,12 @@ export default class GameScene extends Phaser.Scene {
         this.add.image(width/2, height/2, 'nebulaBackground');
         this.add.image(width/2, height/2, 'starsBackground');
         // ui
-        const startWaveBtn = this.add.image(84, height-32, 'uiAssets', 0).setInteractive({ useHandCursor: true }).once('pointerdown', () => {
+        const startWaveBtn = this.add.image(62, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).once('pointerdown', () => {
             //console.log('clicked start wave!')
             this.emitter.emit('startWave', { width })
             this.scene.run('WaveScene', { loadedEnemies: this.enemiesToLoad })
         })
-        startWaveBtn.scaleY = 3
-        startWaveBtn.scaleX = 9
+        startWaveBtn.scaleX = 1.2
         this.add.text(startWaveBtn.x, startWaveBtn.y, 'Start Wave').setOrigin(0.5)
 
 

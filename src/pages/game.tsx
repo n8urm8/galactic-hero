@@ -2,20 +2,25 @@ import { useEffect, useState } from "react"
 import { Game as GameType } from 'phaser'
 import { EventEmitter } from "~/utils/events"
 import { api } from "~/utils/api"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/router"
 
 export const [gameWidth, gameHeight] = [900, 400]
 
 const Game = () => {
-    
+    const router = useRouter()
+    const { data: sessionData } = useSession();
+    sessionData?.user == undefined && router.push('/')
     const [game, setGame] = useState<GameType>()
     const emitter = EventEmitter.getInstance()
     const [width, setWidth] = useState<number>(1000)
-    const enemyLoad: any = api.waveInfo.getWaveEnemies.useQuery({ width: width })
+    const enemyLoad = api.waveInfo.getWaveEnemies.useQuery({ width: width })
     
+    // Work out a router function to handle all events and responses
     const loadEnemy = (data:any) =>{
-        //console.log('got start wave event', data)
         setWidth(data.width)
-        //console.log('enemies to send:', enemyLoad.data)
+        // verify refetch not needed
+        // enemyLoad.refetch()
         emitter.emit('enemyLoaded', enemyLoad.data)
     }
     emitter.on('startWave', loadEnemy)
@@ -39,7 +44,7 @@ const Game = () => {
                 physics: {
                     default: "arcade",
                     arcade:{
-                        debug: true,
+                        debug: false,
                         gravity: {y: 0},
                         //debugShowVelocity: false
                     }

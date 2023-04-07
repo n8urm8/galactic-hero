@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { gameHeight, gameWidth } from "~/pages/game";
+import { PlayerShipSprites } from "~/utils/ships";
 
 // LOAD PLAYER DATA HERE
 
@@ -11,9 +12,10 @@ export default class BootScene extends Phaser.Scene {
     preload(){
         this.load.image('starsBackground', 'assets/images/Stars.png')
         this.load.image('nebulaBackground', 'assets/images/Nebula3.png')
+        this.load.image('purpleButton', 'assets/images/ui/purpleButton.png')
         this.load.spritesheet('uiAssets', 'assets/images/ui/uiAssets.png', {frameWidth: 16, frameHeight: 16} )
         this.load.spritesheet('explosion', 'assets/images/effects/explosion.png', {frameWidth: 32, frameHeight: 32} )
-        this.load.image('player', 'assets/images/ships/player/1B.png');
+        this.load.image(PlayerShipSprites.base, 'assets/images/ships/player/1B.png');
         for (let i = 1; i <= 11; i++) {
             this.load.image('bullet' + i, 'assets/images/bullets/bullet' + i + '.png') 
         };

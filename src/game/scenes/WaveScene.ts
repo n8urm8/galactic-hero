@@ -28,11 +28,10 @@ export default class WaveScene extends Phaser.Scene {
     create() {
         let { width, height } = this.game.canvas;
         
-        const endWaveBtn = this.add.image(84, height-32, 'uiAssets', 0).setInteractive({ useHandCursor: true }).once('pointerdown', () => {
+        const endWaveBtn = this.add.image(62, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).once('pointerdown', () => {
             this.endWave()
         })
-        endWaveBtn.scaleY = 3
-        endWaveBtn.scaleX = 9
+        endWaveBtn.scaleX = 1.2
         this.add.text(endWaveBtn.x, endWaveBtn.y, 'End Wave').setOrigin(0.5)
 
         // Player
