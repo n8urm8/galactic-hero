@@ -3,24 +3,58 @@ import { HealthBar } from "../objects/healthBar";
 import { Bullets } from "./bullet";
 import { EnemyShip } from "./enemy";
 
-interface IPlayer {
-    takeDamage: (power: number) => void
-}
-
 export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     private bullets: Bullets;
     private shootTimer: number = 0;
     private shootDelay: number;
-    private bulletRange: number = 600;
-    private health = 1000;
+    private bulletRange: number;
+    private health: number;
+    private bulletDamage: number;
+    private shield: number; // reduces damage by shield/1000
     private enemy?: EnemyShip;
     private healthBar: HealthBar
+    private baseHP: number;
+    private baseBulletDamage: number;
+    private baseBulletRange: number;
+    private baseBulletSpeed: number;
+    private baseShield: number;
+    private baseShootDelay: number;
+    private level: number;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
+    constructor(scene: Phaser.Scene, 
+        x: number, 
+        y: number, 
+        texture: string, 
+        baseHP: number,
+        baseBulletDamage: number,
+        baseBulletRange: number,
+        baseBulletSpeed: number,
+        baseShield: number,
+        baseShootDelay: number,
+        level: number,
+        frame?: string | number
+    ) {
         super(scene, x, y, texture, frame)
-        this.bullets = new Bullets(scene, 100, 300)
-        this.shootDelay = 300;
+        // base stats
+        this.baseHP = baseHP
+        this.baseBulletDamage = baseBulletDamage
+        this.baseBulletRange = baseBulletRange
+        this.baseBulletSpeed = baseBulletSpeed
+        this.baseShield = baseShield
+        this.baseShootDelay = baseShootDelay
+        this.level = level
+        // stats after level bonus (1%/lvl)
+        this.health = baseHP * (1 + (level / 100))
+        this.bulletDamage = baseBulletDamage * (1 + (level / 100))
+        // need to adjust stats for equipment bonuses
+        console.log('player base stats:', baseHP, baseBulletDamage, baseBulletRange, baseBulletSpeed, baseShield, baseShootDelay, level)
+        this.bulletRange = baseBulletRange
+        this.shield = baseShield
+        this.shootDelay = baseShootDelay
+
+        console.log('ship stats:', this.bulletDamage, this.bulletRange, this.shootDelay)
+        this.bullets = new Bullets(scene, 'bullet5', 100, baseBulletSpeed)
         this.healthBar = new HealthBar(scene, x-40, y+55, this.health)
     }
 
@@ -48,12 +82,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     damageEnemy = (obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) => {  
         this.bullets.killAndHide(obj2)
         // calculate damage to enemy
-        this.enemy?.takeDamage(10)
+        this.enemy?.takeDamage(this.bulletDamage)
     }
 
     takeDamage = (power: number) => {
-        this.health -= power
-        this.healthBar.decrease(power)
+        let damage = power - (power * this.shield / 1000)
+        this.health -= damage
+        this.healthBar.decrease(damage)
         if (this.health <= 0){
           this.disableBody(true, true)
         }
@@ -69,15 +104,37 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         return this.enemy
     }
 
-    updateHealth = () => {
-
+    getCurrentHP = () => {
+        return this.health
     }
 }
 
-Phaser.GameObjects.GameObjectFactory.register('player', function(this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, texture: string, frame?: string | number){
-    let sprite = new Player(this.scene, x, y, texture, frame)
-    let { width } = this.scene.game.canvas
-
+Phaser.GameObjects.GameObjectFactory.register('player', function(this: Phaser.GameObjects.GameObjectFactory, 
+    x: number, 
+    y: number, 
+    texture: string,
+    baseHP: number,
+    baseBulletDamage: number,
+    baseBulletRange: number,
+    baseBulletSpeed: number,
+    baseShield: number,
+    baseShootDelay: number,
+    level: number,
+    frame?: string | number){
+    let sprite = new Player(this.scene, 
+        x, 
+        y,
+        texture,
+        baseHP,
+        baseBulletDamage,
+        baseBulletRange,
+        baseBulletSpeed,
+        baseShield, 
+        baseShootDelay,
+        level,
+        frame
+    )
+    
     this.displayList.add(sprite)
     this.updateList.add(sprite)
 
@@ -86,7 +143,6 @@ Phaser.GameObjects.GameObjectFactory.register('player', function(this: Phaser.Ga
     sprite.scaleY = sprite.scaleX
     sprite.body.setCircle(sprite.displayWidth/1.5)
     sprite.body.setOffset(sprite.displayWidth/6, sprite.displayWidth/3)
-
 
     return sprite
 })
@@ -97,7 +153,19 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			player(x: number, y: number, texture: string, frame?: string | number): Player
+			player(    
+                x: number, 
+                y: number, 
+                texture: string,
+                baseHP: number,
+                baseBulletDamage: number,
+                baseBulletRange: number,
+                baseBulletSpeed: number,
+                baseShield: number,
+                baseShootDelay: number,
+                level: number,
+                frame?: string | number
+                ): Player
 		}
 	}
 }

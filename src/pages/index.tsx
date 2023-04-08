@@ -35,7 +35,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const AuthShowcase: React.FC = () => {
+export const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
   const { data: profile } = api.profile.getProfile.useQuery(
     undefined, { enabled: sessionData?.user !== undefined }
@@ -45,7 +45,14 @@ const AuthShowcase: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       {sessionData && !profile && <CreateProfile />}
-      {sessionData && profile && <Link href={'/game'}>Start Game</Link>}
+      {sessionData && profile && <Link href={'/game'}>
+      <button 
+                className="w-fit rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+                
+            >
+                Start Game
+            </button>
+        </Link>}
       <p className="text-center text-xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
       </p>

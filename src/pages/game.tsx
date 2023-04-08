@@ -4,17 +4,22 @@ import { EventEmitter } from "~/utils/events"
 import { api } from "~/utils/api"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
+import { AuthShowcase } from "."
+import Head from "next/head"
 
 export const [gameWidth, gameHeight] = [900, 400]
 
 const Game = () => {
-    const router = useRouter()
     const { data: sessionData } = useSession();
-    sessionData?.user == undefined && router.push('/')
     const [game, setGame] = useState<GameType>()
     const emitter = EventEmitter.getInstance()
     const [width, setWidth] = useState<number>(1000)
     const enemyLoad = api.waveInfo.getWaveEnemies.useQuery({ width: width })
+    const profile = api.profile.getProfile.useQuery(undefined, {
+        enabled: sessionData?.user != undefined
+    })
+    const waves = api.profile.updateWaveCount.useMutation()
+
     
     // Work out a router function to handle all events and responses
     const loadEnemy = (data:any) =>{
@@ -24,6 +29,12 @@ const Game = () => {
         emitter.emit('enemyLoaded', enemyLoad.data)
     }
     emitter.on('startWave', loadEnemy)
+    const loadProfile = () =>{
+        console.log('sending profile data:', profile.data)
+        emitter.emit('profileLoaded', profile.data)
+    }
+    emitter.on('getProfile', loadProfile)
+    emitter.on('waveCompleted', () => waves.mutate({amount: 1}))
     
     useEffect(() => {
         async function initPhaser(){
@@ -32,6 +43,7 @@ const Game = () => {
             const {default: GameScene} = await import('../game/scenes/GameScene')
             const {default: WaveScene} = await import('../game/scenes/WaveScene')
             setWidth(window.innerWidth)
+
             const phaserGame = new Phaser.Game({
                 title: 'Galatic Hero',
                 width: gameWidth,
@@ -52,7 +64,8 @@ const Game = () => {
                 scale: {
                     mode: Phaser.Scale.NONE,
                     autoCenter: Phaser.Scale.CENTER_BOTH,
-                }
+                },
+                
             })
             setGame(phaserGame)
         }
@@ -75,10 +88,25 @@ const Game = () => {
     })
 
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full relative bg-black">
+            <Head>
+            <title>Galactic Hero</title>
+                <meta name="description" content="Idle, space defender game" />
+                <link rel="icon" href="/favicon.png" />
+            </Head>
+            {profile?.data == undefined && 
+                <div className="w-full h-full p-6 items-center text-center bg-slate-500 bg-opacity-5 fixed top-0 z-10">
+                    <div className="w-full h-fit p-6 items-center text-center bg-slate-900 bg-opacity-75">
+                        <p className="text-2xl text-white font-semibold">You must login and create a profile before playing</p>
+                        <AuthShowcase />
+                    </div>
+                </div>    
+            }
+
             <div id='game-content' key='game-content' className="">
 
             </div>
+            
         </div>
     )
 }

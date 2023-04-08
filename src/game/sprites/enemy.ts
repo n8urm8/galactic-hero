@@ -42,7 +42,7 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
       this.shootDelay = shootDelay
       this.bulletSpeed = bulletSpeed
       this.bulletDamage = bulletDamage
-      this.bullets = new Bullets(scene, 100, this.bulletSpeed, true) 
+      this.bullets = new Bullets(scene, 'bullet5e', 100, this.bulletSpeed, true) 
       this.player = player
       this.scene.physics.add.collider(this.player, this.bullets, this.damagePlayer)
 

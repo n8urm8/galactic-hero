@@ -4,7 +4,7 @@ import '../sprites/player'
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
 import { EventEmitter } from "~/utils/events";
-import { IWaveEnemy } from "~/utils/enemies";
+import { IWaveEnemy } from "~/utils/gameTypes";
 
 // Create wave complete and game over events
 // need wave completion scene before going back to game scene
@@ -14,15 +14,17 @@ export default class WaveScene extends Phaser.Scene {
     private player!: Player;
     private enemies!: Phaser.GameObjects.Group;
     private enemiesToLoad!: IWaveEnemy[]
+    private ship: any;
     private emitter = EventEmitter.getInstance();
 
-    constructor(loadedEnemies: IWaveEnemy[]) {
+    constructor() {
       super("WaveScene");
     }
 
     init(data: any) {
+        // console.log('wavescene data:',data)
         this.enemiesToLoad = data.loadedEnemies
-
+        this.ship = data.player
     }
     
     create() {
@@ -35,7 +37,18 @@ export default class WaveScene extends Phaser.Scene {
         this.add.text(endWaveBtn.x, endWaveBtn.y, 'End Wave').setOrigin(0.5)
 
         // Player
-        this.player = this.add.player(width/1.5, height/1.2, 'player')
+        this.player = this.add.player(
+            width/1.5, 
+            height/1.2,
+            this.ship.sprite,
+            this.ship.baseHP,
+            this.ship.bulletDamage,
+            this.ship.bulletRange,
+            this.ship.bulletSpeed,
+            this.ship.shield,
+            this.ship.shootDelay,
+            this.ship.level,
+        )
         // Enemy Group
         this.enemies = this.add.group({
             classType: EnemyShip,
@@ -47,6 +60,8 @@ export default class WaveScene extends Phaser.Scene {
                 this.enemies.add(new EnemyShip(this, enemy.health, enemy.startX[i]!, enemy.startY, enemy.sprite, enemy.velocity, enemy.bulletRange, enemy.shootDelay, enemy.bulletSpeed, enemy.bulletDamage, this.player))
             }
         })
+
+        // need to add bullet collider effect for player hitting enemies here
         
 
     } 
@@ -62,6 +77,12 @@ export default class WaveScene extends Phaser.Scene {
             timer = 0
         }
         this.findClosestEnemy() && this.player.update(time, delta)
+        
+        if (this.player.getCurrentHP() <= 0) {
+            console.log('looooossssseeerrrrr')
+            this.endWave()
+        }
+
     }
     
     findClosestEnemy = () => {
@@ -79,7 +100,7 @@ export default class WaveScene extends Phaser.Scene {
     }
 
     endWave = () => {
-        console.log('end wave!')
+        // console.log('end wave!')
         this.scene.stop()
         this.scene.run('GameScene')
     }

@@ -81,6 +81,7 @@ model Ship {
   id           Int         @id @default(autoincrement())
   owner        Player      @relation(fields: [playerId], references: [id])
   playerId     Int
+  level        Int
   baseHP       Int
   bulletRange  Int
   bulletSpeed  Int
@@ -104,6 +105,7 @@ model Equipment {
   shipId   Int
   sprite   String
   type     String
+  level    Int
   stats    String
   battery  Int
 }

@@ -71,12 +71,12 @@ export class Bullets extends Phaser.Physics.Arcade.Group {
     private velocity: number;
     private flip: boolean;
 
-    constructor(scene: Phaser.Scene, maxBullets: number, velocity: number, rotate?: boolean) {
+    constructor(scene: Phaser.Scene, sprite: string, maxBullets: number, velocity: number, rotate?: boolean) {
     
         super(scene.physics.world, scene);
         this.createMultiple({
             classType: Bullet,
-            key: 'bullet5',
+            key: sprite,
             frameQuantity: maxBullets,
             active: false,
             visible: false,
