@@ -3,7 +3,8 @@ import { IWaveEnemy } from "./gameTypes"
 
 // need to include wave number effect
 export function getTankEnemy(width: number): IWaveEnemy {
-    let enemyAmount = getRandomInt(2,10)
+    //let enemyAmount = getRandomInt(2,10)
+    let enemyAmount = 1
     let focal = width/1.5
     let range = 100
     let minRange = Math.max(focal-range, width/2)
@@ -26,7 +27,8 @@ export function getTankEnemy(width: number): IWaveEnemy {
 }
 
 export function getNormalEnemy(width: number): IWaveEnemy {
-    let enemyAmount = getRandomInt(2,10)
+    //let enemyAmount = getRandomInt(2,10)
+    let enemyAmount = 1
     let focal = width/1.5
     let range = 200
     let minRange = Math.max(focal-range, width/2)
@@ -49,7 +51,8 @@ export function getNormalEnemy(width: number): IWaveEnemy {
 }
 
 export function getEliteEnemy(width: number): IWaveEnemy {
-    let enemyAmount = getRandomInt(2,10)
+    //let enemyAmount = getRandomInt(2,10)
+    let enemyAmount = 1
     let focal = width/1.5
     let range = 300
     let minRange = Math.max(focal-range, width/2)

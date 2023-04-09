@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { gameHeight, gameWidth } from "~/pages/game";
-import { EventEmitter } from "~/utils/events";
+import { EventEmitter, GameEvents } from "~/utils/events";
 import { PlayerShipSprites } from "~/utils/ships";
 
 // LOAD PLAYER DATA HERE
@@ -16,11 +16,12 @@ export default class BootScene extends Phaser.Scene {
     }
   
     preload(){
-        this.emitter.on('profileLoaded', this.loadProfile)
-        this.emitter.emit('getProfile')
+        this.emitter.on(GameEvents.profileLoaded, this.loadProfile)
+        this.emitter.emit(GameEvents.getProfile)
         this.load.image('starsBackground', 'assets/images/Stars.png')
         this.load.image('nebulaBackground', 'assets/images/Nebula3.png')
         this.load.image('purpleButton', 'assets/images/ui/purpleButton.png')
+        this.load.image('goldSquare', 'assets/images/ui/goldSquare.png')
         this.load.spritesheet('uiAssets', 'assets/images/ui/uiAssets.png', {frameWidth: 16, frameHeight: 16} )
         this.load.spritesheet('explosion', 'assets/images/effects/explosion.png', {frameWidth: 32, frameHeight: 32} )
         this.load.image(PlayerShipSprites.base, 'assets/images/ships/player/1B.png');

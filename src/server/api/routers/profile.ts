@@ -81,10 +81,10 @@ export const profileRouter = createTRPCRouter({
               credits: 1000,
               ships: {
                 create: {
-                  baseHP: 1000,
+                  baseHP: 2000,
                   level: 1,
                   bulletRange: 500,
-                  bulletDamage: 10,
+                  bulletDamage: 50,
                   bulletSpeed: 300,
                   shootDelay: 300,
                   shield: 10,

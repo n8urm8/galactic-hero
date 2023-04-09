@@ -15,7 +15,7 @@ export default class WaveScene extends Phaser.Scene {
     private enemies!: Phaser.GameObjects.Group;
     private enemiesToLoad!: IWaveEnemy[]
     private ship: any;
-    private emitter = EventEmitter.getInstance();
+    private emitter = EventEmitter.getInstance()
 
     constructor() {
       super("WaveScene");
@@ -29,9 +29,9 @@ export default class WaveScene extends Phaser.Scene {
     
     create() {
         let { width, height } = this.game.canvas;
-        
         const endWaveBtn = this.add.image(62, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).once('pointerdown', () => {
-            this.endWave()
+            this.scene.stop()
+            this.scene.run('GameScene')
         })
         endWaveBtn.scaleX = 1.2
         this.add.text(endWaveBtn.x, endWaveBtn.y, 'End Wave').setOrigin(0.5)
@@ -57,12 +57,10 @@ export default class WaveScene extends Phaser.Scene {
 
         this.enemiesToLoad && this.enemiesToLoad.forEach((enemy: IWaveEnemy) => {
             for (let i=0; i < enemy.amount; i++){
-                this.enemies.add(new EnemyShip(this, enemy.health, enemy.startX[i]!, enemy.startY, enemy.sprite, enemy.velocity, enemy.bulletRange, enemy.shootDelay, enemy.bulletSpeed, enemy.bulletDamage, this.player))
+                let newEnemy = this.enemies.add(new EnemyShip(this, enemy.health, enemy.startX[i]!, enemy.startY, enemy.sprite, enemy.velocity, enemy.bulletRange, enemy.shootDelay, enemy.bulletSpeed, enemy.bulletDamage, this.player))
+                this.physics.add.collider(newEnemy, this.player.getBullets(), this.player.damageEnemy)
             }
         })
-
-        // need to add bullet collider effect for player hitting enemies here
-        
 
     } 
     
@@ -80,7 +78,12 @@ export default class WaveScene extends Phaser.Scene {
         
         if (this.player.getCurrentHP() <= 0) {
             console.log('looooossssseeerrrrr')
-            this.endWave()
+            this.endWave(false)
+        }
+
+        if (this.enemies.getMatching('visible', true).length == 0) {
+            console.log('enemy scum terminated!')
+            this.endWave(true)
         }
 
     }
@@ -99,12 +102,10 @@ export default class WaveScene extends Phaser.Scene {
         return false;
     }
 
-    endWave = () => {
-        // console.log('end wave!')
+    endWave = (completed: boolean) => {
+        let condition = completed ? 'VICTORY' : 'DEFEAT'
+        this.scene.start('EndWaveScene', { condition: condition, ship: this.ship })
         this.scene.stop()
-        this.scene.run('GameScene')
-    }
-
-    
+    }    
     
   }

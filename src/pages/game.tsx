@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Game as GameType } from 'phaser'
-import { EventEmitter } from "~/utils/events"
+import { EventEmitter, GameEvents } from "~/utils/events"
 import { api } from "~/utils/api"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
@@ -13,28 +13,28 @@ const Game = () => {
     const { data: sessionData } = useSession();
     const [game, setGame] = useState<GameType>()
     const emitter = EventEmitter.getInstance()
-    const [width, setWidth] = useState<number>(1000)
-    const enemyLoad = api.waveInfo.getWaveEnemies.useQuery({ width: width })
+    
     const profile = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user != undefined
     })
     const waves = api.profile.updateWaveCount.useMutation()
-
-    
-    // Work out a router function to handle all events and responses
-    const loadEnemy = (data:any) =>{
-        setWidth(data.width)
-        // verify refetch not needed
-        // enemyLoad.refetch()
-        emitter.emit('enemyLoaded', enemyLoad.data)
-    }
-    emitter.on('startWave', loadEnemy)
     const loadProfile = () =>{
-        console.log('sending profile data:', profile.data)
-        emitter.emit('profileLoaded', profile.data)
+        //console.log('game.tsx getProfile')
+        emitter.emit(GameEvents.profileLoaded, profile.data)
     }
-    emitter.on('getProfile', loadProfile)
-    emitter.on('waveCompleted', () => waves.mutate({amount: 1}))
+    emitter.on(GameEvents.getProfile, 
+        loadProfile, 
+        emitter.removeListener(GameEvents.getProfile)
+    )
+
+    emitter.on(GameEvents.waveCompleted, async () => {
+        //console.log('game.tsx waveCompletedDB')
+        let result = await waves.mutateAsync({amount: 1})
+        
+        emitter.emit(GameEvents.waveCountUpdated, {waves: result.waves})
+        }, 
+        emitter.removeListener(GameEvents.waveCompleted)
+    )
     
     useEffect(() => {
         async function initPhaser(){
@@ -42,7 +42,7 @@ const Game = () => {
             const {default: BootScene} = await import('../game/scenes/BootScene')
             const {default: GameScene} = await import('../game/scenes/GameScene')
             const {default: WaveScene} = await import('../game/scenes/WaveScene')
-            setWidth(window.innerWidth)
+            const {default: EndWaveScene} = await import('../game/scenes/EndWaveScene')
 
             const phaserGame = new Phaser.Game({
                 title: 'Galatic Hero',
@@ -50,7 +50,7 @@ const Game = () => {
                 height: gameHeight,
                 type: Phaser.AUTO,
                 parent: 'game-content',
-                scene: [BootScene, GameScene, WaveScene],
+                scene: [BootScene, GameScene, WaveScene, EndWaveScene],
                 backgroundColor: '#000',
                 pixelArt: true,
                 physics: {
@@ -76,8 +76,6 @@ const Game = () => {
     useEffect(() => {
         function handleWindowResize() {
             game?.scale.resize(window.innerWidth, window.innerHeight)
-            setWidth(window.innerWidth)
-            //console.log('resizing window...')
         }
         window.addEventListener('resize', handleWindowResize)
 

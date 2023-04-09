@@ -13,8 +13,8 @@ Is a space-themed, incremental, idle, multiplayer game built with Phaser and Nex
 - [x] Player ship targeting enemy ships
 - [ ] Mechanics/logic for Enemy generation
 - [ ] Organize Scene and objects required for waving (battling enemy waves)
-- [ ] Player/Enemy health, bullet damage
-- [ ] Update Sprites (player, shields, enemy, bullets)
+- [x] Player/Enemy health, bullet damage
+- [x] Update Sprites (player, shields, enemy, bullets)
 - [ ] Title and login screen
 - [ ] User Interface
     - [x] Start Wave
@@ -24,9 +24,9 @@ Is a space-themed, incremental, idle, multiplayer game built with Phaser and Nex
     - [ ] Leaderboards
     - [ ] Chat Rooms (General, Alliance, Private)
 - [ ] Database Creation
-    - [ ] Player Current Ship and Stats
+    - [x] Player Current Ship and Stats
     - [ ] Player Equipment (ships and upgrades)
-    - [ ] Connections to Phaser
+    - [x] Connections to Phaser
     - [ ] Alliances
     - [ ] Messaging
 

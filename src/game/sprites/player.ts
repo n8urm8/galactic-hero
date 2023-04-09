@@ -48,12 +48,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.health = baseHP * (1 + (level / 100))
         this.bulletDamage = baseBulletDamage * (1 + (level / 100))
         // need to adjust stats for equipment bonuses
-        console.log('player base stats:', baseHP, baseBulletDamage, baseBulletRange, baseBulletSpeed, baseShield, baseShootDelay, level)
+        //console.log('player base stats:', baseHP, baseBulletDamage, baseBulletRange, baseBulletSpeed, baseShield, baseShootDelay, level)
         this.bulletRange = baseBulletRange
         this.shield = baseShield
         this.shootDelay = baseShootDelay
 
-        console.log('ship stats:', this.bulletDamage, this.bulletRange, this.shootDelay)
+        //console.log('ship stats:', this.bulletDamage, this.bulletRange, this.shootDelay)
         this.bullets = new Bullets(scene, 'bullet5', 100, baseBulletSpeed)
         this.healthBar = new HealthBar(scene, x-40, y+55, this.health)
     }
@@ -75,7 +75,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     
     setEnemy(enemy: EnemyShip) {
         this.enemy = enemy
-        this.scene.physics.add.collider(this.enemy, this.bullets, this.damageEnemy)
         //console.log('!!Enemy Set!!')
     }
     
@@ -98,6 +97,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     getBulletRange() {
         return this.bulletRange
+    }
+
+    getBullets = () => {
+        return this.bullets
     }
 
     getCurrentEnemy() {

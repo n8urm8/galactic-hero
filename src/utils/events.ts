@@ -17,3 +17,12 @@ export class EventEmitter extends EventEmitter3 {
 
 
 }
+
+export enum GameEvents{
+    getProfile = 'getProfile',
+    profileLoaded = 'profileLoaded',
+    waveCompleted = 'waveCompleted',
+    waveCountUpdated = 'waveCountUpdated',
+    creditsUpdated = 'creditsUpdated',
+    adjustCredits = 'adjustCredits',
+}

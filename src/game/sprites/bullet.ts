@@ -46,10 +46,6 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     preUpdate(time: number, delta: number) {
         super.preUpdate(time, delta);
    
-        // if (this.scaleSpeed > 0) {
-        //     this.scaleX += this.scaleSpeed;
-        //     this.scaleY += this.scaleSpeed;
-        // }
         if (this.outOfScreen()) {
             this.remove();
         }
