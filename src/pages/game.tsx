@@ -43,6 +43,7 @@ const Game = () => {
             const {default: GameScene} = await import('../game/scenes/GameScene')
             const {default: WaveScene} = await import('../game/scenes/WaveScene')
             const {default: EndWaveScene} = await import('../game/scenes/EndWaveScene')
+            const {default: UpgradeMenuScene} = await import('../game/scenes/upgradeMenu')
 
             const phaserGame = new Phaser.Game({
                 title: 'Galatic Hero',
@@ -50,13 +51,13 @@ const Game = () => {
                 height: gameHeight,
                 type: Phaser.AUTO,
                 parent: 'game-content',
-                scene: [BootScene, GameScene, WaveScene, EndWaveScene],
+                scene: [BootScene, GameScene, WaveScene, EndWaveScene, UpgradeMenuScene],
                 backgroundColor: '#000',
                 pixelArt: true,
                 physics: {
                     default: "arcade",
                     arcade:{
-                        debug: false,
+                        debug: true,
                         gravity: {y: 0},
                         //debugShowVelocity: false
                     }

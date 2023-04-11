@@ -6,6 +6,7 @@ import { EventEmitter, GameEvents } from "~/utils/events";
 import { IWaveEnemy } from "~/utils/gameTypes";
 import { Player as IPlayer } from "@prisma/client";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
+import UpgradeMenu from "./upgradeMenu";
 
 export default class GameScene extends Phaser.Scene {
 
@@ -48,7 +49,13 @@ export default class GameScene extends Phaser.Scene {
         this.add.text(10, 10, `Player: ${this.profile.name}`)
         this.creditsText = this.add.text(10, 25, `Credits: ${this.profile.credits}`)
         this.wavesText = this.add.text(10, 40, `Waves: ${this.profile.waves}`)
+
         
+        const upgradeMenuBtn = this.add.image(172, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).once('pointerdown', () => {
+          this.scene.run('UpgradeMenuScene', {profileData: this.profile})
+        })
+        this.add.text(upgradeMenuBtn.x, upgradeMenuBtn.y, 'Upgrades').setOrigin(0.5)
+
     } 
     
     update(time: number, delta: number) {
