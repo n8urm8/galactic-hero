@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client"
+
 export interface IWaveEnemy {
     health: number
     velocity: number 
@@ -10,3 +12,9 @@ export interface IWaveEnemy {
     amount: number
     sprite: string
 }
+
+const playerWithInventory = Prisma.validator<Prisma.PlayerArgs>()({include: {
+    ships: true,
+    equipment: true
+}})
+export type PlayerWithInventory = Prisma.PlayerGetPayload<typeof playerWithInventory>

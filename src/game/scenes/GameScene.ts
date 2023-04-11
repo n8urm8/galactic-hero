@@ -48,7 +48,7 @@ export default class GameScene extends Phaser.Scene {
         this.add.text(10, 10, `Player: ${this.profile.name}`)
         this.creditsText = this.add.text(10, 25, `Credits: ${this.profile.credits}`)
         this.wavesText = this.add.text(10, 40, `Waves: ${this.profile.waves}`)
-
+        
     } 
     
     update(time: number, delta: number) {

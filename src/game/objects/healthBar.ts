@@ -15,7 +15,7 @@ export class HealthBar {
         this.y = y;
         this.startHP = startHP
         this.value = startHP;
-        this.p = 12 / 100;
+        this.p = 1 / 100;
 
         this.draw();
         scene.add.text(x-20, y, 'HP')
