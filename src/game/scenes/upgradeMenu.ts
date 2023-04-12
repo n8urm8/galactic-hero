@@ -17,11 +17,12 @@ export default class UpgradeMenu extends Phaser.Scene {
     }
     create() {
         const {width, height} = this.game.canvas
+        const menuContainer = this.add.container(5, height-240)
         const background = this.add.graphics()
-        background.fillRect(0, 0, 300, 200).fillStyle(0x7a7a7a, 0.75)
-
-        const menuContainer = this.add.container(width*.01, height*.35)
-        menuContainer.add(background)
+        background.fillRect(0, 0, 300, 200).fillStyle(0x7a7a7a, 0.75).stroke()
+        const currentShip = this.playerInventory.ships.filter((ship) => ship.isCurrent)[0]
+        const shipImg = this.add.image(0, 0, currentShip!.sprite).setOrigin(0,0)
+        menuContainer.add([background, shipImg])
      
         
     }
