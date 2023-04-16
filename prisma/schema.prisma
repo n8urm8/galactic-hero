@@ -98,16 +98,21 @@ model Ship {
 }
 
 model Equipment {
-  id       Int    @id @default(autoincrement())
-  player   Player @relation(fields: [playerId], references: [id])
-  playerId Int
-  ship     Ship   @relation(fields: [shipId], references: [id])
-  shipId   Int
-  sprite   String
-  type     String
-  level    Int
-  stats    String
-  battery  Int
+  id           Int    @id @default(autoincrement())
+  player       Player @relation(fields: [playerId], references: [id])
+  playerId     Int
+  ship         Ship   @relation(fields: [shipId], references: [id])
+  shipId       Int
+  sprite       String
+  type         String
+  level        Int
+  bulletDamage Int
+  bulletSpeed  Int
+  shootDelay   Int
+  shieldBonus  Int
+  healthBonus  Int
+  batteryCost  Int
+  batteryBonus Int
 }
 
 // enum EquipmentType {

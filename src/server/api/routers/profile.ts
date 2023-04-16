@@ -7,7 +7,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
-import { PlayerShipSprites } from "~/utils/ships";
+import { PlayerShipSprites, getLevelUpCost } from "~/utils/ships";
 
 export const profileRouter = createTRPCRouter({
   // queries: 
@@ -120,11 +120,12 @@ export const profileRouter = createTRPCRouter({
       return waves
     }),
 
+    // not sure I want this, maybe done through wave completion/purchases
     updateCredits: protectedProcedure
     .input( z.object({ amount: z.number()}))
     .mutation(({ ctx, input}) => {
       const userId = ctx.session.user.id
-      const credits = ctx.prisma.player.update({
+      const player = ctx.prisma.player.update({
         where: {
           userId: userId
         },
@@ -133,21 +134,15 @@ export const profileRouter = createTRPCRouter({
         }
       })
 
-      return credits
+      return player
     }),
+
     // input old and new ship IDs, determine id verification needed
     updateCurrentShip: protectedProcedure
     .input( z.object({ oldShipId: z.number(), newShipId: z.number() }))
     .mutation(({ ctx, input}) => {
+      // need to add verification of ownership
       const userId = ctx.session.user.id
-      const player = ctx.prisma.player.findUnique({
-        where: {
-          userId: userId
-        },
-        select: {
-          id: true
-        }
-      })
       const oldShip = ctx.prisma.ship.update({
         where: {
           id: input.oldShipId
@@ -167,6 +162,106 @@ export const profileRouter = createTRPCRouter({
 
       return newShip
     }),
+
+    updateShipEquipment: protectedProcedure
+      .input(z.object({ playerId: z.number(), shipId: z.number(), equipmentIdRemove: z.number().optional(), equipmentIdAdd: z.number() }))
+      .mutation(async ({ctx, input}) => {
+        // verify player owns equipment
+        if (input.equipmentIdRemove) {
+          const verifiedOld = await ctx.prisma.equipment.count({
+            where: {
+              playerId: input.playerId,
+              id: input.equipmentIdRemove
+            }
+          })
+          if (verifiedOld == 0) {
+            return 'equipment to remove not owned'
+          }
+        }
+        const verifiedNew = await ctx.prisma.equipment.count({
+          where: {
+            playerId: input.playerId,
+            id: input.equipmentIdAdd
+          }
+        })
+        if (verifiedNew == 0) {
+          return 'equipment to add not owned'
+        }
+        let updatedShip 
+        if (input.equipmentIdRemove) {
+          updatedShip = await ctx.prisma.ship.update({
+            where: {
+              id: input.shipId,
+            },
+            data: {
+              equipment: {
+                disconnect: { id: input.equipmentIdRemove },
+                connect: { id: input.equipmentIdAdd }
+              }
+            }
+          })
+        } else {
+          updatedShip = await ctx.prisma.ship.update({
+            where: {
+              id: input.shipId,
+            },
+            data: {
+              equipment: {
+                connect: { id: input.equipmentIdAdd }
+              }
+            }
+          })
+        }
+
+        return updatedShip
+      }),
+
+      shipLevelUp: protectedProcedure
+        .input(z.object({ shipId: z.number(), playerId: z.number() }))
+        .mutation( async ({ctx, input}) => {
+          const userId = ctx.session.user.id
+          const currentCredits = await ctx.prisma.player.findUnique({
+            where: {
+              userId: userId,
+            },
+            select: {
+              credits: true
+            }
+          })
+          const currentShip = await ctx.prisma.ship.findUnique({
+            where: {
+              id: input.shipId
+            }
+          })
+          const cost = getLevelUpCost(currentShip!.level, 1)
+
+          if (cost <= currentCredits!.credits) {
+            const player = await ctx.prisma.player.update({
+              where: {
+                userId: userId
+              },
+              data: {
+                credits: {increment: -cost},
+                ships: {
+                  update: {
+                    where: {
+                      id: input.shipId
+                    }, 
+                    data: {
+                      level: { increment: 1 }
+                    }
+                  },
+                }
+              }
+            })
+
+            return player
+          } else {
+            return 'Not enough credits'
+          }
+
+        }),
+        
 
 
 });
