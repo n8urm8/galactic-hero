@@ -35,6 +35,14 @@ const Game = () => {
         }, 
         emitter.removeListener(GameEvents.waveCompleted)
     )
+
+    const levelUp = api.profile.shipLevelUp.useMutation()
+    emitter.on(GameEvents.levelUpShip, async (data: {playerId: number, shipId: number}) => {
+        console.log('game.tsx level up', data)
+        const levelingUp = await levelUp.mutateAsync({playerId: data.playerId, shipId: data.shipId})
+        console.log(levelingUp)
+        emitter.emit(GameEvents.shipLeveled, { player: levelingUp })
+    }, emitter.removeListener(GameEvents.levelUpShip))
     
     useEffect(() => {
         async function initPhaser(){

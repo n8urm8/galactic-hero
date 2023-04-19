@@ -12,12 +12,13 @@ export default class GameScene extends Phaser.Scene {
 
     private player!: Phaser.Physics.Arcade.Sprite;
     private enemies!: Phaser.GameObjects.Group;
-    private emitter=EventEmitter.getInstance();
+    private emitter = EventEmitter.getInstance();
     private enemiesToLoad!: IWaveEnemy[]
     private profile: any
     private ship: any
     private creditsText!: Phaser.GameObjects.Text
     private wavesText!: Phaser.GameObjects.Text
+    private upgradesOpen = true;
 
     constructor() {
       super("GameScene");
@@ -39,7 +40,7 @@ export default class GameScene extends Phaser.Scene {
         this.add.image(width/2, height/2, 'nebulaBackground');
         this.add.image(width/2, height/2, 'starsBackground');
         // ui
-        const startWaveBtn = this.add.image(62, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).once('pointerdown', () => {
+        const startWaveBtn = this.add.image(62, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).on('pointerdown', () => {
             //console.log('clicked start wave!')
             //this.emitter.emit('startWave', { width })
             this.scene.run('WaveScene', { loadedEnemies: this.enemiesToLoad, player: this.ship })
@@ -50,9 +51,15 @@ export default class GameScene extends Phaser.Scene {
         this.creditsText = this.add.text(10, 25, `Credits: ${this.profile.credits}`)
         this.wavesText = this.add.text(10, 40, `Waves: ${this.profile.waves}`)
 
-        
-        const upgradeMenuBtn = this.add.image(172, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).once('pointerdown', () => {
-          this.scene.run('UpgradeMenuScene', {profileData: this.profile})
+        this.scene.run('UpgradeMenuScene', {profileData: this.profile})
+        const upgradeMenuBtn = this.add.image(172, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+          if (this.upgradesOpen) {
+            this.scene.stop('UpgradeMenuScene')
+            this.upgradesOpen = false
+          } else {
+            this.upgradesOpen = true
+            this.scene.run('UpgradeMenuScene', {profileData: this.profile})
+          }
         })
         this.add.text(upgradeMenuBtn.x, upgradeMenuBtn.y, 'Upgrades').setOrigin(0.5)
 

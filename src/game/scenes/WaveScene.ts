@@ -40,14 +40,7 @@ export default class WaveScene extends Phaser.Scene {
         this.player = this.add.player(
             width/1.5, 
             height/1.2,
-            this.ship.sprite,
-            this.ship.baseHP,
-            this.ship.bulletDamage,
-            this.ship.bulletRange,
-            this.ship.bulletSpeed,
-            this.ship.shield,
-            this.ship.shootDelay,
-            this.ship.level,
+            this.ship,
         )
         // Enemy Group
         this.enemies = this.add.group({

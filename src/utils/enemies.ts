@@ -76,6 +76,4 @@ export function getEliteEnemy(width: number): IWaveEnemy {
 
 function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max-min) + min);
-  }
-
-  //width / (Math.random() + 1)
+}

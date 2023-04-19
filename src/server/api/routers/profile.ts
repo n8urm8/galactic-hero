@@ -23,7 +23,11 @@ export const profileRouter = createTRPCRouter({
               userId: userId
           },
           include: {
-            ships: true,
+            ships: {
+              include: {
+                equipment: true
+              },
+            },
             equipment: true,
           }
         })
@@ -44,7 +48,7 @@ export const profileRouter = createTRPCRouter({
       return ships
     }),
 
-    getPlayerEquipment: protectedProcedure
+    getPlayerShipsAndEquipment: protectedProcedure
     .query(({ ctx }) => {
       const userId = ctx.session.user.id
       const ships = ctx.prisma.player.findUnique({
@@ -153,19 +157,30 @@ export const profileRouter = createTRPCRouter({
       })
       const newShip = ctx.prisma.ship.update({
         where: {
-          id: input.newShipId
+          id: input.newShipId,
         },
         data: {
           isCurrent: true
         }
       })
 
-      return newShip
+      const updatedShip = ctx.prisma.ship.findUnique({
+        where: {
+          id: input.newShipId,
+        },
+        include: {
+          equipment: true
+        }
+      }) 
+
+      return updatedShip
     }),
 
     updateShipEquipment: protectedProcedure
       .input(z.object({ playerId: z.number(), shipId: z.number(), equipmentIdRemove: z.number().optional(), equipmentIdAdd: z.number() }))
       .mutation(async ({ctx, input}) => {
+        // TODO: check battery requirements
+        // TODO: check slot type available
         // verify player owns equipment
         if (input.equipmentIdRemove) {
           const verifiedOld = await ctx.prisma.equipment.count({
@@ -236,7 +251,7 @@ export const profileRouter = createTRPCRouter({
           const cost = getLevelUpCost(currentShip!.level, 1)
 
           if (cost <= currentCredits!.credits) {
-            const player = await ctx.prisma.player.update({
+            const updateShipLvl = await ctx.prisma.player.update({
               where: {
                 userId: userId
               },
@@ -255,13 +270,26 @@ export const profileRouter = createTRPCRouter({
               }
             })
 
+            const player = ctx.prisma.player.findUnique({
+              where: {
+                userId: userId
+              },
+              include: {
+                ships: {
+                  include: {
+                    equipment: true
+                  },
+                }
+              }
+            })
+
             return player
           } else {
             return 'Not enough credits'
           }
 
         }),
-        
+
 
 
 });

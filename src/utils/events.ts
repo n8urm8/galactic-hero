@@ -25,4 +25,7 @@ export enum GameEvents{
     waveCountUpdated = 'waveCountUpdated',
     creditsUpdated = 'creditsUpdated',
     adjustCredits = 'adjustCredits',
+    levelUpShip = 'levelUpShip',
+    shipLeveled = 'shipLeveled',
+    
 }

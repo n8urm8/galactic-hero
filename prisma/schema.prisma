@@ -77,6 +77,7 @@ model Player {
   equipment Equipment[]
 }
 
+// add animation sprite possible
 model Ship {
   id           Int         @id @default(autoincrement())
   owner        Player      @relation(fields: [playerId], references: [id])
@@ -95,24 +96,25 @@ model Ship {
   defenseSlots Int
   batterySlots Int
   equipment    Equipment[]
+  animation    String?
 }
 
 model Equipment {
-  id           Int    @id @default(autoincrement())
-  player       Player @relation(fields: [playerId], references: [id])
+  id           Int     @id @default(autoincrement())
+  player       Player? @relation(fields: [playerId], references: [id])
   playerId     Int
-  ship         Ship   @relation(fields: [shipId], references: [id])
+  ship         Ship?   @relation(fields: [shipId], references: [id])
   shipId       Int
   sprite       String
   type         String
   level        Int
   bulletDamage Int
+  bulletRange  Int
   bulletSpeed  Int
   shootDelay   Int
   shieldBonus  Int
   healthBonus  Int
-  batteryCost  Int
-  batteryBonus Int
+  battery      Int
 }
 
 // enum EquipmentType {

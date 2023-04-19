@@ -1,11 +1,30 @@
 import { Prisma } from "@prisma/client"
 import { Rectangle } from "arcade-physics/lib/geom/rectangle/Rectangle"
-import { PlayerWithInventory } from "~/utils/gameTypes"
+import { EventEmitter, GameEvents } from "~/utils/events"
+import { PlayerEquipment, PlayerShipWithEquipment, PlayerWithInventory } from "~/utils/gameTypes"
+import { getLevelUpCost, ShipConstants } from "~/utils/ships"
 
 
 export default class UpgradeMenu extends Phaser.Scene {
 
     private playerInventory!: PlayerWithInventory
+    private emitter = EventEmitter.getInstance()
+    private shipImg?: Phaser.GameObjects.Image
+    private swapShipBtn?: Phaser.GameObjects.Image
+    private swapShipBtnText?: Phaser.GameObjects.Text 
+    private levelUpBtn?: Phaser.GameObjects.Image
+    private lvlUpBtnText?: Phaser.GameObjects.Text  
+    private levelText?: Phaser.GameObjects.Text  
+    private levelUpCostText?: Phaser.GameObjects.Text 
+    private healthText?: Phaser.GameObjects.Text 
+    private shieldText?: Phaser.GameObjects.Text 
+    private bDamageText?: Phaser.GameObjects.Text 
+    private bSpeedText?: Phaser.GameObjects.Text
+    private bDelayText?: Phaser.GameObjects.Text 
+    private batteryText?: Phaser.GameObjects.Text 
+    private equipmentBtn?: Phaser.GameObjects.Image
+    private equipmentBtnText?: Phaser.GameObjects.Text 
+    private currentShipId?: number
 
     constructor(
     ){
@@ -25,65 +44,124 @@ export default class UpgradeMenu extends Phaser.Scene {
         background.scaleX= background.scaleX*1.2
 
         const currentShip = this.playerInventory.ships.filter((ship) => ship.isCurrent)[0]
+        this.currentShipId = currentShip?.id
+        this.shipImg = this.add.image(8, 10, currentShip!.sprite).setOrigin(0,0)
+        this.shipImg.displayHeight = menuHeight-20
+        this.shipImg.scaleX = this.shipImg.scaleY
 
-        const shipImg = this.add.image(8, 10, currentShip!.sprite).setOrigin(0,0)
-        shipImg.displayHeight = menuHeight-20
-        shipImg.scaleX = shipImg.scaleY
-
-        const levelUpBtn = this.add.image(menuWidth-63, 55, 'purpleButton').setInteractive({ useHandCursor: true })
+        this.levelUpBtn = this.add.image(menuWidth-63, 55, 'purpleButton').setInteractive({ useHandCursor: true })
+            .once('pointerdown', () => {
+            this.levelUp()
+        })
+        this.lvlUpBtnText = this.add.text(this.levelUpBtn.x, this.levelUpBtn.y, 'Lvl Up').setOrigin(0.5)
+        
+        this.swapShipBtn = this.add.image(this.shipImg.displayWidth/2 + 8, menuHeight-20, 'purpleButton').setInteractive({ useHandCursor: true })
             .once('pointerdown', () => {
             
         })
-        let lvlUpBtnText = this.add.text(levelUpBtn.x, levelUpBtn.y, 'Lvl Up').setOrigin(0.5)
+        this.swapShipBtnText = this.add.text(this.swapShipBtn.x, this.swapShipBtn.y, 'Swap').setOrigin(0.5)
         
-        const swapShipBtn = this.add.image(shipImg.displayWidth/2 + 8, menuHeight-20, 'purpleButton').setInteractive({ useHandCursor: true })
-            .once('pointerdown', () => {
-            
-        })
-        let swapShipBtnText = this.add.text(swapShipBtn.x, swapShipBtn.y, 'Swap').setOrigin(0.5)
-        
-        let levelText = this.add.text(menuWidth-110, 5, `Level: ${currentShip!.level}`)
+        this.levelText = this.add.text(menuWidth-110, 5, `Level: ${currentShip!.level}`)
         // create formula to calculate cost of next level
-        let levelUpCostText = this.add.text(menuWidth-110, 22, `Cost: ${currentShip!.level * 100}`)
+        this.levelUpCostText = this.add.text(menuWidth-110, 22, `Cost: ${getLevelUpCost(currentShip!.level, 1)}`)
         // text for stats - need formula to calculate stats with equipment and levels
-        let healthText = this.add.text(menuWidth-110, 75, `Health: ${currentShip!.baseHP * 100}`)
-        let shieldText = this.add.text(menuWidth-110, 90, `Shield: ${currentShip!.shield / 1000}%`)
-        let bDamageText = this.add.text(menuWidth-110, 105, `Damage: ${currentShip!.bulletDamage}`)
-        let bDelayText = this.add.text(menuWidth-110, 120, `Interval: ${currentShip!.shootDelay}`)
-        let batteryText = this.add.text(menuWidth-110, 135, `Battery: ${currentShip!.battery}`)
-        // let batterySlotsText = this.add.text(menuWidth-110, 170, `Cost: ${currentShip!.batterySlots}`)
+        this.healthText = this.add.text(menuWidth-110, 75, `Health: ${currentShip!.baseHP * 100}`)
+        this.shieldText = this.add.text(menuWidth-110, 90, `Shield: ${currentShip!.shield / 1000}%`)
+        this.bDamageText = this.add.text(menuWidth-110, 105, `Damage: ${currentShip!.bulletDamage}`)
+        this.bSpeedText = this.add.text(menuWidth-110, 120, `Speed: ${currentShip!.bulletSpeed}`)
+        this.bDelayText = this.add.text(menuWidth-110, 135, `Interval: ${currentShip!.shootDelay}`)
+        this.batteryText = this.add.text(menuWidth-110, 150, `Battery: ${currentShip!.battery}`)
+        this.getCurrentShip()
 
         // add equipment swapping
-        const equipmentBtn = this.add.image(menuWidth-58, menuHeight-20, 'purpleButton').setInteractive({ useHandCursor: true })
+        this.equipmentBtn = this.add.image(menuWidth-58, menuHeight-20, 'purpleButton').setInteractive({ useHandCursor: true })
             .once('pointerdown', () => {
         
         })
-        equipmentBtn.scaleX = 1.1
-        let equipmentBtnText = this.add.text(equipmentBtn.x, equipmentBtn.y, 'Equipment').setOrigin(0.5)
+        this.equipmentBtn.scaleX = 1.1
+        this.equipmentBtnText = this.add.text(this.equipmentBtn.x, this.equipmentBtn.y, 'Equipment').setOrigin(0.5)
         
 
         menuContainer.add([
             background, 
-            shipImg, 
-            swapShipBtn,
-            swapShipBtnText, 
-            levelUpBtn, 
-            lvlUpBtnText, 
-            levelText, 
-            levelUpCostText,
-            healthText,
-            shieldText,
-            bDamageText,
-            bDelayText,
-            batteryText,
-            equipmentBtn,
-            equipmentBtnText
+            this.shipImg, 
+            this.swapShipBtn,
+            this.swapShipBtnText, 
+            this.levelUpBtn, 
+            this.lvlUpBtnText, 
+            this.levelText, 
+            this.levelUpCostText,
+            this.healthText,
+            this.shieldText,
+            this.bDamageText,
+            this.bSpeedText,
+            this.bDelayText,
+            this.batteryText,
+            this.equipmentBtn,
+            this.equipmentBtnText
         ])
      
         
     }
 
     update() {
+        this.emitter.on(GameEvents.shipLeveled, this.completeLevelUp, this.emitter.removeListener(GameEvents.shipLeveled))
 
+    }
+
+    private levelUp = () => {
+        console.log('leveling up!')
+        this.emitter.emit(
+            GameEvents.levelUpShip, 
+            {
+                playerId: this.playerInventory.id,
+                shipId: this.currentShipId
+            }
+            )
+    }
+
+    completeLevelUp = (data: {player: PlayerWithInventory | string}) => {
+        console.log('new level data', data.player)
+        if (typeof data.player != 'string' && typeof data.player != 'undefined' ) {
+            this.playerInventory = data.player
+            this.getCurrentShip()
+        }
+    }
+
+    private getCurrentShip = () => {
+        let ship: PlayerShipWithEquipment = this.playerInventory.ships.filter((ship) => ship.isCurrent)[0]!
+        let equipment: PlayerEquipment[] = ship.equipment
+
+        this.shipImg?.setTexture(ship.sprite)
+
+        this.levelText?.setText(`Level: ${ship.level}`)
+        this.levelUpCostText?.setText(`Cost: ${getLevelUpCost(ship.level, 1)}`)
+
+        let shipLvl = ship.level
+        let health = ship.baseHP + ((shipLvl-1) * ShipConstants.hpPerLevel)
+        let shield = ship.shield * (1+((shipLvl-1) * ShipConstants.shieldPerLevel / 100))
+        let bulletDamage = ship.bulletDamage * (1+((shipLvl-1) * ShipConstants.damagePerLevel)) 
+        let shootDelay = ship.shootDelay
+        let totalBattery = ship.battery
+        let bulletSpeed = ship.bulletSpeed
+
+        for (let i = 0; i < equipment.length ; i++) {
+            let equip = equipment[i]!
+            let lvl = equip?.level
+            health += equip.healthBonus * lvl
+            shield += equip.shieldBonus * lvl
+            bulletDamage += equip.bulletDamage * lvl
+            bulletSpeed += equip.bulletSpeed * lvl
+            shootDelay -= equip.shootDelay * lvl / ShipConstants.shootDelayDivisor
+
+        }
+
+
+        this.healthText?.setText(`Health: ${health}`)
+        this.shieldText?.setText(`Shield: ${shield}%`)
+        this.bDamageText?.setText(`Damage: ${bulletDamage}`)
+        this.bSpeedText?.setText(`Speed: ${bulletSpeed}`)
+        this.bDelayText?.setText(`Interval: ${shootDelay}`)
+        this.batteryText?.setText(`Battery: ${totalBattery}`)
     }
 }
