@@ -18,8 +18,7 @@ const Game = () => {
         enabled: sessionData?.user != undefined
     })
     const waves = api.profile.updateWaveCount.useMutation()
-    const loadProfile = () =>{
-        //console.log('game.tsx getProfile')
+    const loadProfile = async () =>{
         emitter.emit(GameEvents.profileLoaded, profile.data)
     }
     emitter.on(GameEvents.getProfile, 
@@ -38,10 +37,12 @@ const Game = () => {
 
     const levelUp = api.profile.shipLevelUp.useMutation()
     emitter.on(GameEvents.levelUpShip, async (data: {playerId: number, shipId: number}) => {
-        console.log('game.tsx level up', data)
+        //console.log('game.tsx level up', data)
         const levelingUp = await levelUp.mutateAsync({playerId: data.playerId, shipId: data.shipId})
-        console.log(levelingUp)
+        //console.log(levelingUp)
         emitter.emit(GameEvents.shipLeveled, { player: levelingUp })
+        const result = await profile.refetch()
+        emitter.emit(GameEvents.profileLoaded, result.data)
     }, emitter.removeListener(GameEvents.levelUpShip))
     
     useEffect(() => {
@@ -55,8 +56,8 @@ const Game = () => {
 
             const phaserGame = new Phaser.Game({
                 title: 'Galatic Hero',
-                width: gameWidth,
-                height: gameHeight,
+                width: Math.min(window.innerHeight*2.25, gameWidth),
+                height: Math.min(window.innerWidth/2.25, gameHeight),
                 type: Phaser.AUTO,
                 parent: 'game-content',
                 scene: [BootScene, GameScene, WaveScene, EndWaveScene, UpgradeMenuScene],
@@ -67,7 +68,7 @@ const Game = () => {
                     arcade:{
                         debug: true,
                         gravity: {y: 0},
-                        //debugShowVelocity: false
+                        debugShowVelocity: true
                     }
                 },
                 scale: {
@@ -82,20 +83,8 @@ const Game = () => {
         return () => {}
     }, [game])
 
-    useEffect(() => {
-        function handleWindowResize() {
-            game?.scale.resize(window.innerWidth, window.innerHeight)
-        }
-        window.addEventListener('resize', handleWindowResize)
-
-        return () => {
-            window.removeEventListener('resize', handleWindowResize);
-            //console.log('cleanup window resize event')
-        }
-    })
-
     return (
-        <div className="w-full h-full relative bg-black">
+        <div className="w-full min-h-screen relative bg-gradient-to-b from-[#2e026d] to-[#15162c] flex items-center flex-col justify-center">
             <Head>
             <title>Galactic Hero</title>
                 <meta name="description" content="Idle, space defender game" />

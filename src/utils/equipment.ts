@@ -78,20 +78,32 @@ export const chooseTier = (tierMod: number = 0): Tier => {
     const t4min = 995
 
     const randomNumber = getRandomInt(1, 1000) + tierMod
-    if (randomNumber > t2min) {
+    if (randomNumber <= t2min) {
+        tier = 'T1'
+    } else if (randomNumber <= t3min) {
         tier = 'T2'
-    } else if (randomNumber > t3min) {
+    } else if (randomNumber <= t4min) {
         tier = 'T3'
-    } else if (randomNumber > t4min) {
-        tier = 'T4'
     }
 
     return tier
 }
 
-export const chooseEquipmentType = () => {
+export const chooseEquipmentType = (): EquipmentType => {
+    let selectedEquipment: EquipmentType = 'Utility'
+    const offensive = 50
+    const defensive = 90
 
+    const randomNum = getRandomInt(1, 100)
+    if (randomNum <= offensive) {
+        selectedEquipment = 'Offensive'
+    } else if (randomNum <= defensive) {
+        selectedEquipment = 'Defensive'
+    }
+
+    return selectedEquipment
 }
+
 
 function getRandomFromBase(base: number) {
     return getRandomInt(base * .5, base * 1.5)
@@ -100,3 +112,4 @@ function getRandomFromBase(base: number) {
 function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max-min) + min);
 }
+

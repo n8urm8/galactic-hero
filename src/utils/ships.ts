@@ -29,4 +29,6 @@ export enum ShipConstants{
     shieldPerLevel = 0.1,
     damagePerLevel = 0.1,
     shootDelayDivisor = 100,
+    shieldStatDivisor = 10,
+    shieldDamageDivisor = 1000
 }

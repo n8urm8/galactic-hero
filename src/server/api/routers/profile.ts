@@ -8,6 +8,7 @@ import {
 } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { PlayerShipSprites, getLevelUpCost } from "~/utils/ships";
+import { chooseEquipmentType, getNewEquipment } from "~/utils/equipment";
 
 export const profileRouter = createTRPCRouter({
   // queries: 
@@ -289,6 +290,45 @@ export const profileRouter = createTRPCRouter({
           }
 
         }),
+
+        getRandomT1Equipment: protectedProcedure
+          .mutation(async ({ctx}) => {
+            const userId = ctx.session.user.id
+
+            const equipmentType = chooseEquipmentType()
+            const newEquipment = getNewEquipment(equipmentType, 'T1')
+
+            const equipment = await ctx.prisma.equipment.create({
+              data: {
+                sprite: equipmentType,
+                type: equipmentType,
+                level: 1,
+                bulletDamage: newEquipment.damage,
+                bulletRange: newEquipment.range,
+                bulletSpeed: newEquipment.speed,
+                shootDelay: newEquipment.delay,
+                shieldBonus: newEquipment.shield,
+                healthBonus: newEquipment.health,
+                battery: newEquipment.battery
+
+              }
+            })
+
+            const updateInventory = await ctx.prisma.player.update({
+              where: {
+                userId: userId
+              },
+              data: {
+                equipment: {
+                  connect: {
+                    id: equipment.id
+                  }
+                }
+                
+              }
+            })
+            return equipment
+          })
 
 
 

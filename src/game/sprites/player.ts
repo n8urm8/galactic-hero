@@ -30,7 +30,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         frame?: string | number
     ) {
         super(scene, x, y, ship.sprite, frame)
-  
+        
         this.ship = ship
         if (equipment) { this.equipment = equipment}
         this.updateStats()
@@ -42,7 +42,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     updateStats = () => {
         const shipLvl = this.ship.level
         this.health = this.ship.baseHP + ((shipLvl-1) * ShipConstants.hpPerLevel)
-        this.shield = this.ship.shield * (1+((shipLvl-1) * ShipConstants.shieldPerLevel / 100))
+        this.shield = this.ship.shield * (1+((shipLvl-1) * ShipConstants.shieldPerLevel / ShipConstants.shieldStatDivisor))
         this.bulletDamage = this.ship.bulletDamage * (1+((shipLvl-1) * ShipConstants.damagePerLevel)) 
         this.shootDelay = this.ship.shootDelay
         this.bulletSpeed = this.ship.bulletSpeed
@@ -87,7 +87,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     takeDamage = (power: number) => {
-        let damage = power - (power * this.shield / 1000)
+        let damage = power - (power * this.shield / ShipConstants.shieldDamageDivisor)
         this.health -= damage
         this.healthBar.decrease(damage)
         if (this.health <= 0){

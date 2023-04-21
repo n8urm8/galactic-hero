@@ -1,12 +1,10 @@
 import Phaser from "phaser";
-import Player from '../sprites/player'
 import '../sprites/player'
-import { EnemyShip } from "../sprites/enemy";
 import { EventEmitter, GameEvents } from "~/utils/events";
-import { IWaveEnemy } from "~/utils/gameTypes";
-import { Player as IPlayer } from "@prisma/client";
+import { IWaveEnemy, PlayerWithInventory } from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
-import UpgradeMenu from "./upgradeMenu";
+import { PurpleButton } from "../objects/purpleButton";
+import { gameWidth, gameHeight } from "~/pages/game";
 
 export default class GameScene extends Phaser.Scene {
 
@@ -14,11 +12,13 @@ export default class GameScene extends Phaser.Scene {
     private enemies!: Phaser.GameObjects.Group;
     private emitter = EventEmitter.getInstance();
     private enemiesToLoad!: IWaveEnemy[]
-    private profile: any
+    private profile!: PlayerWithInventory
     private ship: any
     private creditsText!: Phaser.GameObjects.Text
     private wavesText!: Phaser.GameObjects.Text
     private upgradesOpen = true;
+    private startWaveBtn?: Phaser.GameObjects.Image
+    private upgradesBtn?: Phaser.GameObjects.Image
 
     constructor() {
       super("GameScene");
@@ -33,35 +33,21 @@ export default class GameScene extends Phaser.Scene {
     
     create() {
       
-        let { width, height } = this.game.canvas;
-        //this.emitter.addListener('waveCompleted', this.updateProfileWaves)
+      let { width, height } = this.game.canvas;
+      //this.emitter.addListener('waveCompleted', this.updateProfileWaves)
 
-        this.loadEnemies(width)
-        this.add.image(width/2, height/2, 'nebulaBackground');
-        this.add.image(width/2, height/2, 'starsBackground');
-        // ui
-        const startWaveBtn = this.add.image(62, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).on('pointerdown', () => {
-            //console.log('clicked start wave!')
-            //this.emitter.emit('startWave', { width })
-            this.scene.run('WaveScene', { loadedEnemies: this.enemiesToLoad, player: this.ship })
-        })
-        startWaveBtn.scaleX = 1.2
-        this.add.text(startWaveBtn.x, startWaveBtn.y, 'Start Wave').setOrigin(0.5)
-        this.add.text(10, 10, `Player: ${this.profile.name}`)
-        this.creditsText = this.add.text(10, 25, `Credits: ${this.profile.credits}`)
-        this.wavesText = this.add.text(10, 40, `Waves: ${this.profile.waves}`)
+      this.loadEnemies(width)
+      this.add.image(width/2, height/2, 'nebulaBackground');
+      this.add.image(width/2, height/2, 'starsBackground');
+      // ui
+      this.startWaveBtn = new PurpleButton(this, 62, height-20, 'Start Wave', this.startWave, undefined, 1.2)
+      this.upgradesBtn = new PurpleButton(this, 172, height-20, 'Upgrades', this.openUpgradesMenu)
+      
+      this.add.text(10, 10, `Player: ${this.profile.name}`)
+      this.creditsText = this.add.text(10, 25, `Credits: ${this.profile.credits}`)
+      this.wavesText = this.add.text(10, 40, `Waves: ${this.profile.waves}`)
 
-        this.scene.run('UpgradeMenuScene', {profileData: this.profile})
-        const upgradeMenuBtn = this.add.image(172, height-20, 'purpleButton').setInteractive({ useHandCursor: true }).on('pointerdown', () => {
-          if (this.upgradesOpen) {
-            this.scene.stop('UpgradeMenuScene')
-            this.upgradesOpen = false
-          } else {
-            this.upgradesOpen = true
-            this.scene.run('UpgradeMenuScene', {profileData: this.profile})
-          }
-        })
-        this.add.text(upgradeMenuBtn.x, upgradeMenuBtn.y, 'Upgrades').setOrigin(0.5)
+      this.scene.run('UpgradeMenuScene', {profileData: this.profile})
 
     } 
     
@@ -70,6 +56,11 @@ export default class GameScene extends Phaser.Scene {
           this.updateProfileWaves, 
           this.emitter.removeListener(GameEvents.waveCountUpdated)
       )
+      this.emitter.on(GameEvents.profileLoaded, 
+        this.loadProfile,
+        this.emitter.removeListener(GameEvents.profileLoaded)
+      )
+      window.addEventListener('resize', this.resize,)
     }
     
     loadEnemies = (width: number, wave?: number) => {
@@ -81,4 +72,30 @@ export default class GameScene extends Phaser.Scene {
         this.profile.waves = data.waves
         this.wavesText.setText(`Waves: ${this.profile.waves}`)
     }
+
+    startWave = () => {
+      this.scene.run('WaveScene', { loadedEnemies: this.enemiesToLoad, player: this.ship })
+    }
+
+    openUpgradesMenu = () => {
+      if (this.upgradesOpen) {
+        this.scene.stop('UpgradeMenuScene')
+        this.upgradesOpen = false
+      } else {
+        this.upgradesOpen = true
+        this.scene.run('UpgradeMenuScene', {profileData: this.profile})
+      }
+    }
+
+    loadProfile = (data: PlayerWithInventory) => {
+        this.profile = data
+        this.creditsText.setText(`Credits: ${this.profile.credits}`)
+        this.wavesText.setText(`Waves: ${this.profile.waves}`)
+    }
+
+    resize = () => {
+      //console.log('resizing', Math.min(window.innerHeight, gameHeight))
+      this.scale.resize(Math.min(window.innerWidth, gameWidth), Math.min(window.innerHeight, gameHeight))
+    }
+
   }

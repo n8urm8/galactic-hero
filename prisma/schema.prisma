@@ -117,8 +117,4 @@ model Equipment {
   battery      Int
 }
 
-// enum EquipmentType {
-//     WEAPON
-//     DEFENSE
-//     BATTERY
-// }
+

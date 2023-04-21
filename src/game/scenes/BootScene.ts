@@ -22,6 +22,8 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('nebulaBackground', 'assets/images/Nebula3.png')
         this.load.image('purpleButton', 'assets/images/ui/purpleButton.png')
         this.load.image('goldSquare', 'assets/images/ui/goldSquare.png')
+        this.load.image('creditsIcon', 'assets/images/ui/creditsIcon.png')
+        this.load.image('menuSlot', 'assets/images/ui/menuSlot.png')
         this.load.spritesheet('uiAssets', 'assets/images/ui/uiAssets.png', {frameWidth: 16, frameHeight: 16} )
         this.load.spritesheet('explosion', 'assets/images/effects/explosion.png', {frameWidth: 32, frameHeight: 32} )
         this.load.image(PlayerShipSprites.base, 'assets/images/ships/player/1B.png');
@@ -31,6 +33,10 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('enemyTank', 'assets/images/ships/enemy/2.png');
         this.load.image('enemyNormal', 'assets/images/ships/enemy/3.png');
         this.load.image('enemyElite', 'assets/images/ships/enemy/4.png');
+
+        this.load.image('Offensive', 'assets/images/equipment/weapon1.png')
+        this.load.image('Defensive', 'assets/images/equipment/defensive1.png')
+        this.load.image('Utility', 'assets/images/equipment/utility1.png')
         
         this.load.bitmapFont('arcade', 'assets/fonts/arcade.png', 'assets/fonts/arcade.xml');
     
@@ -40,7 +46,7 @@ export default class BootScene extends Phaser.Scene {
     }
     
     create() {
-        this.scale.resize(window.innerWidth, window.innerHeight)
+        //this.scale.resize(Math.min(window.innerWidth, gameWidth), Math.min(window.innerHeight, gameHeight))
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', {start: 0, end: 5 }),
