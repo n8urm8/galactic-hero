@@ -27,5 +27,6 @@ export enum GameEvents{
     adjustCredits = 'adjustCredits',
     levelUpShip = 'levelUpShip',
     shipLeveled = 'shipLeveled',
-    
+    getRandomEquipment = 'getRandomEquipment',
+    loadNewEquipment = 'loadNewEquipment'
 }

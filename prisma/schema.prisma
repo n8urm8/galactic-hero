@@ -104,7 +104,7 @@ model Equipment {
   player       Player? @relation(fields: [playerId], references: [id])
   playerId     Int
   ship         Ship?   @relation(fields: [shipId], references: [id])
-  shipId       Int
+  shipId       Int?
   sprite       String
   type         String
   level        Int

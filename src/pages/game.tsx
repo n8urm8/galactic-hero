@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { AuthShowcase } from "."
 import Head from "next/head"
+import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 export const [gameWidth, gameHeight] = [900, 400]
 
@@ -44,6 +45,16 @@ const Game = () => {
         const result = await profile.refetch()
         emitter.emit(GameEvents.profileLoaded, result.data)
     }, emitter.removeListener(GameEvents.levelUpShip))
+
+    const getRandomEquip = api.profile.getRandomT1Equipment.useMutation()
+    emitter.on(GameEvents.getRandomEquipment, async (data: {playerId: number, shipId: number}) => {
+        //console.log('game.tsx level up', data)
+        const newEquip = await getRandomEquip.mutateAsync()
+        //console.log(levelingUp)
+        emitter.emit(GameEvents.loadNewEquipment, newEquip)
+        const result = await profile.refetch()
+        emitter.emit(GameEvents.profileLoaded, result.data)
+    }, emitter.removeListener(GameEvents.getRandomEquipment))
     
     useEffect(() => {
         async function initPhaser(){
@@ -53,14 +64,15 @@ const Game = () => {
             const {default: WaveScene} = await import('../game/scenes/WaveScene')
             const {default: EndWaveScene} = await import('../game/scenes/EndWaveScene')
             const {default: UpgradeMenuScene} = await import('../game/scenes/upgradeMenu')
+            const {default: InventoryScene} = await import('../game/scenes/InventoryScene')
 
             const phaserGame = new Phaser.Game({
                 title: 'Galatic Hero',
-                width: Math.min(window.innerHeight*2.25, gameWidth),
-                height: Math.min(window.innerWidth/2.25, gameHeight),
+                // width: Math.min(window.innerHeight*2.25, gameWidth),
+                // height: Math.min(window.innerWidth/2.25, gameHeight),
                 type: Phaser.AUTO,
                 parent: 'game-content',
-                scene: [BootScene, GameScene, WaveScene, EndWaveScene, UpgradeMenuScene],
+                scene: [BootScene, GameScene, WaveScene, EndWaveScene, UpgradeMenuScene, InventoryScene],
                 backgroundColor: '#000',
                 pixelArt: true,
                 physics: {
@@ -72,10 +84,12 @@ const Game = () => {
                     }
                 },
                 scale: {
-                    mode: Phaser.Scale.NONE,
-                    autoCenter: Phaser.Scale.CENTER_BOTH,
+                    mode: Phaser.Scale.FIT,
+                    width: gameWidth,
+                    height: gameHeight,
+                    zoom: 1,
+                    autoCenter: Phaser.Scale.CENTER_BOTH
                 },
-                
             })
             setGame(phaserGame)
         }
@@ -84,7 +98,9 @@ const Game = () => {
     }, [game])
 
     return (
-        <div className="w-full min-h-screen relative bg-gradient-to-b from-[#2e026d] to-[#15162c] flex items-center flex-col justify-center">
+        <div 
+            className="w-full min-h-screen relative bg-gradient-to-b from-[#2e026d] to-[#15162c] flex items-center flex-col justify-center"
+        >
             <Head>
             <title>Galactic Hero</title>
                 <meta name="description" content="Idle, space defender game" />
@@ -99,7 +115,7 @@ const Game = () => {
                 </div>    
             }
 
-            <div id='game-content' key='game-content' className="">
+            <div id='game-content' key='game-content' className="w-full h-full block">
 
             </div>
             

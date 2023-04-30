@@ -5,6 +5,7 @@ import { IWaveEnemy, PlayerWithInventory } from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
 import { PurpleButton } from "../objects/purpleButton";
 import { gameWidth, gameHeight } from "~/pages/game";
+import { Equipment } from "@prisma/client";
 
 export default class GameScene extends Phaser.Scene {
 
@@ -17,6 +18,7 @@ export default class GameScene extends Phaser.Scene {
     private creditsText!: Phaser.GameObjects.Text
     private wavesText!: Phaser.GameObjects.Text
     private upgradesOpen = true;
+    private inventoryOpen = false;
     private startWaveBtn?: Phaser.GameObjects.Image
     private upgradesBtn?: Phaser.GameObjects.Image
 
@@ -42,6 +44,7 @@ export default class GameScene extends Phaser.Scene {
       // ui
       this.startWaveBtn = new PurpleButton(this, 62, height-20, 'Start Wave', this.startWave, undefined, 1.2)
       this.upgradesBtn = new PurpleButton(this, 172, height-20, 'Upgrades', this.openUpgradesMenu)
+      const buyEquipmentBtn = new PurpleButton(this, 290, height-20, 'Buy Equipment', this.getRandomEquipment, undefined, 1.4)
       
       this.add.text(10, 10, `Player: ${this.profile.name}`)
       this.creditsText = this.add.text(10, 25, `Credits: ${this.profile.credits}`)
@@ -60,7 +63,11 @@ export default class GameScene extends Phaser.Scene {
         this.loadProfile,
         this.emitter.removeListener(GameEvents.profileLoaded)
       )
-      window.addEventListener('resize', this.resize,)
+      this.emitter.on(GameEvents.loadNewEquipment, 
+        this.loadNewEquipment,
+        this.emitter.removeListener(GameEvents.loadNewEquipment)
+      )
+      
     }
     
     loadEnemies = (width: number, wave?: number) => {
@@ -87,6 +94,17 @@ export default class GameScene extends Phaser.Scene {
       }
     }
 
+    openInventory = () => {
+      if (this.inventoryOpen) {
+        this.scene.stop('InventoryScene')
+        this.inventoryOpen = false
+      } else {
+        this.inventoryOpen = true
+        this.scene.run('InventoryScene', {profileData: this.profile})
+      }
+
+    }
+
     loadProfile = (data: PlayerWithInventory) => {
         this.profile = data
         this.creditsText.setText(`Credits: ${this.profile.credits}`)
@@ -94,8 +112,16 @@ export default class GameScene extends Phaser.Scene {
     }
 
     resize = () => {
-      //console.log('resizing', Math.min(window.innerHeight, gameHeight))
-      this.scale.resize(Math.min(window.innerWidth, gameWidth), Math.min(window.innerHeight, gameHeight))
+      console.log('resizing', Math.min(window.innerHeight, gameHeight))
+      //this.scale.resize(Math.min(window.innerWidth, gameWidth), Math.min(window.innerHeight, gameHeight))
+    }
+
+    getRandomEquipment = () => {
+      this.emitter.emit(GameEvents.getRandomEquipment)
+    }
+
+    loadNewEquipment = (equipment: Equipment) => {
+      console.log('got new item:', equipment)
     }
 
   }

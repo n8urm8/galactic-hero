@@ -298,36 +298,33 @@ export const profileRouter = createTRPCRouter({
             const equipmentType = chooseEquipmentType()
             const newEquipment = getNewEquipment(equipmentType, 'T1')
 
-            const equipment = await ctx.prisma.equipment.create({
-              data: {
-                sprite: equipmentType,
-                type: equipmentType,
-                level: 1,
-                bulletDamage: newEquipment.damage,
-                bulletRange: newEquipment.range,
-                bulletSpeed: newEquipment.speed,
-                shootDelay: newEquipment.delay,
-                shieldBonus: newEquipment.shield,
-                healthBonus: newEquipment.health,
-                battery: newEquipment.battery
-
-              }
-            })
-
             const updateInventory = await ctx.prisma.player.update({
               where: {
                 userId: userId
               },
               data: {
                 equipment: {
-                  connect: {
-                    id: equipment.id
+                  create: {
+                    sprite: equipmentType,
+                    type: equipmentType,
+                    level: 1,
+                    bulletDamage: newEquipment.damage,
+                    bulletRange: newEquipment.range,
+                    bulletSpeed: newEquipment.speed,
+                    shootDelay: newEquipment.delay,
+                    shieldBonus: newEquipment.shield,
+                    healthBonus: newEquipment.health,
+                    battery: newEquipment.battery,
+                    
                   }
                 }
                 
+              },
+              include: {
+                equipment: true
               }
             })
-            return equipment
+            return updateInventory.equipment[updateInventory.equipment.length-1]
           })
 
 
