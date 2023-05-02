@@ -150,6 +150,6 @@ export default class UpgradeMenu extends Phaser.Scene {
     }
 
     openEquipment = () => {
-        console.log('opened equipment list')
+        this.scene.run('InventoryScene', {profileData: this.playerInventory, type: 'Equipment'})
     }
 }

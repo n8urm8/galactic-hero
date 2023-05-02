@@ -18,7 +18,7 @@ export default class GameScene extends Phaser.Scene {
     private creditsText!: Phaser.GameObjects.Text
     private wavesText!: Phaser.GameObjects.Text
     private upgradesOpen = true;
-    private inventoryOpen = false;
+    private upgradeMenuOpen = false;
     private startWaveBtn?: Phaser.GameObjects.Image
     private upgradesBtn?: Phaser.GameObjects.Image
 
@@ -95,11 +95,11 @@ export default class GameScene extends Phaser.Scene {
     }
 
     openInventory = () => {
-      if (this.inventoryOpen) {
+      if (this.upgradeMenuOpen) {
         this.scene.stop('InventoryScene')
-        this.inventoryOpen = false
+        this.upgradeMenuOpen = false
       } else {
-        this.inventoryOpen = true
+        this.upgradeMenuOpen = true
         this.scene.run('InventoryScene', {profileData: this.profile})
       }
 
