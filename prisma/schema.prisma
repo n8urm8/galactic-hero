@@ -83,7 +83,7 @@ model Ship {
   owner        Player      @relation(fields: [playerId], references: [id])
   playerId     Int
   level        Int
-  baseHP       Int
+  health       Int
   bulletRange  Int
   bulletSpeed  Int
   bulletDamage Int
@@ -92,9 +92,6 @@ model Ship {
   battery      Int
   sprite       String
   isCurrent    Boolean
-  weaponSlots  Int
-  defenseSlots Int
-  batterySlots Int
   equipment    Equipment[]
   animation    String?
 }
@@ -112,8 +109,8 @@ model Equipment {
   bulletRange  Int
   bulletSpeed  Int
   shootDelay   Int
-  shieldBonus  Int
-  healthBonus  Int
+  shield  Int
+  health  Int
   battery      Int
 }
 

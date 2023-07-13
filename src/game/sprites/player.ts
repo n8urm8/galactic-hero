@@ -41,7 +41,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     updateStats = () => {
         const shipLvl = this.ship.level
-        this.health = this.ship.baseHP + ((shipLvl-1) * ShipConstants.hpPerLevel)
+        this.health = this.ship.health + ((shipLvl-1) * ShipConstants.hpPerLevel)
         this.shield = this.ship.shield * (1+((shipLvl-1) * ShipConstants.shieldPerLevel / ShipConstants.shieldStatDivisor))
         this.bulletDamage = this.ship.bulletDamage * (1+((shipLvl-1) * ShipConstants.damagePerLevel)) 
         this.shootDelay = this.ship.shootDelay
@@ -50,8 +50,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         for (let i = 0; i < this.equipment.length ; i++) {
             let equip = this.equipment[i]!
             let lvl = equip?.level
-            this.health += equip.healthBonus * lvl
-            this.shield += equip.shieldBonus * lvl
+            this.health += equip.health * lvl
+            this.shield += equip.shield * lvl
             this.bulletRange += equip.bulletRange * lvl
             this.bulletDamage += equip.bulletDamage * lvl
             this.bulletSpeed += equip.bulletSpeed * lvl

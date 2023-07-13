@@ -58,7 +58,7 @@ export default class UpgradeMenu extends Phaser.Scene {
         // create formula to calculate cost of next level
         this.levelUpCostText = this.add.text(menuWidth-110, 22, `Cost: ${getLevelUpCost(currentShip!.level, 1)}`)
         // text for stats - need formula to calculate stats with equipment and levels
-        this.healthText = this.add.text(menuWidth-110, 75, `Health: ${currentShip!.baseHP * 100}`)
+        this.healthText = this.add.text(menuWidth-110, 75, `Health: ${currentShip!.health * 100}`)
         this.shieldText = this.add.text(menuWidth-110, 90, `Shield: ${currentShip!.shield / 1000}%`)
         this.bDamageText = this.add.text(menuWidth-110, 105, `Damage: ${currentShip!.bulletDamage}`)
         this.bSpeedText = this.add.text(menuWidth-110, 120, `Speed: ${currentShip!.bulletSpeed}`)
@@ -119,7 +119,7 @@ export default class UpgradeMenu extends Phaser.Scene {
         this.levelUpCostText?.setText(`Cost: ${getLevelUpCost(ship.level, 1)}`)
 
         let shipLvl = ship.level
-        let health = ship.baseHP + ((shipLvl-1) * ShipConstants.hpPerLevel)
+        let health = ship.health + ((shipLvl-1) * ShipConstants.hpPerLevel)
         let shield = ship.shield * (1+((shipLvl-1) * ShipConstants.shieldPerLevel / ShipConstants.shieldStatDivisor))
         let bulletDamage = ship.bulletDamage * (1+((shipLvl-1) * ShipConstants.damagePerLevel)) 
         let shootDelay = ship.shootDelay
@@ -129,8 +129,8 @@ export default class UpgradeMenu extends Phaser.Scene {
         for (let i = 0; i < equipment.length ; i++) {
             let equip = equipment[i]!
             let lvl = equip?.level
-            health += equip.healthBonus * lvl
-            shield += equip.shieldBonus/10 * lvl
+            health += equip.health * lvl
+            shield += equip.shield/10 * lvl
             bulletDamage += equip.bulletDamage * lvl
             bulletSpeed += equip.bulletSpeed * lvl
             shootDelay -= equip.shootDelay * lvl / ShipConstants.shootDelayDivisor
