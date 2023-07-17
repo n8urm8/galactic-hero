@@ -8,7 +8,7 @@ import { api } from "~/utils/api";
 import config from "next/config";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { CreateProfile } from "~/components/CreateProfile";
+import { CreateProfile } from "~/components/profile/CreateProfile";
 
 const Home: NextPage = () => {
     return (

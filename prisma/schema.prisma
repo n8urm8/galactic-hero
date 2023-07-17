@@ -94,6 +94,7 @@ model Ship {
   isCurrent    Boolean
   equipment    Equipment[]
   animation    String?
+  rarity       String @default("T1")
 }
 
 model Equipment {
@@ -109,9 +110,8 @@ model Equipment {
   bulletRange  Int
   bulletSpeed  Int
   shootDelay   Int
-  shield  Int
-  health  Int
+  shield       Int
+  health       Int
   battery      Int
+  rarity       String @default("T1")
 }
-
-

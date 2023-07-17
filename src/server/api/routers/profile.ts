@@ -84,7 +84,7 @@ export const profileRouter = createTRPCRouter({
                             ships: {
                                 create: {
                                     health: 2000,
-                                    level: 1,
+                                    level: 0,
                                     bulletRange: 500,
                                     bulletDamage: 50,
                                     bulletSpeed: 300,
@@ -306,7 +306,7 @@ export const profileRouter = createTRPCRouter({
                     create: {
                         sprite: equipmentType,
                         type: equipmentType,
-                        level: 1,
+                        level: 0,
                         bulletDamage: newEquipment.damage,
                         bulletRange: newEquipment.range,
                         bulletSpeed: newEquipment.speed,
