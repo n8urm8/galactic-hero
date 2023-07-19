@@ -9,6 +9,7 @@ import config from "next/config";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { CreateProfile } from "~/components/profile/CreateProfile";
+import { Button } from "~/components/button";
 
 const Home: NextPage = () => {
     return (
@@ -48,24 +49,21 @@ export const AuthShowcase: React.FC = () => {
             )}
             {sessionData && profile && (
                 <Link href={"/game"}>
-                    <button className="w-fit rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20">
-                        Start Game
-                    </button>
+                    <Button>Start Game</Button>
                 </Link>
             )}
-            <p className="text-center text-xl text-white">
+            <p className="text-center text-xl text-white ">
                 {sessionData && (
                     <span>Logged in as {sessionData.user?.name}</span>
                 )}
             </p>
-            <button
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+            <Button
                 onClick={
                     sessionData ? () => void signOut() : () => void signIn()
                 }
             >
                 {sessionData ? "Sign out" : "Sign in"}
-            </button>
+            </Button>
         </div>
     );
 };

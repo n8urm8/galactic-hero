@@ -8,64 +8,7 @@ import { api } from "~/utils/api";
 
 export const [gameWidth, gameHeight] = [900, 400];
 export const GameCanvas = () => {
-    const { data: sessionData } = useSession();
     const [game, setGame] = useState<GameType>();
-    const emitter = EventEmitter.getInstance();
-
-    const profile = api.profile.getProfile.useQuery(undefined, {
-        enabled: sessionData?.user != undefined,
-    });
-    const waves = api.profile.updateWaveCount.useMutation();
-    const loadProfile = async () => {
-        emitter.emit(GameEvents.profileLoaded, profile.data);
-    };
-    emitter.on(
-        GameEvents.getProfile,
-        loadProfile,
-        emitter.removeListener(GameEvents.getProfile)
-    );
-
-    emitter.on(
-        GameEvents.waveCompleted,
-        async () => {
-            //console.log('game.tsx waveCompletedDB')
-            let result = await waves.mutateAsync({ amount: 1 });
-
-            emitter.emit(GameEvents.waveCountUpdated, { waves: result.waves });
-        },
-        emitter.removeListener(GameEvents.waveCompleted)
-    );
-
-    const levelUp = api.profile.shipLevelUp.useMutation();
-    emitter.on(
-        GameEvents.levelUpShip,
-        async (data: { playerId: number; shipId: number }) => {
-            //console.log('game.tsx level up', data)
-            const levelingUp = await levelUp.mutateAsync({
-                playerId: data.playerId,
-                shipId: data.shipId,
-            });
-            //console.log(levelingUp)
-            emitter.emit(GameEvents.shipLeveled, { player: levelingUp });
-            const result = await profile.refetch();
-            emitter.emit(GameEvents.profileLoaded, result.data);
-        },
-        emitter.removeListener(GameEvents.levelUpShip)
-    );
-
-    const getRandomEquip = api.profile.getRandomT1Equipment.useMutation();
-    emitter.on(
-        GameEvents.getRandomEquipment,
-        async (data: { playerId: number; shipId: number }) => {
-            //console.log('game.tsx level up', data)
-            const newEquip = await getRandomEquip.mutateAsync();
-            //console.log(levelingUp)
-            emitter.emit(GameEvents.loadNewEquipment, newEquip);
-            const result = await profile.refetch();
-            emitter.emit(GameEvents.profileLoaded, result.data);
-        },
-        emitter.removeListener(GameEvents.getRandomEquipment)
-    );
 
     useEffect(() => {
         async function initPhaser() {

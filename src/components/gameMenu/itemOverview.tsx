@@ -98,6 +98,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                     })}
                 </div>
             </div>
+            {"equipment" in item && <p className="">Equipped</p>}
             {"equipment" in item && (
                 <div className="flex gap-1">
                     {item.equipment.map((item) => (
