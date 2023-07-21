@@ -1,12 +1,6 @@
-import { EventEmitter, GameEvents } from "~/utils/events";
-import { useSession } from "next-auth/react";
 import { Game as GameType } from "phaser";
-import { Head } from "next/document";
 import { useState, useEffect } from "react";
-import { AuthShowcase } from "~/pages";
-import { api } from "~/utils/api";
 
-export const [gameWidth, gameHeight] = [900, 400];
 export const GameCanvas = () => {
     const [game, setGame] = useState<GameType>();
 
@@ -25,27 +19,12 @@ export const GameCanvas = () => {
             const { default: EndWaveScene } = await import(
                 "../game/scenes/EndWaveScene"
             );
-            const { default: UpgradeMenuScene } = await import(
-                "../game/scenes/upgradeMenu"
-            );
-            const { default: InventoryScene } = await import(
-                "../game/scenes/InventoryScene"
-            );
 
             const phaserGame = new Phaser.Game({
                 title: "Galatic Hero",
-                // width: Math.min(window.innerHeight*2.25, gameWidth),
-                // height: Math.min(window.innerWidth/2.25, gameHeight),
                 type: Phaser.AUTO,
                 parent: "game-content",
-                scene: [
-                    BootScene,
-                    GameScene,
-                    WaveScene,
-                    EndWaveScene,
-                    UpgradeMenuScene,
-                    InventoryScene,
-                ],
+                scene: [BootScene, GameScene, WaveScene, EndWaveScene],
                 backgroundColor: "#000",
                 pixelArt: true,
                 physics: {
@@ -60,7 +39,7 @@ export const GameCanvas = () => {
                     mode: Phaser.Scale.FIT,
                     //width: "100%",
                     //height: "95%",
-                    zoom: 1,
+                    zoom: 1.25,
                 },
             });
             setGame(phaserGame);

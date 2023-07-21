@@ -13,12 +13,9 @@ export default class GameScene extends Phaser.Scene {
     private enemiesToLoad!: IWaveEnemy[];
     private profile!: PlayerWithInventory;
     private ship: any;
-    // private creditsText!: Phaser.GameObjects.Text;
-    // private wavesText!: Phaser.GameObjects.Text;
-    // private upgradesOpen = true;
-    // private upgradeMenuOpen = false;
     private startWaveBtn?: Phaser.GameObjects.Image;
-    // private upgradesBtn?: Phaser.GameObjects.Image;
+
+    // TODO : update loadprofile event to update wave count and load new enemies
 
     constructor() {
         super("GameScene");
@@ -35,7 +32,6 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
         let { width, height } = this.game.canvas;
-        this.emitter.addListener("waveCompleted", this.updateProfileWaves);
 
         this.loadEnemies(width, this.profile.waves);
         this.add.image(width / 2, height / 2, "nebulaBackground");
@@ -62,7 +58,7 @@ export default class GameScene extends Phaser.Scene {
 
     loadEnemies = (width: number, wave?: number) => {
         this.enemiesToLoad = [
-            getTankEnemy(width),
+            getTankEnemy(width, wave),
             getNormalEnemy(width),
             getEliteEnemy(width),
         ];
@@ -82,5 +78,6 @@ export default class GameScene extends Phaser.Scene {
 
     loadProfile = (data: PlayerWithInventory) => {
         this.profile = data;
+        this.loadEnemies;
     };
 }

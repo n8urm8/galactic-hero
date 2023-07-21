@@ -35,7 +35,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
         this.updateStats();
 
-        this.bullets = new Bullets(scene, "bullet5", 100, this.bulletSpeed);
+        this.bullets = new Bullets(scene, "bullet5", 1000, this.bulletSpeed);
         this.healthBar = new HealthBar(scene, x - 40, y + 55, this.health);
     }
 
