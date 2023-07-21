@@ -47,7 +47,7 @@ export const profileRouter = createTRPCRouter({
         return ships;
     }),
 
-    getPlayerShipsAndEquipment: protectedProcedure.query(({ ctx }) => {
+    getPlayerEquipment: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.session.user.id;
         const ships = ctx.prisma.player.findUnique({
             where: {
@@ -58,6 +58,27 @@ export const profileRouter = createTRPCRouter({
             },
         });
         return ships;
+    }),
+
+    getPlayerCurrentShip: protectedProcedure.query(({ ctx }) => {
+        const userId = ctx.session.user.id;
+        const currentShip = ctx.prisma.player.findFirst({
+            where: {
+                userId: userId,
+            },
+            select: {
+                ships: {
+                    where: {
+                        isCurrent: true,
+                    },
+                    include: {
+                        equipment: true,
+                    },
+                },
+            },
+        });
+
+        return currentShip;
     }),
 
     // mutations:

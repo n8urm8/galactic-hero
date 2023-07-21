@@ -5,6 +5,7 @@ import {
     getEquipmentStats,
     getShipWithEquipmentStats,
 } from "~/utils/statFormulas";
+import { Modal } from "../modal";
 
 export interface IItemOverview {
     item: PlayerShipWithEquipment | PlayerEquipment;
@@ -80,17 +81,24 @@ export const ItemOverview: React.FC<IItemOverview> = ({
     }, [item]);
 
     return (
-        <>
-            <div className="flex gap-2">
+        <div className="flex flex-col">
+            <div className="flex  justify-between gap-2">
                 <div>
                     <p>{name}</p>
-                    <ItemImg item={item} size="large" />
+                    <Modal
+                        buttonElement={<ItemImg item={item} size="large" />}
+                        header={""}
+                        body={<ItemOverview item={item} currentShip={false} />}
+                        footer={"action buttons here"}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <p>Stats</p>
+                <div className="flex w-full flex-col">
                     {Object.keys(stats).map((key) => {
                         return (
-                            <div className="flex justify-between" key={key}>
+                            <div
+                                className="-my-1 flex w-full justify-between"
+                                key={key}
+                            >
                                 <p>{key}:</p>
                                 <p>{stats[key as keyof typeof stats]}</p>
                             </div>
@@ -100,15 +108,19 @@ export const ItemOverview: React.FC<IItemOverview> = ({
             </div>
             {"equipment" in item && <p className="">Equipped</p>}
             {"equipment" in item && (
-                <div className="flex gap-1">
+                <div className="flex min-h-[15px] gap-1 rounded-md border">
                     {item.equipment.map((item) => (
-                        // TODO: add onclick to open item modal
-                        <div>
-                            <ItemImg item={item} size="small" />
-                        </div>
+                        <Modal
+                            buttonElement={<ItemImg item={item} size="small" />}
+                            header={""}
+                            body={
+                                <ItemOverview item={item} currentShip={false} />
+                            }
+                            footer={"action buttons here"}
+                        />
                     ))}
                 </div>
             )}
-        </>
+        </div>
     );
 };

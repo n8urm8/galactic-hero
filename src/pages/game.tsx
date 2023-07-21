@@ -3,10 +3,8 @@ import { Game as GameType } from "phaser";
 import { EventEmitter, GameEvents } from "~/utils/events";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { AuthShowcase } from ".";
 import Head from "next/head";
-import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js";
 import { GameCanvas } from "~/game";
 import { ItemOverview, PlayerStats } from "~/components/gameMenu";
 import { Button } from "~/components/button";
@@ -16,6 +14,10 @@ const Game = () => {
     const profile = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user != undefined,
     });
+    const currentShip = api.profile.getPlayerCurrentShip.useQuery(undefined, {
+        enabled: sessionData?.user != undefined,
+    });
+    console.log("current ship", currentShip.data);
     const emitter = EventEmitter.getInstance();
 
     const waves = api.profile.updateWaveCount.useMutation();
@@ -51,6 +53,7 @@ const Game = () => {
             //console.log(levelingUp)
             emitter.emit(GameEvents.shipLeveled, { player: levelingUp });
             const result = await profile.refetch();
+            const shipUpdate = await currentShip.refetch();
             emitter.emit(GameEvents.profileLoaded, result.data);
         },
         emitter.removeListener(GameEvents.levelUpShip)
@@ -77,7 +80,7 @@ const Game = () => {
                 <meta name="description" content="Idle, space defender game" />
                 <link rel="icon" href="/favicon.png" />
             </Head>
-            {profile?.data == undefined && (
+            {profile?.data == undefined || profile.data == null ? (
                 <div className="fixed top-0 z-10 h-full w-full items-center bg-slate-500 bg-opacity-5 p-6 text-center">
                     <div className="h-fit w-full items-center bg-slate-900 bg-opacity-75 p-6 text-center">
                         <p className="text-2xl font-semibold text-white">
@@ -86,31 +89,23 @@ const Game = () => {
                         <AuthShowcase />
                     </div>
                 </div>
+            ) : (
+                <div className="relative flex min-h-screen w-full flex-row items-center justify-center gap-1">
+                    <div className="flex h-full w-1/4 flex-col gap-2 bg-transparent p-2">
+                        <PlayerStats
+                            name={profile.data.name}
+                            waves={profile.data.waves}
+                            credits={profile.data.credits}
+                        />
+                        <ItemOverview
+                            item={currentShip.data?.ships[0]!}
+                            currentShip={true}
+                        />
+                        {/* <Button>Start Wave</Button> */}
+                    </div>
+                    <GameCanvas />
+                </div>
             )}
-            <div className="flex flex-col rounded-md border border-transparent bg-stone-600 p-2">
-                <PlayerStats name={""} waves={0} credits={0} />
-                <ItemOverview
-                    item={{
-                        id: 0,
-                        playerId: 0,
-                        shipId: null,
-                        sprite: "",
-                        type: "",
-                        level: 0,
-                        bulletDamage: 0,
-                        bulletRange: 0,
-                        bulletSpeed: 0,
-                        shootDelay: 0,
-                        shield: 0,
-                        health: 0,
-                        battery: 0,
-                        rarity: "",
-                    }}
-                    currentShip={false}
-                />
-                <Button>Start Wave</Button>
-            </div>
-            <GameCanvas />
         </div>
     );
 };

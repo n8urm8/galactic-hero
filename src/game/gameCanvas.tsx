@@ -58,10 +58,9 @@ export const GameCanvas = () => {
                 },
                 scale: {
                     mode: Phaser.Scale.FIT,
-                    width: gameWidth,
-                    height: gameHeight,
+                    width: "100%",
+                    height: "95%",
                     zoom: 1,
-                    autoCenter: Phaser.Scale.CENTER_BOTH,
                 },
             });
             setGame(phaserGame);
@@ -74,7 +73,7 @@ export const GameCanvas = () => {
         <div
             id="game-content"
             key="game-content"
-            className="block h-full w-full"
+            className="block h-full w-full rounded-md"
         ></div>
     );
 };

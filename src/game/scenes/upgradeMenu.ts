@@ -1,5 +1,3 @@
-import { Prisma } from "@prisma/client";
-import { Rectangle } from "arcade-physics/lib/geom/rectangle/Rectangle";
 import { EventEmitter, GameEvents } from "~/utils/events";
 import {
     PlayerEquipment,
