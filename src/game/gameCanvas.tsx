@@ -58,8 +58,8 @@ export const GameCanvas = () => {
                 },
                 scale: {
                     mode: Phaser.Scale.FIT,
-                    width: "100%",
-                    height: "95%",
+                    //width: "100%",
+                    //height: "95%",
                     zoom: 1,
                 },
             });
@@ -73,7 +73,7 @@ export const GameCanvas = () => {
         <div
             id="game-content"
             key="game-content"
-            className="block h-full w-full rounded-md"
+            className="mt-auto block h-full max-h-[600px] w-full rounded-md"
         ></div>
     );
 };

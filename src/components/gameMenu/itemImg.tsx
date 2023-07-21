@@ -11,11 +11,14 @@ export interface IItemImg {
 export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
     const imageStyle = size == "large" ? "w-24 rounded-xl" : "w-8 rounded";
     const imgURL = spriteSelector[item.sprite as keyof typeof spriteSelector];
-    console.log("img url:", imgURL);
+    const pStyle =
+        size == "large"
+            ? "absolute right-2 bottom-1"
+            : "absolute text-xs right-[2px] bottom-[1px]";
     return (
         <div className={`${imageStyle} relative h-auto border`}>
             <img src={imgURL} alt={"item"} />
-            <p className="absolute right-2 bottom-1">{item.level}</p>
+            <p className={pStyle}>{item.level}</p>
         </div>
     );
 };

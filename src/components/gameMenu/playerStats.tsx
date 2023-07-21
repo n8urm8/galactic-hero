@@ -9,13 +9,13 @@ export interface IPlayerStats {
 
 export const PlayerStats: React.FC<IPlayerStats> = ({
     name,
-    rank = 2,
+    rank = 0,
     waves,
     credits,
 }) => {
     return (
-        <div className="flex justify-between">
-            <div className="flex flex-col">
+        <div className="flex justify-between rounded-md border p-2">
+            <div className="flex flex-col font-semibold">
                 <p>{name}</p>
                 <p>Waves</p>
                 <p>Credits</p>

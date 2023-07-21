@@ -6,8 +6,10 @@ import { useSession } from "next-auth/react";
 import { AuthShowcase } from ".";
 import Head from "next/head";
 import { GameCanvas } from "~/game";
-import { ItemOverview, PlayerStats } from "~/components/gameMenu";
+import { Inventory, ItemOverview, PlayerStats } from "~/components/gameMenu";
 import { Button } from "~/components/button";
+import Image from "next/image";
+//import GHLogo from "/static/images/GHLogo.png";
 
 const Game = () => {
     const { data: sessionData } = useSession();
@@ -74,38 +76,55 @@ const Game = () => {
     );
 
     return (
-        <div className="relative flex min-h-screen w-full flex-row items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] p-2">
-            <Head>
-                <title>Galactic Hero</title>
-                <meta name="description" content="Idle, space defender game" />
-                <link rel="icon" href="/favicon.png" />
-            </Head>
-            {profile?.data == undefined || profile.data == null ? (
-                <div className="fixed top-0 z-10 h-full w-full items-center bg-slate-500 bg-opacity-5 p-6 text-center">
-                    <div className="h-fit w-full items-center bg-slate-900 bg-opacity-75 p-6 text-center">
-                        <p className="text-2xl font-semibold text-white">
-                            You must login and create a profile before playing
-                        </p>
-                        <AuthShowcase />
+        <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+            <div className="relative mx-auto flex min-h-screen w-fit flex-col p-2">
+                <Head>
+                    <title>Galactic Hero</title>
+                    <meta
+                        name="description"
+                        content="Idle, space defender game"
+                    />
+                    <link rel="icon" href="/favicon.png" />
+                </Head>
+                {profile?.data == undefined || profile.data == null ? (
+                    <div className="fixed top-0 z-10 h-full w-full items-center bg-slate-500 bg-opacity-5 p-6 text-center">
+                        <div className="h-fit w-full items-center bg-slate-900 bg-opacity-75 p-6 text-center">
+                            <p className="text-2xl font-semibold text-white">
+                                You must login and create a profile before
+                                playing
+                            </p>
+                            <AuthShowcase />
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div className="relative flex min-h-screen w-full flex-row items-center justify-center gap-1">
-                    <div className="flex h-full w-1/4 flex-col gap-2 bg-transparent p-2">
-                        <PlayerStats
-                            name={profile.data.name}
-                            waves={profile.data.waves}
-                            credits={profile.data.credits}
-                        />
-                        <ItemOverview
-                            item={currentShip.data?.ships[0]!}
-                            currentShip={true}
-                        />
-                        {/* <Button>Start Wave</Button> */}
+                ) : (
+                    <div className="relative flex  w-full flex-row gap-2">
+                        <div className="flex h-full flex-col gap-2 bg-transparent p-2">
+                            <Image
+                                src={"/static/images/GHLogo.png"}
+                                height={250}
+                                width={250}
+                                alt="Galactic Hero"
+                            />
+                            <PlayerStats
+                                name={profile.data.name}
+                                waves={profile.data.waves}
+                                credits={profile.data.credits}
+                            />
+                            <ItemOverview
+                                item={currentShip.data?.ships[0]!}
+                                currentShip={true}
+                            />
+
+                            <Inventory
+                                ships={profile.data.ships}
+                                equipment={profile.data.equipment}
+                            />
+                            {/* <Button>Start Wave</Button> */}
+                        </div>
+                        <GameCanvas />
                     </div>
-                    <GameCanvas />
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };
