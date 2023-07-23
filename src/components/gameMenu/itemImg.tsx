@@ -17,7 +17,7 @@ export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
             : "absolute text-xs right-[2px] bottom-[1px]";
     return (
         <div className={`${imageStyle} relative h-auto border`}>
-            <img src={imgURL} alt={"item"} />
+            <img className="w-24" src={imgURL} alt={"item"} />
             <p className={pStyle}>{item.level}</p>
         </div>
     );

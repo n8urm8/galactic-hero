@@ -27,7 +27,7 @@ export const Modal: React.FC<IModal> = ({
                             <div className="relative flex w-full flex-col rounded-lg border-2 bg-stone-600 shadow-lg outline-none focus:outline-none">
                                 {/*header*/}
                                 <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-1">
-                                    <h3 className="text-3xl font-semibold">
+                                    <h3 className="pt-2 pl-2 text-xl font-semibold text-white">
                                         {header}
                                     </h3>
                                     <button

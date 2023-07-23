@@ -31,11 +31,8 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
         targetY: number,
         isPlayer: boolean
     ) {
-        this.body.reset(x, y);
-
-        this.setActive(true);
-        this.setVisible(true);
-        this.direction = Math.atan((targetX - this.x) / (targetY - this.y));
+        this.enableBody(true, x, y, true, true);
+        this.direction = Math.atan((targetX - this.x) / (targetY + 5 - this.y));
         if (targetY >= this.y) {
             this.xSpeed = velocity * Math.sin(this.direction);
             this.ySpeed = velocity * Math.cos(this.direction);
@@ -103,15 +100,13 @@ export class Bullets extends Phaser.Physics.Arcade.Group {
             bulletY -= shooter.height / 2.1;
         }
 
-        if (bullet) {
-            bullet.fire(
-                shooter.x,
-                bulletY,
-                this.velocity,
-                targetX,
-                targetY,
-                isPlayer
-            );
-        }
+        bullet.fire(
+            shooter.x,
+            bulletY,
+            this.velocity,
+            targetX,
+            targetY,
+            isPlayer
+        );
     }
 }

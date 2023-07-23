@@ -56,23 +56,19 @@ export default class GameScene extends Phaser.Scene {
         );
     }
 
-    loadEnemies = (width: number, wave?: number) => {
+    loadEnemies = (width: number, wave: number) => {
         this.enemiesToLoad = [
             getTankEnemy(width, wave),
-            getNormalEnemy(width),
-            getEliteEnemy(width),
+            getNormalEnemy(width, wave),
+            getEliteEnemy(width, wave),
         ];
-    };
-
-    updateProfileWaves = (data: { waves: number }) => {
-        //console.log('updating wave count')
-        this.profile.waves = data.waves;
     };
 
     startWave = () => {
         this.scene.run("WaveScene", {
             loadedEnemies: this.enemiesToLoad,
             player: this.ship,
+            wave: this.profile.waves,
         });
     };
 

@@ -6,15 +6,18 @@ import {
     getShipWithEquipmentStats,
 } from "~/utils/statFormulas";
 import { Modal } from "../modal";
+import { Button } from "../button";
 
 export interface IItemOverview {
     item: PlayerShipWithEquipment | PlayerEquipment;
     currentShip: boolean;
+    clickable?: boolean;
 }
 
 export const ItemOverview: React.FC<IItemOverview> = ({
     item,
     currentShip,
+    clickable = false,
 }) => {
     const [stats, setStats] = useState({
         Level: 0,
@@ -32,6 +35,9 @@ export const ItemOverview: React.FC<IItemOverview> = ({
         : "type" in item
         ? item.type.toUpperCase()
         : "Ship";
+
+    const equipBtnTxt =
+        currentShip || ("shipId" in item && item.shipId) ? "unequip" : "equip";
 
     useEffect(() => {
         if ("equipment" in item) {
@@ -85,12 +91,23 @@ export const ItemOverview: React.FC<IItemOverview> = ({
             <div className="flex  justify-between gap-2">
                 <div>
                     <p>{name}</p>
-                    <Modal
-                        buttonElement={<ItemImg item={item} size="large" />}
-                        header={""}
-                        body={<ItemOverview item={item} currentShip={false} />}
-                        footer={"action buttons here"}
-                    />
+                    {clickable ? (
+                        <Modal
+                            buttonElement={<ItemImg item={item} size="large" />}
+                            header={""}
+                            body={
+                                <ItemOverview item={item} currentShip={false} />
+                            }
+                            footer={
+                                <div className="flex gap-1">
+                                    <Button color="yellow">Level Up</Button>
+                                    <Button>{equipBtnTxt}</Button>
+                                </div>
+                            }
+                        />
+                    ) : (
+                        <ItemOverview item={item} currentShip={false} />
+                    )}
                 </div>
                 <div className="flex w-full flex-col">
                     {Object.keys(stats).map((key) => {
@@ -106,7 +123,10 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                     })}
                 </div>
             </div>
-            {"equipment" in item && <p className="">Equipped</p>}
+            {"shipId" in item && item.shipId && (
+                <p>Equipped to Ship {item.shipId}</p>
+            )}
+            {"equipment" in item && <p className="">Equipment</p>}
             {"equipment" in item && (
                 <div className="flex min-h-[15px] gap-1 rounded-md border">
                     {item.equipment.map((item) => (
@@ -116,7 +136,12 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                             body={
                                 <ItemOverview item={item} currentShip={false} />
                             }
-                            footer={"action buttons here"}
+                            footer={
+                                <>
+                                    <Button>Level Up</Button>
+                                    <Button>Equip</Button>
+                                </>
+                            }
                         />
                     ))}
                 </div>

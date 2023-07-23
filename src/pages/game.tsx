@@ -19,7 +19,7 @@ const Game = () => {
     const currentShip = api.profile.getPlayerCurrentShip.useQuery(undefined, {
         enabled: sessionData?.user != undefined,
     });
-    console.log("current ship", currentShip.data);
+    //console.log("current ship", currentShip.data);
     const emitter = EventEmitter.getInstance();
 
     const waves = api.profile.updateWaveCount.useMutation();
@@ -96,7 +96,7 @@ const Game = () => {
                             <AuthShowcase />
                         </div>
                     </div>
-                ) : (
+                ) : currentShip.isFetched ? (
                     <div className="relative flex  w-full flex-row gap-2">
                         <div className="flex h-full flex-col gap-2 bg-transparent p-2">
                             <Image
@@ -123,7 +123,7 @@ const Game = () => {
                         </div>
                         <GameCanvas />
                     </div>
-                )}
+                ) : null}
             </div>
         </div>
     );

@@ -4,7 +4,7 @@ import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
 import { EventEmitter } from "~/utils/events";
-import { IWaveEnemy } from "~/utils/gameTypes";
+import { IWaveEnemy, WaveSceneProps } from "~/utils/gameTypes";
 
 // Create wave complete and game over events
 // need wave completion scene before going back to game scene
@@ -15,15 +15,18 @@ export default class WaveScene extends Phaser.Scene {
     private enemiesToLoad!: IWaveEnemy[];
     private ship: any;
     private emitter = EventEmitter.getInstance();
+    private wave: number = 0;
+    private timer = 0;
 
     constructor() {
         super("WaveScene");
     }
 
-    init(data: any) {
+    init(data: WaveSceneProps) {
         // console.log('wavescene data:',data)
         this.enemiesToLoad = data.loadedEnemies;
         this.ship = data.player;
+        this.wave = data.wave;
     }
 
     create() {
@@ -75,15 +78,16 @@ export default class WaveScene extends Phaser.Scene {
 
     update(time: number, delta: number) {
         //super.update(time, delta);
-        let timer = 0;
-        timer += delta;
-        if (timer <= 300) {
+        this.timer += delta;
+        //console.log(time, delta, this.timer);
+        if (this.timer >= 300) {
             let target = this.findClosestEnemy();
-            //console.log('player in update:', this.player)
+            //console.log("enemy found", target);
             target && this.player.setEnemy(target);
-            timer = 0;
+            this.timer = 0;
         }
-        this.findClosestEnemy() && this.player.update(time, delta);
+
+        this.player.update(time, delta);
 
         if (this.player.getCurrentHP() <= 0) {
             console.log("looooossssseeerrrrr");
@@ -115,6 +119,7 @@ export default class WaveScene extends Phaser.Scene {
                 //console.log('returned enemy', enemy as EnemyShip)
                 return enemy as EnemyShip;
         }
+        //console.warn("no enemy found");
         return false;
     };
 
@@ -123,6 +128,7 @@ export default class WaveScene extends Phaser.Scene {
         this.scene.start("EndWaveScene", {
             condition: condition,
             ship: this.ship,
+            wave: this.wave,
         });
         this.scene.stop();
     };

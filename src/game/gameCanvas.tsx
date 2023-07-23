@@ -32,7 +32,7 @@ export const GameCanvas = () => {
                     arcade: {
                         debug: true,
                         gravity: { y: 0 },
-                        debugShowVelocity: true,
+                        //debugShowVelocity: true,
                     },
                 },
                 scale: {

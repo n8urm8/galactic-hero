@@ -35,7 +35,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
         this.updateStats();
 
-        this.bullets = new Bullets(scene, "bullet5", 1000, this.bulletSpeed);
+        this.bullets = new Bullets(scene, "bullet5", 20, this.bulletSpeed);
         this.healthBar = new HealthBar(scene, x - 40, y + 55, this.health);
     }
 
@@ -73,13 +73,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         //super.update(time, delta);
         //console.log(this.shootTimer)
         this.shootTimer += delta;
-        if (this.shootTimer > this.shootDelay) {
+        if (this.shootTimer > this.shootDelay && this.enemy) {
             //console.log('enemy:', this.enemy)
             this.shootTimer = 0;
             this.bullets.fireBullet(
                 this,
-                this.enemy!.x,
-                this.enemy!.y + 10,
+                this.enemy.x,
+                this.enemy.y + 10,
                 true
             );
         }
