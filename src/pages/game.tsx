@@ -75,6 +75,33 @@ const Game = () => {
         emitter.removeListener(GameEvents.getRandomEquipment)
     );
 
+    const equipItemAPI = api.profile.updateShipEquipment.useMutation();
+    emitter.on(
+        GameEvents.equipItem,
+        async (data: { playerId: number; itemId: number }) => {
+            await equipItemAPI.mutateAsync({
+                playerId: data.playerId,
+                equipmentIdAdd: data.itemId,
+            });
+            const result = await profile.refetch();
+            emitter.emit(GameEvents.profileLoaded, result.data);
+        },
+        emitter.removeListener(GameEvents.equipItem)
+    );
+
+    const equipmentLevelUpAI = api.profile.equipmentLevelUp.useMutation();
+    emitter.on(
+        GameEvents.levelUpEquipment,
+        async (data: { itemId: number }) => {
+            const newEquipment = await equipmentLevelUpAI.mutateAsync({
+                equipmentId: data.itemId,
+            });
+            const result = await profile.refetch();
+            emitter.emit(GameEvents.profileLoaded, result.data);
+        },
+        emitter.removeListener(GameEvents.levelUpEquipment)
+    );
+
     return (
         <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
             <div className="relative mx-auto flex min-h-screen w-fit flex-col p-2">

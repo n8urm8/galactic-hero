@@ -3,6 +3,7 @@ import React from "react";
 export interface IButton {
     color?: "yellow" | "violet";
     variant?: "filled" | "outlined";
+    className?: string;
     children?: React.ReactNode;
     disabled?: boolean;
     onClick?: () => void;
@@ -12,6 +13,7 @@ export const Button: React.FC<IButton> = ({
     children,
     color = "violet",
     variant = "filled",
+    className = "",
     disabled = false,
     onClick,
 }) => {
@@ -32,7 +34,7 @@ export const Button: React.FC<IButton> = ({
     return (
         <button
             type="button"
-            className={classes}
+            className={classes + className}
             disabled={disabled}
             onClick={onClick}
         >

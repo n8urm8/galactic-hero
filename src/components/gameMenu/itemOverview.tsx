@@ -7,6 +7,7 @@ import {
 } from "~/utils/statFormulas";
 import { Modal } from "../modal";
 import { Button } from "../button";
+import { EventEmitter, GameEvents } from "~/utils/events";
 
 export interface IItemOverview {
     item: PlayerShipWithEquipment | PlayerEquipment;
@@ -19,6 +20,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
     currentShip,
     clickable = false,
 }) => {
+    const emitter = new EventEmitter();
     const [stats, setStats] = useState({
         Level: 0,
         Health: 0,
@@ -85,6 +87,10 @@ export const ItemOverview: React.FC<IItemOverview> = ({
             });
         }
     }, [item]);
+
+    const levelUpEquipment = () => {
+        emitter.emit(GameEvents.levelUpEquipment, { itemId: item.id });
+    };
 
     return (
         <div className="flex flex-col">
