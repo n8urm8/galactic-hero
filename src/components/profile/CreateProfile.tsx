@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
@@ -15,7 +14,9 @@ export const CreateProfile: React.FC<ICreateProfile> = ({ defaultName }) => {
     const nameRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const { mutate, isSuccess } = api.profile.createNewProfile.useMutation();
-    const submitProfile = (e: any) => {
+    const submitProfile = (
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
         if (nameRef.current != null && nameRef.current.value.length > 0) {
             e.preventDefault();
             const name = nameRef.current.value;
@@ -27,8 +28,8 @@ export const CreateProfile: React.FC<ICreateProfile> = ({ defaultName }) => {
     };
 
     useEffect(() => {
-        isSuccess && router.push("/game");
-    }, [isSuccess]);
+        isSuccess && router.push("/game").catch((e) => console.error(e));
+    }, [isSuccess, router]);
 
     return (
         <div className="flex flex-col items-center gap-2 text-center">

@@ -43,7 +43,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
 
     useEffect(() => {
         if ("equipment" in item) {
-            let newStats = getShipWithEquipmentStats(
+            const newStats = getShipWithEquipmentStats(
                 item.level,
                 item.health,
                 item.shield,
@@ -65,7 +65,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                 Battery: `${newStats.batteryUsage}/${newStats.maxBattery}`,
             });
         } else {
-            let newStats = getEquipmentStats(
+            const newStats = getEquipmentStats(
                 item.level,
                 item.health,
                 item.shield,
@@ -137,6 +137,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                 <div className="flex min-h-[15px] gap-1 rounded-md border">
                     {item.equipment.map((item) => (
                         <Modal
+                            key={item.id}
                             buttonElement={<ItemImg item={item} size="small" />}
                             header={""}
                             body={

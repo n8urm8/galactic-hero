@@ -1,7 +1,11 @@
 import Phaser from "phaser";
 import "../sprites/player";
 import { EventEmitter, GameEvents } from "~/utils/events";
-import { IWaveEnemy, PlayerWithInventory } from "~/utils/gameTypes";
+import {
+    IWaveEnemy,
+    PlayerShipWithEquipment,
+    PlayerWithInventory,
+} from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
 import { PurpleButton } from "../objects/purpleButton";
 import { Equipment } from "@prisma/client";
@@ -12,7 +16,7 @@ export default class GameScene extends Phaser.Scene {
     private emitter = EventEmitter.getInstance();
     private enemiesToLoad!: IWaveEnemy[];
     private profile!: PlayerWithInventory;
-    private ship: any;
+    private ship!: PlayerShipWithEquipment;
     private startWaveBtn?: Phaser.GameObjects.Image;
 
     // TODO : update loadprofile event to update wave count and load new enemies
@@ -21,17 +25,17 @@ export default class GameScene extends Phaser.Scene {
         super("GameScene");
     }
 
-    init(data: any) {
+    init(data: PlayerWithInventory) {
         this.profile = data;
         for (let i = 0; i < data.ships.length; i++) {
-            if (data.ships[i].isCurrent) {
-                this.ship = data.ships[i];
+            if (data.ships[i]!.isCurrent) {
+                this.ship = data.ships[i]!;
             }
         }
     }
 
     create() {
-        let { width, height } = this.game.canvas;
+        const { width, height } = this.game.canvas;
 
         this.loadEnemies(width, this.profile.waves);
         this.add.image(width / 2, height / 2, "nebulaBackground");
@@ -67,7 +71,7 @@ export default class GameScene extends Phaser.Scene {
     startWave = () => {
         this.scene.run("WaveScene", {
             loadedEnemies: this.enemiesToLoad,
-            player: this.ship,
+            ship: this.ship,
             wave: this.profile.waves,
         });
     };

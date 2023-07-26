@@ -4,7 +4,11 @@ import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
 import { EventEmitter, GameEvents } from "~/utils/events";
-import { EndWaveSceneProps, IWaveEnemy } from "~/utils/gameTypes";
+import {
+    EndWaveSceneProps,
+    IWaveEnemy,
+    PlayerShipWithEquipment,
+} from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
 
 // Create wave complete and game over events
@@ -15,9 +19,9 @@ export default class EndWaveScene extends Phaser.Scene {
     private condition = "DEFEAT";
     private timer = 200;
     private timerText!: Phaser.GameObjects.Text;
-    private ship: any;
-    private waves: number = 0;
-    private waveIncrement: number = 1;
+    private ship!: PlayerShipWithEquipment;
+    private waves = 0;
+    private waveIncrement = 1;
 
     constructor() {
         super("EndWaveScene");
@@ -26,18 +30,19 @@ export default class EndWaveScene extends Phaser.Scene {
     init(data: EndWaveSceneProps) {
         this.condition = data.condition;
         this.ship = data.ship;
-        this.waves = data.wave + this.waveIncrement;
+        this.waves = data.wave;
     }
 
     create() {
         if (this.condition == "VICTORY") {
             //console.log('waveCompleted event')
+            this.waves += this.waveIncrement;
             this.emitter.emit(GameEvents.waveCompleted);
             //this.emitter.emit(GameEvents.getProfile)
         }
-        let { width, height } = this.game.canvas;
-        let container = this.add.container(width / 2, height / 2.5);
-        let endWaveModal = this.add.image(0, 0, "goldSquare");
+        const { width, height } = this.game.canvas;
+        const container = this.add.container(width / 2, height / 2.5);
+        const endWaveModal = this.add.image(0, 0, "goldSquare");
         endWaveModal.scaleX = 1.5;
         const endWaveBtn = this.add
             .image(0, +40, "purpleButton")
@@ -46,10 +51,10 @@ export default class EndWaveScene extends Phaser.Scene {
                 this.endWave();
             });
         endWaveBtn.scaleX = 1.2;
-        let btnText = this.add
+        const btnText = this.add
             .text(endWaveBtn.x, endWaveBtn.y, "Retreat")
             .setOrigin(0.5);
-        let conditionText = this.add
+        const conditionText = this.add
             .text(endWaveModal.x, endWaveModal.y - 30, this.condition, {
                 fontSize: "40px",
                 color: "#fff",
@@ -83,7 +88,7 @@ export default class EndWaveScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number) {
-        let width = this.game.canvas.width;
+        const width = this.game.canvas.width;
         if (this.condition == "VICTORY" && this.timer > 0) {
             this.timer--;
             this.timerText.setText(this.formatTimer(this.timer));
@@ -97,14 +102,14 @@ export default class EndWaveScene extends Phaser.Scene {
     };
 
     formatTimer = (ms: number) => {
-        let seconds = Math.floor(ms / 100);
-        let remainder = ms % 100;
+        const seconds = Math.floor(ms / 100);
+        const remainder = ms % 100;
 
         return `${seconds}:${remainder}`;
     };
 
     loadNextWave = (width: number, wave: number) => {
-        let enemiesToLoad = [
+        const enemiesToLoad = [
             getTankEnemy(width, wave),
             getNormalEnemy(width, wave),
             getEliteEnemy(width, wave),
@@ -114,7 +119,8 @@ export default class EndWaveScene extends Phaser.Scene {
         //console.log('next wave data', enemiesToLoad)
         this.scene.run("WaveScene", {
             loadedEnemies: enemiesToLoad,
-            player: this.ship,
+            ship: this.ship,
+            wave: this.waves,
         });
     };
 }

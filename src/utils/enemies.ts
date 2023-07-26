@@ -1,4 +1,4 @@
-import { IWaveEnemy } from "./gameTypes";
+import type { IWaveEnemy } from "./gameTypes";
 
 function getRandomStartX(width: number) {
     return getRandomInt(width / 2.5, width / 1.5);
@@ -6,10 +6,10 @@ function getRandomStartX(width: number) {
 
 // need to include wave number effect
 export function getTankEnemy(width: number, wave: number): IWaveEnemy {
-    let enemyAmount = getRandomInt(2, 10);
+    const enemyAmount = getRandomInt(2, 10);
     //let enemyAmount = 1;
 
-    let tankEnemy: IWaveEnemy = {
+    const tankEnemy: IWaveEnemy = {
         health: getRandomInt(80, 120),
         velocity: getRandomInt(50, 150),
         startX: Array.from({ length: enemyAmount }, () =>
@@ -29,9 +29,9 @@ export function getTankEnemy(width: number, wave: number): IWaveEnemy {
 
 export function getNormalEnemy(width: number, wave: number): IWaveEnemy {
     //let enemyAmount = getRandomInt(2,10)
-    let enemyAmount = 1;
+    const enemyAmount = 1;
 
-    let normalEnemy: IWaveEnemy = {
+    const normalEnemy: IWaveEnemy = {
         health: getRandomInt(50, 100),
         velocity: getRandomInt(50, 150),
         startX: Array.from({ length: enemyAmount }, () =>
@@ -51,9 +51,9 @@ export function getNormalEnemy(width: number, wave: number): IWaveEnemy {
 
 export function getEliteEnemy(width: number, wave: number): IWaveEnemy {
     //let enemyAmount = getRandomInt(2,10)
-    let enemyAmount = 1;
+    const enemyAmount = 1;
 
-    let eliteEnemy: IWaveEnemy = {
+    const eliteEnemy: IWaveEnemy = {
         health: getRandomInt(40, 90),
         velocity: getRandomInt(50, 150),
         startX: Array.from({ length: enemyAmount }, () =>

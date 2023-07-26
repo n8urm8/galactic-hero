@@ -19,17 +19,17 @@ export const getShipStats = (
     baseRange: number,
     battery: number
 ) => {
-    let health = baseHP + level * ShipConstants.hpPerLevel;
-    let shield =
+    const health = baseHP + level * ShipConstants.hpPerLevel;
+    const shield =
         baseShield *
         (1 +
             (level * ShipConstants.shieldPerLevel) /
                 ShipConstants.shieldStatDivisor);
-    let damage = baseDamage * (1 + level * ShipConstants.damagePerLevel);
-    let speed = baseSpeed;
-    let interval = baseDelay;
-    let range = baseRange;
-    let maxBattery = battery;
+    const damage = baseDamage * (1 + level * ShipConstants.damagePerLevel);
+    const speed = baseSpeed;
+    const interval = baseDelay;
+    const range = baseRange;
+    const maxBattery = battery;
 
     return { health, shield, damage, speed, interval, range, maxBattery };
 };
@@ -44,12 +44,12 @@ export const getEquipmentStats = (
     baseRange: number,
     batteryUsage: number
 ) => {
-    let health = baseHP + baseHP * level;
-    let shield = baseShield + baseShield * level;
-    let damage = baseDamage + baseDamage * level;
-    let speed = baseSpeed + baseSpeed * level;
-    let interval = baseDelay + baseDelay * level;
-    let range = baseRange + baseRange * level;
+    const health = baseHP + baseHP * level;
+    const shield = baseShield + baseShield * level;
+    const damage = baseDamage + baseDamage * level;
+    const speed = baseSpeed + baseSpeed * level;
+    const interval = baseDelay + baseDelay * level;
+    const range = baseRange + baseRange * level;
 
     return { health, shield, damage, speed, interval, range, batteryUsage };
 };
@@ -78,7 +78,7 @@ export const getShipWithEquipmentStats = (
         );
     let batteryUsage = 0;
     equipment.forEach((e) => {
-        let eStat = getEquipmentStats(
+        const eStat = getEquipmentStats(
             e.level,
             e.health,
             e.shield,

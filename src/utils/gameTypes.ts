@@ -48,12 +48,12 @@ export type EquipmentType = "Offensive" | "Defensive" | "Utility";
 
 export type WaveSceneProps = {
     loadedEnemies: IWaveEnemy[];
-    player: Player;
+    ship: PlayerShipWithEquipment;
     wave: number;
 };
 
 export type EndWaveSceneProps = {
     condition: "VICTORY" | "DEFEAT";
-    ship: Player;
+    ship: PlayerShipWithEquipment;
     wave: number;
 };

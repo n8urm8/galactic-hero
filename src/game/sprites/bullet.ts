@@ -1,12 +1,10 @@
 import Phaser from "phaser";
 
-const HEIGHT = 640;
-const WIDTH = 800;
-
 export class Bullet extends Phaser.Physics.Arcade.Sprite {
     private direction = 0;
     private xSpeed = 0;
     private ySpeed = 0;
+    private sceneHeight = 0;
 
     constructor(
         scene: Phaser.Scene,
@@ -17,7 +15,8 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     ) {
         super(scene, x, y, sprite, frame);
         scene.physics.add.existing(this);
-        const { width } = scene.game.canvas;
+        const { height, width } = scene.game.canvas;
+        this.sceneHeight = height;
         this.displayWidth = width / 100;
         this.displayHeight = this.scaleX;
         this.body.setCircle(this.width);
@@ -60,7 +59,7 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     outOfScreen() {
-        return this.y <= 0 || this.y >= HEIGHT;
+        return this.y <= 0 || this.y >= this.sceneHeight;
     }
 
     remove() {
@@ -94,7 +93,7 @@ export class Bullets extends Phaser.Physics.Arcade.Group {
         targetY: number,
         isPlayer: boolean | false
     ) {
-        let bullet = this.get();
+        const bullet: Bullet = this.get() as Bullet;
         let bulletY = shooter.y;
         if (isPlayer) {
             bulletY -= shooter.height / 2.1;

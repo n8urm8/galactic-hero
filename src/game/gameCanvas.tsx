@@ -44,8 +44,8 @@ export const GameCanvas = () => {
             });
             setGame(phaserGame);
         }
-        game == undefined && initPhaser();
-        return () => {};
+        game == undefined && initPhaser().catch((e) => console.error(e));
+        //return () => {};
     }, [game]);
 
     return (

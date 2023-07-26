@@ -48,7 +48,7 @@ export const profileRouter = createTRPCRouter({
     // leaderboards - unprotected?
     getProfile: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.session.user.id;
-        let profile = ctx.prisma.player.findUnique({
+        const profile = ctx.prisma.player.findUnique({
             where: {
                 userId: userId,
             },
@@ -118,10 +118,10 @@ export const profileRouter = createTRPCRouter({
     // update materials
     // update ship (iscurrent, equipment)
     // update inventory
-    createNewProfile: publicProcedure
+    createNewProfile: protectedProcedure
         .input(z.object({ name: z.string() }))
         .mutation(({ ctx, input }) => {
-            const userId = ctx.session!.user.id;
+            const userId = ctx.session.user.id;
             const profile = ctx.prisma.user.update({
                 where: {
                     id: userId,

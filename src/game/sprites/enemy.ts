@@ -32,7 +32,6 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
     ) {
         super(scene, startX, startY, sprite);
         this.scene = scene;
-        let { width, height } = scene.game.canvas;
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.pushable = false;
@@ -68,8 +67,8 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time: number, delta: number) {
-        let targetX = this.player.x;
-        let targetY = this.player.y;
+        const targetX = this.player.x;
+        const targetY = this.player.y;
         // stop when in shooting range of target
         if (
             Phaser.Math.Distance.Between(this.x, this.y, targetX, targetY) <

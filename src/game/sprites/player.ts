@@ -2,12 +2,16 @@ import Phaser, { Physics } from "phaser";
 import { HealthBar } from "../objects/healthBar";
 import { Bullets } from "./bullet";
 import { EnemyShip } from "./enemy";
-import { PlayerEquipment, PlayerShip } from "~/utils/gameTypes";
+import {
+    PlayerEquipment,
+    PlayerShip,
+    PlayerShipWithEquipment,
+} from "~/utils/gameTypes";
 import { ShipConstants } from "~/utils/statFormulas";
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     private bullets: Bullets;
-    private shootTimer: number = 0;
+    private shootTimer = 0;
     private shootDelay!: number;
     private bulletRange!: number;
     private health!: number;
@@ -55,8 +59,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.bulletSpeed = this.ship.bulletSpeed;
         this.bulletRange = this.ship.bulletRange;
         for (let i = 0; i < this.equipment.length; i++) {
-            let equip = this.equipment[i]!;
-            let lvl = equip?.level;
+            const equip = this.equipment[i]!;
+            const lvl = equip?.level;
             this.health += equip.health * lvl;
             this.shield += equip.shield * lvl;
             this.bulletRange += equip.bulletRange * lvl;
@@ -67,7 +71,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
     };
 
-    create() {}
+    //create() {}
 
     update = (time: number, delta: number) => {
         //super.update(time, delta);
@@ -100,7 +104,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
 
     takeDamage = (power: number) => {
-        let damage =
+        const damage =
             power - (power * this.shield) / ShipConstants.shieldDamageDivisor;
         this.health -= damage;
         this.healthBar.decrease(damage);
@@ -133,11 +137,11 @@ Phaser.GameObjects.GameObjectFactory.register(
         this: Phaser.GameObjects.GameObjectFactory,
         x: number,
         y: number,
-        ship: PlayerShip,
+        ship: PlayerShipWithEquipment,
         equipment?: PlayerEquipment[],
         frame?: string | number
     ) {
-        let sprite = new Player(this.scene, x, y, ship, equipment, frame);
+        const sprite = new Player(this.scene, x, y, ship, equipment, frame);
 
         this.displayList.add(sprite);
         this.updateList.add(sprite);

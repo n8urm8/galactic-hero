@@ -23,7 +23,7 @@ const Game = () => {
     const emitter = EventEmitter.getInstance();
 
     const waves = api.profile.updateWaveCount.useMutation();
-    const loadProfile = async () => {
+    const loadProfile = () => {
         emitter.emit(GameEvents.profileLoaded, profile.data);
     };
     emitter.on(
@@ -34,11 +34,15 @@ const Game = () => {
 
     emitter.on(
         GameEvents.waveCompleted,
-        async () => {
+        () => {
             //console.log('game.tsx waveCompletedDB')
-            let result = await waves.mutateAsync({ amount: 1 });
+            async () => {
+                const result = await waves.mutateAsync({ amount: 1 });
 
-            emitter.emit(GameEvents.waveCountUpdated, { waves: result.waves });
+                emitter.emit(GameEvents.waveCountUpdated, {
+                    waves: result.waves,
+                });
+            };
         },
         emitter.removeListener(GameEvents.waveCompleted)
     );
@@ -46,17 +50,19 @@ const Game = () => {
     const levelUp = api.profile.shipLevelUp.useMutation();
     emitter.on(
         GameEvents.levelUpShip,
-        async (data: { playerId: number; shipId: number }) => {
-            //console.log('game.tsx level up', data)
-            const levelingUp = await levelUp.mutateAsync({
-                playerId: data.playerId,
-                shipId: data.shipId,
-            });
-            //console.log(levelingUp)
-            emitter.emit(GameEvents.shipLeveled, { player: levelingUp });
-            const result = await profile.refetch();
-            const shipUpdate = await currentShip.refetch();
-            emitter.emit(GameEvents.profileLoaded, result.data);
+        (data: { playerId: number; shipId: number }) => {
+            async () => {
+                //console.log('game.tsx level up', data)
+                const levelingUp = await levelUp.mutateAsync({
+                    playerId: data.playerId,
+                    shipId: data.shipId,
+                });
+                //console.log(levelingUp)
+                emitter.emit(GameEvents.shipLeveled, { player: levelingUp });
+                const result = await profile.refetch();
+                const shipUpdate = await currentShip.refetch();
+                emitter.emit(GameEvents.profileLoaded, result.data);
+            };
         },
         emitter.removeListener(GameEvents.levelUpShip)
     );
@@ -64,13 +70,15 @@ const Game = () => {
     const getRandomEquip = api.profile.getRandomT1Equipment.useMutation();
     emitter.on(
         GameEvents.getRandomEquipment,
-        async (data: { playerId: number; shipId: number }) => {
-            //console.log('game.tsx level up', data)
-            const newEquip = await getRandomEquip.mutateAsync();
-            //console.log(levelingUp)
-            emitter.emit(GameEvents.loadNewEquipment, newEquip);
-            const result = await profile.refetch();
-            emitter.emit(GameEvents.profileLoaded, result.data);
+        (data: { playerId: number; shipId: number }) => {
+            async () => {
+                //console.log('game.tsx level up', data)
+                const newEquip = await getRandomEquip.mutateAsync();
+                //console.log(levelingUp)
+                emitter.emit(GameEvents.loadNewEquipment, newEquip);
+                const result = await profile.refetch();
+                emitter.emit(GameEvents.profileLoaded, result.data);
+            };
         },
         emitter.removeListener(GameEvents.getRandomEquipment)
     );
@@ -78,13 +86,15 @@ const Game = () => {
     const equipItemAPI = api.profile.updateShipEquipment.useMutation();
     emitter.on(
         GameEvents.equipItem,
-        async (data: { playerId: number; itemId: number }) => {
-            await equipItemAPI.mutateAsync({
-                playerId: data.playerId,
-                equipmentIdAdd: data.itemId,
-            });
-            const result = await profile.refetch();
-            emitter.emit(GameEvents.profileLoaded, result.data);
+        (data: { playerId: number; itemId: number }) => {
+            async () => {
+                await equipItemAPI.mutateAsync({
+                    playerId: data.playerId,
+                    equipmentIdAdd: data.itemId,
+                });
+                const result = await profile.refetch();
+                emitter.emit(GameEvents.profileLoaded, result.data);
+            };
         },
         emitter.removeListener(GameEvents.equipItem)
     );
@@ -92,12 +102,14 @@ const Game = () => {
     const equipmentLevelUpAI = api.profile.equipmentLevelUp.useMutation();
     emitter.on(
         GameEvents.levelUpEquipment,
-        async (data: { itemId: number }) => {
-            const newEquipment = await equipmentLevelUpAI.mutateAsync({
-                equipmentId: data.itemId,
-            });
-            const result = await profile.refetch();
-            emitter.emit(GameEvents.profileLoaded, result.data);
+        (data: { itemId: number }) => {
+            async () => {
+                const newEquipment = await equipmentLevelUpAI.mutateAsync({
+                    equipmentId: data.itemId,
+                });
+                const result = await profile.refetch();
+                emitter.emit(GameEvents.profileLoaded, result.data);
+            };
         },
         emitter.removeListener(GameEvents.levelUpEquipment)
     );
@@ -138,7 +150,7 @@ const Game = () => {
                                 credits={profile.data.credits}
                             />
                             <ItemOverview
-                                item={currentShip.data?.ships[0]!}
+                                item={currentShip.data!.ships[0]!}
                                 currentShip={true}
                             />
 

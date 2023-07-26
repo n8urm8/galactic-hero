@@ -1,12 +1,13 @@
 import Phaser from "phaser";
 import { EventEmitter, GameEvents } from "~/utils/events";
+import { PlayerWithInventory } from "~/utils/gameTypes";
 import { PlayerShipSprites } from "~/utils/ships";
 
 // LOAD PLAYER DATA HERE
 
 export default class BootScene extends Phaser.Scene {
     private emitter = EventEmitter.getInstance();
-    private profile: any;
+    private profile!: PlayerWithInventory;
 
     constructor() {
         super("BootScene");
@@ -68,7 +69,7 @@ export default class BootScene extends Phaser.Scene {
         this.scene.start("GameScene", this.profile);
     }
 
-    loadProfile = (data: any) => {
+    loadProfile = (data: PlayerWithInventory) => {
         this.profile = data;
     };
 }
