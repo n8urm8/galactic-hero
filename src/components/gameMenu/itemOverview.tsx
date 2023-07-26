@@ -6,12 +6,14 @@ import {
     getShipWithEquipmentStats,
 } from "~/utils/statFormulas";
 import { Modal } from "../modal";
-import { Button } from "../button";
+import { Button, ConfirmButton } from "../button";
 import { EventEmitter, GameEvents } from "~/utils/events";
+import { ItemButtons } from "./itemButtons";
 
 export interface IItemOverview {
     item: PlayerShipWithEquipment | PlayerEquipment;
     currentShip: boolean;
+    currentCredits: number;
     clickable?: boolean;
 }
 
@@ -19,16 +21,16 @@ export const ItemOverview: React.FC<IItemOverview> = ({
     item,
     currentShip,
     clickable = false,
+    currentCredits,
 }) => {
-    const emitter = new EventEmitter();
     const [stats, setStats] = useState({
-        Level: 0,
-        Health: 0,
-        Shield: 0,
-        Damage: 0,
-        Speed: 0,
-        Range: 0,
-        Interval: 0,
+        Level: "0",
+        Health: "0",
+        Shield: "0",
+        Damage: "0",
+        Speed: "0",
+        Range: "0",
+        Interval: "0",
         Battery: "0",
     });
 
@@ -37,9 +39,6 @@ export const ItemOverview: React.FC<IItemOverview> = ({
         : "type" in item
         ? item.type.toUpperCase()
         : "Ship";
-
-    const equipBtnTxt =
-        currentShip || ("shipId" in item && item.shipId) ? "unequip" : "equip";
 
     useEffect(() => {
         if ("equipment" in item) {
@@ -55,13 +54,13 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                 item.equipment
             );
             setStats({
-                Level: item.level,
-                Health: newStats.health,
-                Shield: newStats.shield,
-                Damage: newStats.damage,
-                Speed: newStats.speed,
-                Range: newStats.range,
-                Interval: newStats.interval,
+                Level: item.level.toFixed(0),
+                Health: newStats.health.toFixed(0),
+                Shield: newStats.shield.toFixed(1),
+                Damage: newStats.damage.toFixed(1),
+                Speed: newStats.speed.toFixed(0),
+                Range: newStats.range.toFixed(0),
+                Interval: newStats.interval.toFixed(0),
                 Battery: `${newStats.batteryUsage}/${newStats.maxBattery}`,
             });
         } else {
@@ -76,43 +75,44 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                 item.battery
             );
             setStats({
-                Level: item.level,
-                Health: newStats.health,
-                Shield: newStats.shield,
-                Damage: newStats.damage,
-                Speed: newStats.speed,
-                Range: newStats.range,
-                Interval: newStats.interval,
+                Level: item.level.toFixed(0),
+                Health: newStats.health.toFixed(0),
+                Shield: newStats.shield.toFixed(1),
+                Damage: newStats.damage.toFixed(1),
+                Speed: newStats.speed.toFixed(0),
+                Range: newStats.range.toFixed(0),
+                Interval: newStats.interval.toFixed(0),
                 Battery: `${newStats.batteryUsage}`,
             });
         }
     }, [item]);
 
-    const levelUpEquipment = () => {
-        emitter.emit(GameEvents.levelUpEquipment, { itemId: item.id });
-    };
-
     return (
         <div className="flex flex-col">
-            <div className="flex  justify-between gap-2">
+            <div className="flex min-w-[280px] justify-between gap-2">
                 <div>
                     <p>{name}</p>
                     {clickable ? (
                         <Modal
                             buttonElement={<ItemImg item={item} size="large" />}
-                            header={""}
+                            header={name}
                             body={
-                                <ItemOverview item={item} currentShip={false} />
+                                <ItemOverview
+                                    item={item}
+                                    currentShip={false}
+                                    clickable={false}
+                                    currentCredits={currentCredits}
+                                />
                             }
                             footer={
-                                <div className="flex gap-1">
-                                    <Button color="yellow">Level Up</Button>
-                                    <Button>{equipBtnTxt}</Button>
-                                </div>
+                                <ItemButtons
+                                    item={item}
+                                    currentCredits={currentCredits}
+                                />
                             }
                         />
                     ) : (
-                        <ItemOverview item={item} currentShip={false} />
+                        <ItemImg item={item} size="large" />
                     )}
                 </div>
                 <div className="flex w-full flex-col">
@@ -139,15 +139,20 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                         <Modal
                             key={item.id}
                             buttonElement={<ItemImg item={item} size="small" />}
-                            header={""}
+                            header={name}
                             body={
-                                <ItemOverview item={item} currentShip={false} />
+                                <ItemOverview
+                                    item={item}
+                                    currentShip={false}
+                                    clickable={false}
+                                    currentCredits={currentCredits}
+                                />
                             }
                             footer={
-                                <>
-                                    <Button>Level Up</Button>
-                                    <Button>Equip</Button>
-                                </>
+                                <ItemButtons
+                                    item={item}
+                                    currentCredits={currentCredits}
+                                />
                             }
                         />
                     ))}

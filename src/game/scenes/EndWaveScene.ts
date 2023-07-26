@@ -35,7 +35,7 @@ export default class EndWaveScene extends Phaser.Scene {
 
     create() {
         if (this.condition == "VICTORY") {
-            //console.log('waveCompleted event')
+            //console.log("waveCompleted event");
             this.waves += this.waveIncrement;
             this.emitter.emit(GameEvents.waveCompleted);
             //this.emitter.emit(GameEvents.getProfile)

@@ -28,4 +28,5 @@ export enum GameEvents {
     loadNewEquipment = "loadNewEquipment",
     levelUpEquipment = "levelUpEquipment",
     equipItem = "equipItem",
+    refreshProfile = "refreshProfile",
 }

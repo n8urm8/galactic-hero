@@ -7,13 +7,19 @@ import {
 import { Modal } from "../modal";
 import { ItemImg } from "./itemImg";
 import { ItemOverview } from "./itemOverview";
+import { ItemButtons } from "./itemButtons";
 
 export interface IInventory {
     ships: PlayerShipWithEquipment[];
     equipment: PlayerEquipment[];
+    currentCredits: number;
 }
 
-export const Inventory: React.FC<IInventory> = ({ ships, equipment }) => {
+export const Inventory: React.FC<IInventory> = ({
+    ships,
+    equipment,
+    currentCredits,
+}) => {
     return (
         <div>
             <p>Inventory</p>
@@ -32,9 +38,16 @@ export const Inventory: React.FC<IInventory> = ({ ships, equipment }) => {
                                     <ItemOverview
                                         item={ship}
                                         currentShip={false}
+                                        clickable={false}
+                                        currentCredits={currentCredits}
                                     />
                                 }
-                                footer={undefined}
+                                footer={
+                                    <ItemButtons
+                                        item={ship}
+                                        currentCredits={currentCredits}
+                                    />
+                                }
                             />
                         );
                     })}
@@ -53,9 +66,16 @@ export const Inventory: React.FC<IInventory> = ({ ships, equipment }) => {
                                     <ItemOverview
                                         item={item}
                                         currentShip={false}
+                                        clickable={false}
+                                        currentCredits={currentCredits}
                                     />
                                 }
-                                footer={undefined}
+                                footer={
+                                    <ItemButtons
+                                        item={item}
+                                        currentCredits={currentCredits}
+                                    />
+                                }
                             />
                         );
                     })}

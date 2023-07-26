@@ -1,7 +1,7 @@
 import type { IWaveEnemy } from "./gameTypes";
 
 function getRandomStartX(width: number) {
-    return getRandomInt(width / 2.5, width / 1.5);
+    return getRandomInt(width / 2 - 100, width / 2 + 100);
 }
 
 // need to include wave number effect

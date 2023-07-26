@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Game as GameType } from "phaser";
 import { EventEmitter, GameEvents } from "~/utils/events";
 import { api } from "~/utils/api";
@@ -9,6 +9,10 @@ import { GameCanvas } from "~/game";
 import { Inventory, ItemOverview, PlayerStats } from "~/components/gameMenu";
 import { Button } from "~/components/button";
 import Image from "next/image";
+import { CanvasLoader } from "~/components/loaders";
+import { PlayerEquipment } from "~/utils/gameTypes";
+import { Modal } from "~/components/modal";
+import { ItemButtons } from "~/components/gameMenu/itemButtons";
 //import GHLogo from "/static/images/GHLogo.png";
 
 const Game = () => {
@@ -16,9 +20,17 @@ const Game = () => {
     const profile = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user != undefined,
     });
-    const currentShip = api.profile.getPlayerCurrentShip.useQuery(undefined, {
-        enabled: sessionData?.user != undefined,
-    });
+    const currentShipAPI = api.profile.getPlayerCurrentShip.useQuery(
+        undefined,
+        {
+            enabled: sessionData?.user != undefined,
+        }
+    );
+    const getRandomEquipmentAPI =
+        api.profile.getRandomT1Equipment.useMutation();
+    const [newEquipment, setNewEquipment] = useState<PlayerEquipment>(
+        {} as PlayerEquipment
+    );
     //console.log("current ship", currentShip.data);
     const emitter = EventEmitter.getInstance();
 
@@ -34,85 +46,32 @@ const Game = () => {
 
     emitter.on(
         GameEvents.waveCompleted,
-        () => {
-            //console.log('game.tsx waveCompletedDB')
-            async () => {
-                const result = await waves.mutateAsync({ amount: 1 });
 
-                emitter.emit(GameEvents.waveCountUpdated, {
-                    waves: result.waves,
-                });
-            };
+        async () => {
+            const result = await waves.mutateAsync({ amount: 1 });
+            await profile.refetch();
+            emitter.emit(GameEvents.waveCountUpdated, {
+                waves: result.waves,
+            });
         },
         emitter.removeListener(GameEvents.waveCompleted)
     );
 
-    const levelUp = api.profile.shipLevelUp.useMutation();
     emitter.on(
-        GameEvents.levelUpShip,
-        (data: { playerId: number; shipId: number }) => {
-            async () => {
-                //console.log('game.tsx level up', data)
-                const levelingUp = await levelUp.mutateAsync({
-                    playerId: data.playerId,
-                    shipId: data.shipId,
-                });
-                //console.log(levelingUp)
-                emitter.emit(GameEvents.shipLeveled, { player: levelingUp });
-                const result = await profile.refetch();
-                const shipUpdate = await currentShip.refetch();
-                emitter.emit(GameEvents.profileLoaded, result.data);
-            };
+        GameEvents.refreshProfile,
+        async () => {
+            console.log("refresh profile");
+            const result = await profile.refetch();
+            const shipUpdate = await currentShipAPI.refetch();
         },
-        emitter.removeListener(GameEvents.levelUpShip)
+        emitter.removeListener(GameEvents.refreshProfile)
     );
 
-    const getRandomEquip = api.profile.getRandomT1Equipment.useMutation();
-    emitter.on(
-        GameEvents.getRandomEquipment,
-        (data: { playerId: number; shipId: number }) => {
-            async () => {
-                //console.log('game.tsx level up', data)
-                const newEquip = await getRandomEquip.mutateAsync();
-                //console.log(levelingUp)
-                emitter.emit(GameEvents.loadNewEquipment, newEquip);
-                const result = await profile.refetch();
-                emitter.emit(GameEvents.profileLoaded, result.data);
-            };
-        },
-        emitter.removeListener(GameEvents.getRandomEquipment)
-    );
-
-    const equipItemAPI = api.profile.updateShipEquipment.useMutation();
-    emitter.on(
-        GameEvents.equipItem,
-        (data: { playerId: number; itemId: number }) => {
-            async () => {
-                await equipItemAPI.mutateAsync({
-                    playerId: data.playerId,
-                    equipmentIdAdd: data.itemId,
-                });
-                const result = await profile.refetch();
-                emitter.emit(GameEvents.profileLoaded, result.data);
-            };
-        },
-        emitter.removeListener(GameEvents.equipItem)
-    );
-
-    const equipmentLevelUpAI = api.profile.equipmentLevelUp.useMutation();
-    emitter.on(
-        GameEvents.levelUpEquipment,
-        (data: { itemId: number }) => {
-            async () => {
-                const newEquipment = await equipmentLevelUpAI.mutateAsync({
-                    equipmentId: data.itemId,
-                });
-                const result = await profile.refetch();
-                emitter.emit(GameEvents.profileLoaded, result.data);
-            };
-        },
-        emitter.removeListener(GameEvents.levelUpEquipment)
-    );
+    const getNewRandEquipment = async () => {
+        const newEquip = await getRandomEquipmentAPI.mutateAsync();
+        await profile.refetch();
+        setNewEquipment(newEquip!);
+    };
 
     return (
         <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
@@ -135,7 +94,8 @@ const Game = () => {
                             <AuthShowcase />
                         </div>
                     </div>
-                ) : currentShip.isFetched ? (
+                ) : currentShipAPI.isFetched &&
+                  currentShipAPI.data?.ships[0] ? (
                     <div className="relative flex  w-full flex-row gap-2">
                         <div className="flex h-full flex-col gap-2 bg-transparent p-2">
                             <Image
@@ -150,17 +110,30 @@ const Game = () => {
                                 credits={profile.data.credits}
                             />
                             <ItemOverview
-                                item={currentShip.data!.ships[0]!}
+                                item={currentShipAPI.data.ships[0]}
                                 currentShip={true}
+                                clickable={true}
+                                currentCredits={profile.data.credits}
                             />
 
                             <Inventory
                                 ships={profile.data.ships}
                                 equipment={profile.data.equipment}
+                                currentCredits={profile.data.credits}
                             />
-                            {/* <Button>Start Wave</Button> */}
+                            <Button
+                                onClick={() => getNewRandEquipment()}
+                                disabled={
+                                    getRandomEquipmentAPI.isLoading ||
+                                    profile.data.credits < 100
+                                }
+                            >
+                                Buy Equipment - 100 credits
+                            </Button>
                         </div>
-                        <GameCanvas />
+                        <Suspense fallback={<CanvasLoader />}>
+                            <GameCanvas />
+                        </Suspense>
                     </div>
                 ) : null}
             </div>

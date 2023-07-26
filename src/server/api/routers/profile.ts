@@ -7,9 +7,12 @@ import {
     protectedProcedure,
 } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
-import { PlayerShipSprites, getLevelUpCost } from "~/utils/ships";
+import { PlayerShipSprites } from "~/utils/ships";
 import { chooseEquipmentType, getNewEquipment } from "~/utils/equipment";
-import { getEquipmentLevelUpCost } from "~/utils/costFormulas";
+import {
+    getEquipmentLevelUpCost,
+    getShipLevelUpCost,
+} from "~/utils/costFormulas";
 
 const getCurrentPlayer = async (userId: string) => {
     const player = await prisma.player.findFirst({
@@ -156,14 +159,25 @@ export const profileRouter = createTRPCRouter({
 
     updateWaveCount: protectedProcedure
         .input(z.object({ amount: z.number() }))
-        .mutation(({ ctx, input }) => {
+        .mutation(async ({ ctx, input }) => {
             const userId = ctx.session.user.id;
-            const waves = ctx.prisma.player.update({
+            const currentWaves = await ctx.prisma.player.findUniqueOrThrow({
+                where: {
+                    userId: userId,
+                },
+                select: {
+                    waves: true,
+                },
+            });
+            const creditReward =
+                currentWaves.waves * (Math.floor(currentWaves.waves / 10) + 1);
+            const waves = await ctx.prisma.player.update({
                 where: {
                     userId: userId,
                 },
                 data: {
                     waves: { increment: input.amount },
+                    credits: { increment: creditReward },
                 },
             });
 
@@ -189,43 +203,45 @@ export const profileRouter = createTRPCRouter({
 
     // input old and new ship IDs, determine id verification needed
     updateCurrentShip: protectedProcedure
-        .input(z.object({ oldShipId: z.number(), newShipId: z.number() }))
-        .mutation(({ ctx, input }) => {
+        .input(z.object({ newShipId: z.number() }))
+        .mutation(async ({ ctx, input }) => {
             // need to add verification of ownership
             const userId = ctx.session.user.id;
-            const oldShip = ctx.prisma.ship.update({
+
+            const currentShip = await getCurrentShip(userId);
+            const verified = await ctx.prisma.ship.count({
                 where: {
-                    id: input.oldShipId,
+                    playerId: currentShip?.playerId,
+                    id: input.newShipId,
+                },
+            });
+            if (verified == 0) return "ship not owned";
+            const oldShip = await ctx.prisma.ship.update({
+                where: {
+                    id: currentShip?.id,
                 },
                 data: {
                     isCurrent: false,
                 },
             });
-            const newShip = ctx.prisma.ship.update({
+            const newShip = await ctx.prisma.ship.update({
                 where: {
                     id: input.newShipId,
                 },
                 data: {
                     isCurrent: true,
                 },
-            });
-
-            const updatedShip = ctx.prisma.ship.findUnique({
-                where: {
-                    id: input.newShipId,
-                },
                 include: {
                     equipment: true,
                 },
             });
 
-            return updatedShip;
+            return newShip;
         }),
 
     updateShipEquipment: protectedProcedure
         .input(
             z.object({
-                playerId: z.number(),
                 equipmentIdRemove: z.number().optional(),
                 equipmentIdAdd: z.number().optional(),
             })
@@ -241,7 +257,7 @@ export const profileRouter = createTRPCRouter({
             if (input.equipmentIdRemove) {
                 const verifiedOld = await ctx.prisma.equipment.count({
                     where: {
-                        playerId: input.playerId,
+                        playerId: currentShip.playerId,
                         id: input.equipmentIdRemove,
                     },
                 });
@@ -262,7 +278,7 @@ export const profileRouter = createTRPCRouter({
             if (input.equipmentIdAdd) {
                 const verifiedNew = await ctx.prisma.equipment.count({
                     where: {
-                        playerId: input.playerId,
+                        playerId: currentShip.playerId,
                         id: input.equipmentIdAdd,
                     },
                 });
@@ -355,12 +371,8 @@ export const profileRouter = createTRPCRouter({
                     credits: true,
                 },
             });
-            const currentShip = await ctx.prisma.ship.findUnique({
-                where: {
-                    id: input.shipId,
-                },
-            });
-            const cost = getLevelUpCost(currentShip!.level, 1);
+            const currentShip = await getCurrentShip(userId);
+            const cost = getShipLevelUpCost(currentShip!);
 
             if (cost <= currentCredits!.credits) {
                 const updateShipLvl = await ctx.prisma.player.update({
@@ -426,6 +438,7 @@ export const profileRouter = createTRPCRouter({
                         battery: newEquipment.battery,
                     },
                 },
+                credits: { increment: -100 },
             },
             include: {
                 equipment: true,

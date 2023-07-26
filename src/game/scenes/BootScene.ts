@@ -22,10 +22,10 @@ export default class BootScene extends Phaser.Scene {
         this.load.image("goldSquare", "static/images/ui/goldSquare.png");
         this.load.image("creditsIcon", "static/images/ui/creditsIcon.png");
         this.load.image("menuSlot", "static/images/ui/menuSlot.png");
-        this.load.spritesheet("uiStatic", "static/images/ui/uiStatic.png", {
-            frameWidth: 16,
-            frameHeight: 16,
-        });
+        // this.load.spritesheet("uiStatic", "static/images/ui/uiAssets.png", {
+        //     frameWidth: 16,
+        //     frameHeight: 16,
+        // });
         this.load.spritesheet(
             "explosion",
             "static/images/effects/explosion.png",

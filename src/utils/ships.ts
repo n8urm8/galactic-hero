@@ -12,13 +12,3 @@ export type BaseShipStats = {
     bulletSpeed: number;
     bulletRange: number;
 };
-
-export const getLevelUpCost = (currentLevel: number, increase: number) => {
-    const costPerLevel = 100;
-    let totalCost = 0;
-    for (let i = 0; i < increase; i++) {
-        totalCost += (currentLevel + i) * costPerLevel;
-    }
-
-    return totalCost;
-};
