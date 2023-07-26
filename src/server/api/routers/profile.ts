@@ -13,6 +13,7 @@ import {
     getEquipmentLevelUpCost,
     getShipLevelUpCost,
 } from "~/utils/costFormulas";
+import { PlayerShipWithEquipment } from "~/utils/gameTypes";
 
 const getCurrentPlayer = async (userId: string) => {
     const player = await prisma.player.findFirst({
@@ -311,7 +312,7 @@ export const profileRouter = createTRPCRouter({
                 });
             }
 
-            return updatedShip;
+            return updatedShip as PlayerShipWithEquipment;
         }),
 
     equipmentLevelUp: protectedProcedure
@@ -320,7 +321,7 @@ export const profileRouter = createTRPCRouter({
             const currentPlayer = await getCurrentPlayer(ctx.session.user.id);
             const verified = await ctx.prisma.equipment.count({
                 where: {
-                    playerId: currentPlayer!.id,
+                    playerId: currentPlayer.id,
                     id: input.equipmentId,
                 },
             });
@@ -334,8 +335,8 @@ export const profileRouter = createTRPCRouter({
                     id: input.equipmentId,
                 },
             });
-            const levelUpCost = getEquipmentLevelUpCost(equipment!);
-            if (currentPlayer!.credits < levelUpCost)
+            const levelUpCost = getEquipmentLevelUpCost(equipment);
+            if (currentPlayer.credits < levelUpCost)
                 return "not enough credits";
 
             await ctx.prisma.player.update({
@@ -372,9 +373,9 @@ export const profileRouter = createTRPCRouter({
                 },
             });
             const currentShip = await getCurrentShip(userId);
-            const cost = getShipLevelUpCost(currentShip!);
+            const cost = getShipLevelUpCost(currentShip);
 
-            if (cost <= currentCredits!.credits) {
+            if (cost <= currentCredits.credits) {
                 const updateShipLvl = await ctx.prisma.player.update({
                     where: {
                         userId: userId,

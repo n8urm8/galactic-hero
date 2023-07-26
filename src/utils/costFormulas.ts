@@ -6,7 +6,7 @@ export const getEquipmentLevelUpCost = (equipment: Equipment) => {
 
 export const getShipLevelUpCost = (ship: Ship) => {
     const costPerLevel = 100;
-    let totalCost = (ship.level + 1) * costPerLevel;
+    const totalCost = (ship.level + 1) * costPerLevel;
 
     return totalCost;
 };

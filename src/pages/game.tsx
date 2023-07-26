@@ -70,7 +70,7 @@ const Game = () => {
     const getNewRandEquipment = async () => {
         const newEquip = await getRandomEquipmentAPI.mutateAsync();
         await profile.refetch();
-        setNewEquipment(newEquip!);
+        setNewEquipment(newEquip);
     };
 
     return (
@@ -122,7 +122,11 @@ const Game = () => {
                                 currentCredits={profile.data.credits}
                             />
                             <Button
-                                onClick={() => getNewRandEquipment()}
+                                onClick={() =>
+                                    getNewRandEquipment().catch((e) =>
+                                        console.error(e)
+                                    )
+                                }
                                 disabled={
                                     getRandomEquipmentAPI.isLoading ||
                                     profile.data.credits < 100

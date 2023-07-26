@@ -39,7 +39,12 @@ const config = {
             },
         ],
         "@typescript-eslint/no-namespace": ["warn"],
-        "@typescript-eslint/no-misused-promises": ["warn"],
+        "@typescript-eslint/no-misused-promises": [
+            "error",
+            {
+                checksConditionals: false,
+            },
+        ],
         "@typescript-eslint/ban-ts-comment": ["warn"],
         "@typescript-eslint/no-unsafe-assignment": ["warn"],
     },
