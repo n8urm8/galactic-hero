@@ -1,39 +1,59 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from "@prisma/client";
+import Player from "~/game/sprites/player";
 
 export interface IWaveEnemy {
-    health: number
-    velocity: number 
-    startX: number[]
-    startY: number
-    shootDelay: number
-    bulletRange: number
-    bulletSpeed: number
-    bulletDamage: number
-    amount: number
-    sprite: string
+    health: number;
+    velocity: number;
+    startX: number[];
+    startY: number;
+    shootDelay: number;
+    bulletRange: number;
+    bulletSpeed: number;
+    bulletDamage: number;
+    amount: number;
+    sprite: string;
 }
 
-const playerWithInventory = Prisma.validator<Prisma.PlayerArgs>()({include: {
-    ships: {
-        include: {
-          equipment: true
+const playerWithInventory = Prisma.validator<Prisma.PlayerArgs>()({
+    include: {
+        ships: {
+            include: {
+                equipment: true,
+            },
         },
-      },
-    equipment: true
-}})
-export type PlayerWithInventory = Prisma.PlayerGetPayload<typeof playerWithInventory>
+        equipment: true,
+    },
+});
+export type PlayerWithInventory = Prisma.PlayerGetPayload<
+    typeof playerWithInventory
+>;
 
-const equipment = Prisma.validator<Prisma.EquipmentArgs>()({})
-export type PlayerEquipment = Prisma.EquipmentGetPayload<typeof equipment>
+const equipment = Prisma.validator<Prisma.EquipmentArgs>()({});
+export type PlayerEquipment = Prisma.EquipmentGetPayload<typeof equipment>;
 
-const ship = Prisma.validator<Prisma.ShipArgs>()({})
-export type PlayerShip = Prisma.ShipGetPayload<typeof ship>
+const ship = Prisma.validator<Prisma.ShipArgs>()({});
+export type PlayerShip = Prisma.ShipGetPayload<typeof ship>;
 
-const shipWithEquipment = Prisma.validator<Prisma.ShipArgs>()({include: {
-    equipment: true
-}})
-export type PlayerShipWithEquipment = Prisma.ShipGetPayload<typeof shipWithEquipment>
+const shipWithEquipment = Prisma.validator<Prisma.ShipArgs>()({
+    include: {
+        equipment: true,
+    },
+});
+export type PlayerShipWithEquipment = Prisma.ShipGetPayload<
+    typeof shipWithEquipment
+>;
 
+export type Tier = "T1" | "T2" | "T3" | "T4";
+export type EquipmentType = "Offensive" | "Defensive" | "Utility";
 
-export type Tier = 'T1' | 'T2' | 'T3' | 'T4'
-export type EquipmentType = 'Offensive' | 'Defensive' | 'Utility'
+export type WaveSceneProps = {
+    loadedEnemies: IWaveEnemy[];
+    player: Player;
+    wave: number;
+};
+
+export type EndWaveSceneProps = {
+    condition: "VICTORY" | "DEFEAT";
+    ship: Player;
+    wave: number;
+};

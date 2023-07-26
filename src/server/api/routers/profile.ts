@@ -9,6 +9,36 @@ import {
 import { prisma } from "~/server/db";
 import { PlayerShipSprites, getLevelUpCost } from "~/utils/ships";
 import { chooseEquipmentType, getNewEquipment } from "~/utils/equipment";
+import { getEquipmentLevelUpCost } from "~/utils/costFormulas";
+
+const getCurrentPlayer = async (userId: string) => {
+    const player = await prisma.player.findFirst({
+        where: {
+            userId: userId,
+        },
+    });
+    return player;
+};
+
+const getCurrentShip = async (userId: string) => {
+    const currentShip = await prisma.player.findUnique({
+        where: {
+            userId: userId,
+        },
+        select: {
+            ships: {
+                where: {
+                    isCurrent: true,
+                },
+                include: {
+                    equipment: true,
+                },
+            },
+        },
+    });
+
+    return currentShip ? currentShip.ships[0] : null;
+};
 
 export const profileRouter = createTRPCRouter({
     // queries:
@@ -47,7 +77,7 @@ export const profileRouter = createTRPCRouter({
         return ships;
     }),
 
-    getPlayerShipsAndEquipment: protectedProcedure.query(({ ctx }) => {
+    getPlayerEquipment: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.session.user.id;
         const ships = ctx.prisma.player.findUnique({
             where: {
@@ -58,6 +88,27 @@ export const profileRouter = createTRPCRouter({
             },
         });
         return ships;
+    }),
+
+    getPlayerCurrentShip: protectedProcedure.query(({ ctx }) => {
+        const userId = ctx.session.user.id;
+        const currentShip = ctx.prisma.player.findFirst({
+            where: {
+                userId: userId,
+            },
+            select: {
+                ships: {
+                    where: {
+                        isCurrent: true,
+                    },
+                    include: {
+                        equipment: true,
+                    },
+                },
+            },
+        });
+
+        return currentShip;
     }),
 
     // mutations:
@@ -84,7 +135,7 @@ export const profileRouter = createTRPCRouter({
                             ships: {
                                 create: {
                                     health: 2000,
-                                    level: 1,
+                                    level: 0,
                                     bulletRange: 500,
                                     bulletDamage: 50,
                                     bulletSpeed: 300,
@@ -175,15 +226,18 @@ export const profileRouter = createTRPCRouter({
         .input(
             z.object({
                 playerId: z.number(),
-                shipId: z.number(),
                 equipmentIdRemove: z.number().optional(),
-                equipmentIdAdd: z.number(),
+                equipmentIdAdd: z.number().optional(),
             })
         )
         .mutation(async ({ ctx, input }) => {
             // TODO: check battery requirements
-            // TODO: check slot type available
             // verify player owns equipment
+            const userId = ctx.session.user.id;
+            const currentShip = await getCurrentShip(userId);
+            if (currentShip == null) return "Must have ship equipped";
+            const shipId = currentShip.id;
+            let updatedShip;
             if (input.equipmentIdRemove) {
                 const verifiedOld = await ctx.prisma.equipment.count({
                     where: {
@@ -194,33 +248,44 @@ export const profileRouter = createTRPCRouter({
                 if (verifiedOld == 0) {
                     return "equipment to remove not owned";
                 }
-            }
-            const verifiedNew = await ctx.prisma.equipment.count({
-                where: {
-                    playerId: input.playerId,
-                    id: input.equipmentIdAdd,
-                },
-            });
-            if (verifiedNew == 0) {
-                return "equipment to add not owned";
-            }
-            let updatedShip;
-            if (input.equipmentIdRemove) {
                 updatedShip = await ctx.prisma.ship.update({
                     where: {
-                        id: input.shipId,
+                        id: shipId,
                     },
                     data: {
                         equipment: {
                             disconnect: { id: input.equipmentIdRemove },
-                            connect: { id: input.equipmentIdAdd },
                         },
                     },
                 });
-            } else {
+            }
+            if (input.equipmentIdAdd) {
+                const verifiedNew = await ctx.prisma.equipment.count({
+                    where: {
+                        playerId: input.playerId,
+                        id: input.equipmentIdAdd,
+                    },
+                });
+                if (verifiedNew == 0) {
+                    return "equipment to add not owned";
+                }
+                // check battery requirement
+                const equipment = await ctx.prisma.equipment.findUniqueOrThrow({
+                    where: {
+                        id: input.equipmentIdAdd,
+                    },
+                });
+
+                let currentBattery = 0;
+                currentShip.equipment.forEach((item) => {
+                    currentBattery += item.battery;
+                });
+                if (currentBattery + equipment.battery > currentShip.battery)
+                    return "battery usage too high";
+
                 updatedShip = await ctx.prisma.ship.update({
                     where: {
-                        id: input.shipId,
+                        id: shipId,
                     },
                     data: {
                         equipment: {
@@ -231,6 +296,51 @@ export const profileRouter = createTRPCRouter({
             }
 
             return updatedShip;
+        }),
+
+    equipmentLevelUp: protectedProcedure
+        .input(z.object({ equipmentId: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const currentPlayer = await getCurrentPlayer(ctx.session.user.id);
+            const verified = await ctx.prisma.equipment.count({
+                where: {
+                    playerId: currentPlayer!.id,
+                    id: input.equipmentId,
+                },
+            });
+            if (verified == 0) {
+                return "equipment not owned";
+            }
+
+            // some cost associated with level
+            const equipment = await ctx.prisma.equipment.findFirst({
+                where: {
+                    id: input.equipmentId,
+                },
+            });
+            const levelUpCost = getEquipmentLevelUpCost(equipment!);
+            if (currentPlayer!.credits < levelUpCost)
+                return "not enough credits";
+
+            await ctx.prisma.player.update({
+                where: {
+                    id: currentPlayer?.id,
+                },
+                data: {
+                    credits: { increment: -levelUpCost },
+                },
+            });
+
+            const levelUpEquipment = await ctx.prisma.equipment.update({
+                where: {
+                    id: input.equipmentId,
+                },
+                data: {
+                    level: { increment: 1 },
+                },
+            });
+
+            return levelUpEquipment;
         }),
 
     shipLevelUp: protectedProcedure
@@ -306,7 +416,7 @@ export const profileRouter = createTRPCRouter({
                     create: {
                         sprite: equipmentType,
                         type: equipmentType,
-                        level: 1,
+                        level: 0,
                         bulletDamage: newEquipment.damage,
                         bulletRange: newEquipment.range,
                         bulletSpeed: newEquipment.speed,
