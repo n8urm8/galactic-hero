@@ -28,7 +28,8 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
         shootDelay: number,
         bulletSpeed: number,
         bulletDamage: number,
-        player: Player
+        player: Player,
+        isBoss: boolean
     ) {
         super(scene, startX, startY, sprite);
         this.scene = scene;
@@ -37,7 +38,7 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
         this.body.pushable = false;
         this.health = health;
         this.shootTimer = 0;
-        this.displayWidth = 25;
+        this.displayWidth = isBoss ? 100 : 25;
         this.scaleY = this.scaleX;
         this.velocity = velocity;
         this.body.setCircle(this.width / 2);

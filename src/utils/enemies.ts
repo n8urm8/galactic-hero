@@ -7,7 +7,6 @@ function getRandomStartX(width: number) {
 // need to include wave number effect
 export function getTankEnemy(width: number, wave: number): IWaveEnemy {
     const enemyAmount = getRandomInt(2, 10);
-    //let enemyAmount = 1;
 
     const tankEnemy: IWaveEnemy = {
         health: getRandomInt(80, 120),
@@ -28,8 +27,7 @@ export function getTankEnemy(width: number, wave: number): IWaveEnemy {
 }
 
 export function getNormalEnemy(width: number, wave: number): IWaveEnemy {
-    //let enemyAmount = getRandomInt(2,10)
-    const enemyAmount = 1;
+    const enemyAmount = getRandomInt(2, 10);
 
     const normalEnemy: IWaveEnemy = {
         health: getRandomInt(50, 100),
@@ -50,8 +48,7 @@ export function getNormalEnemy(width: number, wave: number): IWaveEnemy {
 }
 
 export function getEliteEnemy(width: number, wave: number): IWaveEnemy {
-    //let enemyAmount = getRandomInt(2,10)
-    const enemyAmount = 1;
+    const enemyAmount = getRandomInt(2, 10);
 
     const eliteEnemy: IWaveEnemy = {
         health: getRandomInt(40, 90),
@@ -69,6 +66,25 @@ export function getEliteEnemy(width: number, wave: number): IWaveEnemy {
     };
 
     return eliteEnemy;
+}
+
+export function getBossEnemy(width: number, wave: number): IWaveEnemy {
+    const enemyAmount = 1;
+
+    const bossEnemy: IWaveEnemy = {
+        health: getRandomInt(1500, 5000),
+        velocity: 30,
+        startX: [width / 2],
+        startY: -200,
+        shootDelay: 300,
+        bulletRange: 300,
+        bulletSpeed: 200,
+        bulletDamage: getRandomInt(20, 50),
+        amount: enemyAmount,
+        sprite: "enemyBoss",
+    };
+
+    return bossEnemy;
 }
 
 function getRandomInt(min: number, max: number) {

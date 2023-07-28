@@ -41,6 +41,7 @@ export default class BootScene extends Phaser.Scene {
         this.load.image("enemyTank", "static/images/ships/enemy/2.png");
         this.load.image("enemyNormal", "static/images/ships/enemy/3.png");
         this.load.image("enemyElite", "static/images/ships/enemy/4.png");
+        this.load.image("enemyBoss", "static/images/ships/enemy/8.png");
 
         // this.load.image("Offensive", "static/images/equipment/weapon1.png");
         // this.load.image("Defensive", "static/images/equipment/defensive1.png");

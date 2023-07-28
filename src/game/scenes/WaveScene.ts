@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser, { GameObjects } from "phaser";
 import Player from "../sprites/player";
 import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
@@ -10,6 +10,7 @@ import {
     PlayerShipWithEquipment,
     WaveSceneProps,
 } from "~/utils/gameTypes";
+import { getBossEnemy } from "~/utils/enemies";
 
 // Create wave complete and game over events
 // need wave completion scene before going back to game scene
@@ -69,7 +70,8 @@ export default class WaveScene extends Phaser.Scene {
                             enemy.shootDelay,
                             enemy.bulletSpeed,
                             enemy.bulletDamage,
-                            this.player
+                            this.player,
+                            false
                         )
                     );
                     this.physics.add.collider(
@@ -79,6 +81,30 @@ export default class WaveScene extends Phaser.Scene {
                     );
                 }
             });
+        console.log(this.wave, this.wave % 10 == 0);
+        if (this.wave % 10 == 0) {
+            const bossStats = getBossEnemy(width, this.wave);
+            const boss = new EnemyShip(
+                this,
+                bossStats.health,
+                bossStats.startX[0],
+                bossStats.startY,
+                bossStats.sprite,
+                bossStats.velocity,
+                bossStats.bulletRange,
+                bossStats.shootDelay,
+                bossStats.bulletSpeed,
+                bossStats.bulletDamage,
+                this.player,
+                true
+            );
+            this.enemies.add(boss);
+            this.physics.add.collider(
+                boss,
+                this.player.getBullets(),
+                this.player.damageEnemy
+            );
+        }
         console.log(this.enemies.getChildren());
     }
 
@@ -125,6 +151,24 @@ export default class WaveScene extends Phaser.Scene {
                 //console.log('returned enemy', enemy as EnemyShip)
                 return enemy as EnemyShip;
         }
+
+        // the following finds the closest enemy, but currently doesn't discriminate if enemy has been killed
+        // const closest = this.physics.closest(
+        //     player,
+        //     enemyUnits
+        // ) as Phaser.Physics.Arcade.Sprite;
+        // console.log("finding enemy");
+        // if (
+        //     closest.active &&
+        //     Phaser.Math.Distance.Between(
+        //         player.x,
+        //         player.y,
+        //         closest.x,
+        //         closest.y
+        //     ) < player.getBulletRange()
+        // ) {
+        //     return closest;
+        // }
         //console.warn("no enemy found");
         return false;
     };
