@@ -53,7 +53,7 @@ export const Inventory: React.FC<IInventory> = ({
                     })}
                 </div>
                 <p className="text-xs">EQUIPMENT</p>
-                <div className="max-h-18 mb-1 flex flex-row gap-1 overflow-y-auto">
+                <div className="max-h-18 mb-1 flex max-w-sm flex-row flex-wrap gap-1 overflow-y-auto">
                     {equipment.map((item) => {
                         return (
                             <Modal

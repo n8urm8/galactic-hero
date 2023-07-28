@@ -31,11 +31,23 @@ export const getNewEquipment = (
     type: EquipmentType,
     tier: Tier
 ): IEquipment => {
-    const newEq = baseEquipment;
+    const newEq: IEquipment = {
+        health: 0,
+        shield: 0,
+        range: 0,
+        speed: 0,
+        damage: 0,
+        delay: 0,
+        battery: 0,
+    };
     const mod = tierMod[tier];
-    if (tier == "T4") newEq.delay = 1;
+    console.log("tier mod: ", mod);
+    console.log("equipment type: ", type);
+    console.log("base equipment: ", baseEquipment);
+    if (tier == "T4") newEq.delay = 100;
 
     if (type == "Utility") {
+        console.log("went to Utility");
         newEq.health = 0;
         newEq.shield = 0;
         newEq.range = 0;
@@ -45,8 +57,9 @@ export const getNewEquipment = (
         newEq.battery =
             tier == "T1" ? 5 : tier == "T2" ? 4 : tier == "T3" ? 3 : 2;
     } else if (type == "Defensive") {
-        newEq.health = getRandomFromBase(newEq.health * mod);
-        newEq.shield = getRandomFromBase(newEq.shield * mod);
+        console.log("went to Defensive");
+        newEq.health = getRandomFromBase(baseEquipment.health * mod);
+        newEq.shield = getRandomFromBase(baseEquipment.shield * mod);
         newEq.range = 0;
         newEq.speed = 0;
         newEq.damage = 0;
@@ -60,12 +73,13 @@ export const getNewEquipment = (
                 ? getRandomInt(3, 6)
                 : getRandomInt(4, 8);
     } else if (type == "Offensive") {
+        console.log("went to Offensive");
         newEq.health = 0;
         newEq.shield = 0;
         newEq.range = 0;
-        newEq.speed = getRandomFromBase(newEq.speed * mod);
-        newEq.damage = getRandomFromBase(newEq.damage * mod);
-        newEq.delay = getRandomFromBase(newEq.delay * mod);
+        newEq.speed = getRandomFromBase(baseEquipment.speed * mod);
+        newEq.damage = getRandomFromBase(baseEquipment.damage * mod);
+        newEq.delay = getRandomFromBase(baseEquipment.delay * mod);
         newEq.battery =
             tier == "T1"
                 ? getRandomInt(1, 2)
@@ -75,15 +89,9 @@ export const getNewEquipment = (
                 ? getRandomInt(3, 6)
                 : getRandomInt(4, 8);
     } else {
-        newEq.health = 0;
-        newEq.shield = 0;
-        newEq.range = 0;
-        newEq.speed = 0;
-        newEq.damage = 0;
-        newEq.delay = 0;
-        newEq.battery = 0;
+        console.log("type not selected properly");
     }
-
+    console.log("final equipment: ", newEq);
     return newEq;
 };
 
@@ -117,7 +125,6 @@ export const chooseEquipmentType = (): EquipmentType => {
     } else if (randomNum <= defensive) {
         selectedEquipment = "Defensive";
     }
-
     return selectedEquipment;
 };
 
