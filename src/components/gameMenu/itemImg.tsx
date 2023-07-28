@@ -15,8 +15,15 @@ export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
         size == "large"
             ? "absolute right-2 bottom-1"
             : "absolute text-xs right-[2px] bottom-[1px]";
+    const borderStyle =
+        ("shipId" in item && item.shipId) ||
+        ("isCurrent" in item && item.isCurrent && size == "small")
+            ? "border-red-400"
+            : "";
     return (
-        <div className={`${imageStyle} relative h-auto border`}>
+        <div
+            className={`${imageStyle} ${borderStyle} relative h-auto border p-1`}
+        >
             <img className="w-24" src={imgURL} alt={"item"} />
             <p className={pStyle}>{item.level}</p>
         </div>
