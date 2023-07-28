@@ -52,7 +52,7 @@ export const GameCanvas = () => {
         <div
             id="game-content"
             key="game-content"
-            className="mt-auto block h-full max-h-[600px] w-full rounded-md"
+            className="mt-8 block h-full max-h-[600px] w-full rounded-md"
         ></div>
     );
 };

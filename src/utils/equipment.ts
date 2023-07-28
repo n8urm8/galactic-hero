@@ -41,13 +41,13 @@ export const getNewEquipment = (
         battery: 0,
     };
     const mod = tierMod[tier];
-    console.log("tier mod: ", mod);
-    console.log("equipment type: ", type);
-    console.log("base equipment: ", baseEquipment);
+    // console.log("tier mod: ", mod);
+    // console.log("equipment type: ", type);
+    // console.log("base equipment: ", baseEquipment);
     if (tier == "T4") newEq.delay = 100;
 
     if (type == "Utility") {
-        console.log("went to Utility");
+        //console.log("went to Utility");
         newEq.health = 0;
         newEq.shield = 0;
         newEq.range = 0;
@@ -57,7 +57,7 @@ export const getNewEquipment = (
         newEq.battery =
             tier == "T1" ? 5 : tier == "T2" ? 4 : tier == "T3" ? 3 : 2;
     } else if (type == "Defensive") {
-        console.log("went to Defensive");
+        //console.log("went to Defensive");
         newEq.health = getRandomFromBase(baseEquipment.health * mod);
         newEq.shield = getRandomFromBase(baseEquipment.shield * mod);
         newEq.range = 0;
@@ -73,7 +73,7 @@ export const getNewEquipment = (
                 ? getRandomInt(3, 6)
                 : getRandomInt(4, 8);
     } else if (type == "Offensive") {
-        console.log("went to Offensive");
+        //console.log("went to Offensive");
         newEq.health = 0;
         newEq.shield = 0;
         newEq.range = 0;
@@ -88,10 +88,8 @@ export const getNewEquipment = (
                 : tier == "T3"
                 ? getRandomInt(3, 6)
                 : getRandomInt(4, 8);
-    } else {
-        console.log("type not selected properly");
     }
-    console.log("final equipment: ", newEq);
+    //console.log("final equipment: ", newEq);
     return newEq;
 };
 

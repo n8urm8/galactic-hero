@@ -297,8 +297,18 @@ export const profileRouter = createTRPCRouter({
                 currentShip.equipment.forEach((item) => {
                     currentBattery += item.battery;
                 });
-                if (currentBattery + equipment.battery > currentShip.battery)
+
+                const hasBattery = currentShip.equipment.find(
+                    (e) => e.type == "Utility"
+                );
+                if (equipment.type == "Utility") {
+                    if (hasBattery) return "Can only have 1 battery";
+                } else if (
+                    currentBattery + equipment.battery >
+                    currentShip.battery
+                ) {
                     return "battery usage too high";
+                }
 
                 updatedShip = await ctx.prisma.ship.update({
                     where: {

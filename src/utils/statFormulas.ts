@@ -1,4 +1,4 @@
-import { PlayerEquipment } from "./gameTypes";
+import { PlayerEquipment, Tier } from "./gameTypes";
 
 export enum ShipConstants {
     hpPerLevel = 10,
@@ -35,6 +35,7 @@ export const getShipStats = (
 };
 
 export const getEquipmentStats = (
+    type: string,
     level: number,
     baseHP: number,
     baseShield: number,
@@ -50,6 +51,9 @@ export const getEquipmentStats = (
     const speed = baseSpeed + baseSpeed * level;
     const interval = baseDelay + baseDelay * level;
     const range = baseRange + baseRange * level;
+    if (type == "Utility") {
+        batteryUsage = getBatteryIncrease(batteryUsage, level);
+    }
 
     return { health, shield, damage, speed, interval, range, batteryUsage };
 };
@@ -79,6 +83,7 @@ export const getShipWithEquipmentStats = (
     let batteryUsage = 0;
     equipment.forEach((e) => {
         const eStat = getEquipmentStats(
+            e.type,
             e.level,
             e.health,
             e.shield,
@@ -88,13 +93,18 @@ export const getShipWithEquipmentStats = (
             e.bulletRange,
             e.battery
         );
+
         health += eStat.health;
         shield += eStat.shield;
         damage += eStat.damage;
         speed += eStat.speed;
-        interval += eStat.interval;
+        interval -= eStat.interval;
         range += eStat.range;
-        batteryUsage += eStat.batteryUsage;
+        if (e.type == "Utility") {
+            maxBattery += getBatteryIncrease(e.battery, e.level);
+        } else {
+            batteryUsage += eStat.batteryUsage;
+        }
     });
 
     return {
@@ -108,3 +118,7 @@ export const getShipWithEquipmentStats = (
         batteryUsage,
     };
 };
+
+function getBatteryIncrease(battery: number, level: number) {
+    return 1 + Math.round(level / battery);
+}

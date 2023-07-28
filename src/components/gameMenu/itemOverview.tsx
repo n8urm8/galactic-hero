@@ -65,6 +65,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
             });
         } else {
             const newStats = getEquipmentStats(
+                item.type,
                 item.level,
                 item.health,
                 item.shield,
