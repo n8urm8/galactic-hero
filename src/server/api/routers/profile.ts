@@ -14,6 +14,7 @@ import {
     getShipLevelUpCost,
 } from "~/utils/costFormulas";
 import { PlayerShipWithEquipment } from "~/utils/gameTypes";
+import { getBatteryIncrease } from "~/utils/statFormulas";
 
 const getCurrentPlayer = async (userId: string) => {
     const player = await prisma.player.findFirst({
@@ -294,19 +295,31 @@ export const profileRouter = createTRPCRouter({
                 });
 
                 let currentBattery = 0;
+                let maxBattery = currentShip.battery;
                 currentShip.equipment.forEach((item) => {
-                    currentBattery += item.battery;
+                    if (item.type != "Utility") {
+                        currentBattery += item.battery;
+                    } else {
+                        maxBattery += getBatteryIncrease(
+                            item.battery,
+                            item.level
+                        );
+                    }
                 });
 
                 const hasBattery = currentShip.equipment.find(
                     (e) => e.type == "Utility"
                 );
                 if (equipment.type == "Utility") {
+                    console.log("Can only have 1 battery");
                     if (hasBattery) return "Can only have 1 battery";
-                } else if (
-                    currentBattery + equipment.battery >
-                    currentShip.battery
-                ) {
+                } else if (currentBattery + equipment.battery > maxBattery) {
+                    console.log(
+                        "battery usage too high",
+                        currentBattery,
+                        equipment.battery,
+                        maxBattery
+                    );
                     return "battery usage too high";
                 }
 

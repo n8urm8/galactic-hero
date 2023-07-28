@@ -63,7 +63,8 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     remove() {
-        this.disableBody(true, true);
+        //this.disableBody(true, true);
+        this.destroy();
     }
 }
 

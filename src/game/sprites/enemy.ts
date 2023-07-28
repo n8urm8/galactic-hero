@@ -65,7 +65,7 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
             this.explosion.setVisible(false);
         });
 
-        this.body.pushable = false;
+        this.setPushable(false);
     }
 
     update(time: number, delta: number) {

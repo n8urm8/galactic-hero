@@ -119,6 +119,6 @@ export const getShipWithEquipmentStats = (
     };
 };
 
-function getBatteryIncrease(battery: number, level: number) {
+export function getBatteryIncrease(battery: number, level: number) {
     return 1 + Math.round(level / battery);
 }
