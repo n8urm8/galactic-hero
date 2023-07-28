@@ -79,6 +79,7 @@ export default class WaveScene extends Phaser.Scene {
                     );
                 }
             });
+        console.log(this.enemies.getChildren());
     }
 
     update(time: number, delta: number) {

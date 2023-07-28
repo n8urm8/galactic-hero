@@ -64,11 +64,15 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
         this.explosion.on("animationcomplete", () => {
             this.explosion.setVisible(false);
         });
+
+        this.body.pushable = false;
     }
 
     update(time: number, delta: number) {
         const targetX = this.player.x;
         const targetY = this.player.y;
+
+        this.setVelocityY(this.velocity);
         // stop when in shooting range of target
         if (
             Phaser.Math.Distance.Between(this.x, this.y, targetX, targetY) <
@@ -122,6 +126,7 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
 
     takeDamage = (power: number) => {
         this.health -= power;
+        //console.log("enemy took damage", this.velocity);
         if (this.health <= 0) {
             this.disableBody(true, true);
             this.explosion.setPosition(this.x, this.y);
