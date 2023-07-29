@@ -14,7 +14,7 @@ export const PlayerStats: React.FC<IPlayerStats> = ({
     credits,
 }) => {
     return (
-        <div className="flex justify-between rounded-md border p-2">
+        <div className="flex w-full justify-between rounded-md border p-2">
             <div className="flex flex-col font-semibold">
                 <p>{name}</p>
                 <p>Waves</p>

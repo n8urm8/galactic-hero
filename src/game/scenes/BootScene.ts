@@ -14,6 +14,7 @@ export default class BootScene extends Phaser.Scene {
     }
 
     preload() {
+        const { width, height } = this.game.canvas;
         this.emitter.on(GameEvents.profileLoaded, this.loadProfile);
         this.emitter.emit(GameEvents.getProfile);
         this.load.image("starsBackground", "static/images/Stars.png");
@@ -42,6 +43,7 @@ export default class BootScene extends Phaser.Scene {
         this.load.image("enemyNormal", "static/images/ships/enemy/3.png");
         this.load.image("enemyElite", "static/images/ships/enemy/4.png");
         this.load.image("enemyBoss", "static/images/ships/enemy/8.png");
+        this.load.image("umbralLogo", "static/images/umbralLogo.png");
 
         // this.load.image("Offensive", "static/images/equipment/weapon1.png");
         // this.load.image("Defensive", "static/images/equipment/defensive1.png");
@@ -55,9 +57,75 @@ export default class BootScene extends Phaser.Scene {
 
         // this.load.audio('firebullet', "static/sounds/blaster.mp3");
         // this.load.audio('explode', "static/sounds/explode1.wav");
+
+        // loader
+        const progressBar = this.add.graphics();
+        const progressBox = this.add.graphics();
+        progressBox.fillStyle(0x222222, 0.8);
+        progressBox.fillRect(width / 2 - 160, height / 2 - 25, 320, 50);
+        var loadingText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 50,
+            text: "Loading...",
+            style: {
+                font: "20px monospace",
+                color: "#fff",
+            },
+        });
+        loadingText.setOrigin(0.5, 0.5);
+        const percentText = this.make.text({
+            x: width / 2,
+            y: height / 2,
+            text: "0%",
+            style: {
+                font: "18px monospace",
+                color: "#ffffff",
+            },
+        });
+        percentText.setOrigin(0.5, 0.5);
+        var assetText = this.make.text({
+            x: width / 2,
+            y: height / 2 + 50,
+            text: "",
+            style: {
+                font: "18px monospace",
+                color: "#ffffff",
+            },
+        });
+        assetText.setOrigin(0.5, 0.5);
+
+        this.load.on("progress", function (value) {
+            //console.log(value);
+            progressBar.clear();
+            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillRect(
+                width / 2 - 150,
+                height / 2 - 15,
+                300 * value,
+                30
+            );
+            percentText.setText(parseInt((value * 100).toString()) + "%");
+        });
+
+        this.load.on("fileprogress", function (file: Phaser.Loader.File) {
+            //console.log(file.src);
+            assetText.setText("Loading asset: " + file.key);
+        });
+        this.load.on("complete", function () {
+            //console.log("complete");
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+            percentText.destroy();
+            assetText.destroy();
+        });
     }
 
     create() {
+        // const { width, height } = this.game.canvas;
+        // const logo = this.add
+        //     .image(width / 2, height / 2, "umbralLogo")
+        //     .setOrigin(0.5, 0.5)
         //this.scale.resize(Math.min(window.innerWidth, gameWidth), Math.min(window.innerHeight, gameHeight))
         this.anims.create({
             key: "explode",

@@ -16,6 +16,7 @@ export class EventEmitter extends EventEmitter3 {
 }
 
 export enum GameEvents {
+    gameLoaded = "gameLoaded",
     getProfile = "getProfile",
     profileLoaded = "profileLoaded",
     waveCompleted = "waveCompleted",

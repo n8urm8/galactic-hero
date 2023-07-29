@@ -37,11 +37,12 @@ export default Home;
 
 export const AuthShowcase: React.FC = () => {
     const { data: sessionData } = useSession();
-    const { data: profile } = api.profile.getProfile.useQuery(undefined, {
+    const profileAPI = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user !== undefined,
     });
-    const router = useRouter();
+    const profile = profileAPI.data;
 
+    if (profileAPI.isLoading) return <></>;
     return (
         <div className="flex flex-col items-center justify-center gap-4">
             {sessionData && !profile && (

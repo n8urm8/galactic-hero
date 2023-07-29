@@ -1,5 +1,6 @@
 import { Game as GameType } from "phaser";
 import { useState, useEffect } from "react";
+import { EventEmitter, GameEvents } from "~/utils/events";
 
 export const GameCanvas = () => {
     const [game, setGame] = useState<GameType>();

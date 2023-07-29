@@ -84,7 +84,11 @@ const Game = () => {
                     />
                     <link rel="icon" href="/favicon.png" />
                 </Head>
-                {profile?.data == undefined || profile.data == null ? (
+                {profile.isLoading ? (
+                    <div className="my-auto flex justify-center text-center">
+                        <p>Loading...</p>
+                    </div>
+                ) : profile?.data == undefined || profile.data == null ? (
                     <div className="fixed top-0 z-10 h-full w-full items-center bg-slate-500 bg-opacity-5 p-6 text-center">
                         <div className="h-fit w-full items-center bg-slate-900 bg-opacity-75 p-6 text-center">
                             <p className="text-2xl font-semibold text-white">
@@ -97,7 +101,7 @@ const Game = () => {
                 ) : currentShipAPI.isFetched &&
                   currentShipAPI.data?.ships[0] ? (
                     <div className="relative flex  w-full flex-row gap-2">
-                        <div className="flex h-full flex-col gap-2 bg-transparent p-2">
+                        <div className="flex h-full max-w-[350] flex-col items-center justify-center gap-2 bg-transparent p-2">
                             <Image
                                 src={"/static/images/GHLogo.png"}
                                 height={250}
@@ -135,9 +139,7 @@ const Game = () => {
                                 Buy Equipment - 100 credits
                             </Button>
                         </div>
-                        <Suspense fallback={<CanvasLoader />}>
-                            <GameCanvas />
-                        </Suspense>
+                        <GameCanvas />
                     </div>
                 ) : null}
             </div>

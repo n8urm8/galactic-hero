@@ -72,7 +72,7 @@ export function getBossEnemy(width: number, wave: number): IWaveEnemy {
     const enemyAmount = 1;
 
     const bossEnemy: IWaveEnemy = {
-        health: getRandomInt(1500, 5000),
+        health: getRandomInt(1500, 3000),
         velocity: 30,
         startX: [width / 2],
         startY: -200,
