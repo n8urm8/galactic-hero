@@ -18,6 +18,9 @@ export default class GameScene extends Phaser.Scene {
     private profile!: PlayerWithInventory;
     private ship!: PlayerShipWithEquipment;
     private startWaveBtn?: Phaser.GameObjects.Image;
+    private background: Phaser.GameObjects.TileSprite;
+    private starsBackground: Phaser.GameObjects.TileSprite;
+    private backgroundScroll = false;
 
     // TODO : update loadprofile event to update wave count and load new enemies
 
@@ -32,14 +35,21 @@ export default class GameScene extends Phaser.Scene {
                 this.ship = data.ships[i]!;
             }
         }
+        this.backgroundScroll = false;
     }
 
     create() {
         const { width, height } = this.game.canvas;
 
         this.loadEnemies(width, this.profile.waves);
-        this.add.image(width / 2, height / 2, "nebulaBackground");
-        this.add.image(width / 2, height / 2, "starsBackground");
+        this.background = this.add
+            .tileSprite(width, height, 1024, 1024, "blueNebulaBackground")
+            .setOrigin(1);
+        this.starsBackground = this.add
+            .tileSprite(0, 0, 1024, 1024, "starsBackground")
+            .setOrigin(0)
+            .setAlpha(0.7);
+
         // ui
         this.startWaveBtn = new PurpleButton(
             this,
@@ -53,6 +63,16 @@ export default class GameScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number) {
+        if (this.backgroundScroll) {
+            this.background.setTilePosition(
+                0,
+                this.background.tilePositionY - 0.15
+            );
+            this.starsBackground.setTilePosition(
+                0,
+                this.starsBackground.tilePositionY - 0.3
+            );
+        }
         this.emitter.on(
             GameEvents.profileLoaded,
             this.loadProfile,
@@ -74,6 +94,7 @@ export default class GameScene extends Phaser.Scene {
             ship: this.ship,
             wave: this.profile.waves,
         });
+        this.backgroundScroll = true;
     };
 
     loadProfile = (data: PlayerWithInventory) => {

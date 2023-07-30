@@ -17,8 +17,26 @@ export default class BootScene extends Phaser.Scene {
         const { width, height } = this.game.canvas;
         this.emitter.on(GameEvents.profileLoaded, this.loadProfile);
         this.emitter.emit(GameEvents.getProfile);
-        this.load.image("starsBackground", "static/images/Stars.png");
-        this.load.image("nebulaBackground", "static/images/Nebula3.png");
+        this.load.image(
+            "starsBackground",
+            "static/images/backgrounds/Stars.png"
+        );
+        this.load.image(
+            "nebulaBackground",
+            "static/images/backgrounds/Nebula3.png"
+        );
+        this.load.image(
+            "greenNebulaBackground",
+            "static/images/backgrounds/greenNebula1.png"
+        );
+        this.load.image(
+            "blueNebulaBackground",
+            "static/images/backgrounds/blueNebula1.png"
+        );
+        this.load.image(
+            "purpleNebulaBackground",
+            "static/images/backgrounds/purpleNebula1.png"
+        );
         this.load.image("purpleButton", "static/images/ui/purpleButton.png");
         this.load.image("goldSquare", "static/images/ui/goldSquare.png");
         this.load.image("creditsIcon", "static/images/ui/creditsIcon.png");

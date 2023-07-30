@@ -101,7 +101,7 @@ const Game = () => {
                 ) : currentShipAPI.isFetched &&
                   currentShipAPI.data?.ships[0] ? (
                     <div className="relative flex  w-full flex-row gap-2">
-                        <div className="flex h-full max-w-[350] flex-col items-center justify-center gap-2 bg-transparent p-2">
+                        <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2">
                             <Image
                                 src={"/static/images/GHLogo.png"}
                                 height={250}
@@ -139,7 +139,12 @@ const Game = () => {
                                 Buy Equipment - 100 credits
                             </Button>
                         </div>
-                        <GameCanvas />
+                        <div
+                            id="canvas-wrapper"
+                            className="max-h-[600px] min-w-[800px] rounded-md"
+                        >
+                            <GameCanvas />
+                        </div>
                     </div>
                 ) : null}
             </div>

@@ -89,7 +89,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
     }, [item]);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex w-full flex-col">
             <div className="flex min-w-[280px] justify-between gap-2">
                 <div>
                     <p>{name}</p>
