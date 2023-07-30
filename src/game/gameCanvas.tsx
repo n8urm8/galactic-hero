@@ -2,7 +2,12 @@ import { Game as GameType } from "phaser";
 import { useState, useEffect } from "react";
 import { EventEmitter, GameEvents } from "~/utils/events";
 
-export const GameCanvas = () => {
+interface IGameCanvas {
+    gameWidth: number;
+    gameHeight: number;
+}
+
+export const GameCanvas = ({ gameWidth, gameHeight }) => {
     const [game, setGame] = useState<GameType>();
 
     useEffect(() => {
@@ -36,12 +41,13 @@ export const GameCanvas = () => {
                         //debugShowVelocity: true,
                     },
                 },
-                scale: {
-                    mode: Phaser.Scale.FIT,
-                    //width: "100%",
-                    //height: "95%",
-                    zoom: 1.25,
-                },
+                width: gameWidth,
+                height: gameHeight,
+                // scale: {
+                //     mode: Phaser.Scale.FIT,
+                //     //width: "100%",
+                //     //height: "95%",
+                // },
             });
             setGame(phaserGame);
         }
@@ -53,7 +59,7 @@ export const GameCanvas = () => {
         <div
             id="game-content"
             key="game-content"
-            className="mt-8 block h-full max-h-[600px] w-full rounded-md"
+            className="block h-full max-h-[600px] rounded-md max-[400px]:max-h-[400px] max-[400px]:min-h-[450px] max-[400px]:max-w-[350px] min-[400px]:mt-8"
         ></div>
     );
 };

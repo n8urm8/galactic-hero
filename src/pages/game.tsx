@@ -1,21 +1,26 @@
-import { Suspense, useEffect, useState } from "react";
-import { Game as GameType } from "phaser";
+import { useEffect, useState } from "react";
 import { EventEmitter, GameEvents } from "~/utils/events";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { AuthShowcase } from ".";
-import Head from "next/head";
 import { GameCanvas } from "~/game";
 import { Inventory, ItemOverview, PlayerStats } from "~/components/gameMenu";
 import { Button } from "~/components/button";
 import Image from "next/image";
-import { CanvasLoader } from "~/components/loaders";
 import { PlayerEquipment } from "~/utils/gameTypes";
 import { Modal } from "~/components/modal";
 import { ItemButtons } from "~/components/gameMenu/itemButtons";
 //import GHLogo from "/static/images/GHLogo.png";
 
 const Game = () => {
+    const [gameWidth, setGameWith] = useState(800);
+    const [gameHeight, setGameHeight] = useState(600);
+    useEffect(() => {
+        if (window.innerWidth <= 400) {
+            setGameWith(330);
+            setGameHeight(450);
+        }
+    }, []);
     const { data: sessionData } = useSession();
     const profile = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user != undefined,
@@ -74,16 +79,8 @@ const Game = () => {
     };
 
     return (
-        <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-            <div className="relative mx-auto flex min-h-screen w-fit flex-col p-2">
-                <Head>
-                    <title>Galactic Hero</title>
-                    <meta
-                        name="description"
-                        content="Idle, space defender game"
-                    />
-                    <link rel="icon" href="/favicon.png" />
-                </Head>
+        <>
+            <div className="relative mx-auto flex min-h-screen w-fit flex-col p-2 max-[400px]:w-full">
                 {profile.isLoading ? (
                     <div className="my-auto flex justify-center text-center">
                         <p>Loading...</p>
@@ -100,14 +97,16 @@ const Game = () => {
                     </div>
                 ) : currentShipAPI.isFetched &&
                   currentShipAPI.data?.ships[0] ? (
-                    <div className="relative flex  w-full flex-row gap-2">
-                        <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2">
-                            <Image
-                                src={"/static/images/GHLogo.png"}
-                                height={250}
-                                width={250}
-                                alt="Galactic Hero"
-                            />
+                    <div className="relative flex  w-full flex-row gap-2 max-[400px]:max-w-none max-[400px]:flex-col-reverse ">
+                        <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[400px]:max-w-none">
+                            <div className="max-[400px]:hidden">
+                                <Image
+                                    src={"/static/images/GHLogo.png"}
+                                    height={250}
+                                    width={250}
+                                    alt="Galactic Hero"
+                                />
+                            </div>
                             <PlayerStats
                                 name={profile.data.name}
                                 waves={profile.data.waves}
@@ -141,14 +140,17 @@ const Game = () => {
                         </div>
                         <div
                             id="canvas-wrapper"
-                            className="max-h-[600px] min-w-[800px] rounded-md"
+                            className="mx-auto max-h-[600px] min-h-[250px] min-w-[800px] rounded-md px-1  max-[400px]:w-full max-[400px]:min-w-0"
                         >
-                            <GameCanvas />
+                            <GameCanvas
+                                gameHeight={gameHeight}
+                                gameWidth={gameWidth}
+                            />
                         </div>
                     </div>
                 ) : null}
             </div>
-        </div>
+        </>
     );
 };
 
