@@ -1,12 +1,10 @@
 import { z } from "zod";
-import { Ship } from "@prisma/client";
 
 import {
     createTRPCRouter,
     publicProcedure,
     protectedProcedure,
 } from "~/server/api/trpc";
-import { prisma } from "~/server/db";
 import { PlayerShipSprites } from "~/utils/ships";
 import { chooseEquipmentType, getNewEquipment } from "~/utils/equipment";
 import {
@@ -15,35 +13,7 @@ import {
 } from "~/utils/costFormulas";
 import { PlayerShipWithEquipment } from "~/utils/gameTypes";
 import { getBatteryIncrease } from "~/utils/statFormulas";
-
-const getCurrentPlayer = async (userId: string) => {
-    const player = await prisma.player.findFirst({
-        where: {
-            userId: userId,
-        },
-    });
-    return player;
-};
-
-const getCurrentShip = async (userId: string) => {
-    const currentShip = await prisma.player.findUnique({
-        where: {
-            userId: userId,
-        },
-        select: {
-            ships: {
-                where: {
-                    isCurrent: true,
-                },
-                include: {
-                    equipment: true,
-                },
-            },
-        },
-    });
-
-    return currentShip ? currentShip.ships[0] : null;
-};
+import { getCurrentShip, getCurrentPlayer } from "~/utils/prismaHelpers";
 
 export const profileRouter = createTRPCRouter({
     // queries:
@@ -64,6 +34,7 @@ export const profileRouter = createTRPCRouter({
                     },
                 },
                 equipment: true,
+                craftingMaterials: true,
             },
         });
         return profile;
@@ -151,6 +122,7 @@ export const profileRouter = createTRPCRouter({
                                     isCurrent: true,
                                 },
                             },
+                            craftingMaterials: {},
                         },
                     },
                 },
@@ -159,49 +131,22 @@ export const profileRouter = createTRPCRouter({
             return profile;
         }),
 
-    updateWaveCount: protectedProcedure
-        .input(z.object({ amount: z.number() }))
-        .mutation(async ({ ctx, input }) => {
-            const userId = ctx.session.user.id;
-            const currentWaves = await ctx.prisma.player.findUniqueOrThrow({
-                where: {
-                    userId: userId,
-                },
-                select: {
-                    waves: true,
-                },
-            });
-            const creditReward =
-                currentWaves.waves * (Math.floor(currentWaves.waves / 10) + 1);
-            const waves = await ctx.prisma.player.update({
-                where: {
-                    userId: userId,
-                },
-                data: {
-                    waves: { increment: input.amount },
-                    credits: { increment: creditReward },
-                },
-            });
-
-            return waves;
-        }),
-
     // not sure I want this, maybe done through wave completion/purchases
-    updateCredits: protectedProcedure
-        .input(z.object({ amount: z.number() }))
-        .mutation(({ ctx, input }) => {
-            const userId = ctx.session.user.id;
-            const player = ctx.prisma.player.update({
-                where: {
-                    userId: userId,
-                },
-                data: {
-                    credits: { increment: input.amount },
-                },
-            });
+    // updateCredits: protectedProcedure
+    //     .input(z.object({ amount: z.number() }))
+    //     .mutation(({ ctx, input }) => {
+    //         const userId = ctx.session.user.id;
+    //         const player = ctx.prisma.player.update({
+    //             where: {
+    //                 userId: userId,
+    //             },
+    //             data: {
+    //                 credits: { increment: input.amount },
+    //             },
+    //         });
 
-            return player;
-        }),
+    //         return player;
+    //     }),
 
     // input old and new ship IDs, determine id verification needed
     updateCurrentShip: protectedProcedure

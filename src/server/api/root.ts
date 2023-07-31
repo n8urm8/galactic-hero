@@ -1,6 +1,7 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { waveInfoRouter } from "./routers/waveInfo";
 import { profileRouter } from "./routers/profile";
+import { craftingRouter } from "./routers/crafting";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { profileRouter } from "./routers/profile";
 export const appRouter = createTRPCRouter({
     waveInfo: waveInfoRouter,
     profile: profileRouter,
+    crafting: craftingRouter,
 });
 
 // export type definition of API

@@ -73,6 +73,7 @@ model Player {
   credits   Int
   ships     Ship[]
   equipment Equipment[]
+  craftingMaterials CraftingMaterials?
 
   @@index([userId])
 }
@@ -119,4 +120,14 @@ model Equipment {
 
   @@index([playerId])
   @@index([shipId])
+}
+
+model CraftingMaterials {
+  player       Player @relation(fields: [playerId], references: [id])
+  playerId     Int @unique
+  metal         Int @default(0)
+  energy      Int @default(0)
+  gilding     Int @default(0)
+
+  @@index([playerId])
 }

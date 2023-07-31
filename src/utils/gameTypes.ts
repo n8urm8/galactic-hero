@@ -57,3 +57,9 @@ export type EndWaveSceneProps = {
     ship: PlayerShipWithEquipment;
     wave: number;
 };
+
+export type CraftingReward = {
+    metal: number;
+    energy: number;
+    gilding: number;
+};

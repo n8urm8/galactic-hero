@@ -81,7 +81,7 @@ export default class WaveScene extends Phaser.Scene {
                     );
                 }
             });
-        console.log(this.wave, this.wave % 10 == 0);
+        //console.log(this.wave, this.wave % 10 == 0);
         if (this.wave % 10 == 0) {
             const bossStats = getBossEnemy(width, this.wave);
             const boss = new EnemyShip(
@@ -105,7 +105,7 @@ export default class WaveScene extends Phaser.Scene {
                 this.player.damageEnemy
             );
         }
-        console.log(this.enemies.getChildren());
+        //console.log(this.enemies.getChildren());
     }
 
     update(time: number, delta: number) {

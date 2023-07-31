@@ -4,7 +4,12 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { AuthShowcase } from ".";
 import { GameCanvas } from "~/game";
-import { Inventory, ItemOverview, PlayerStats } from "~/components/gameMenu";
+import {
+    Crafting,
+    Inventory,
+    ItemOverview,
+    PlayerStats,
+} from "~/components/gameMenu";
 import { Button } from "~/components/button";
 import Image from "next/image";
 import { PlayerEquipment } from "~/utils/gameTypes";
@@ -39,7 +44,7 @@ const Game = () => {
     //console.log("current ship", currentShip.data);
     const emitter = EventEmitter.getInstance();
 
-    const waves = api.profile.updateWaveCount.useMutation();
+    const waves = api.waveInfo.updateWaveCount.useMutation();
     const loadProfile = () => {
         emitter.emit(GameEvents.profileLoaded, profile.data);
     };
@@ -80,7 +85,7 @@ const Game = () => {
 
     return (
         <>
-            <div className="relative mx-auto flex min-h-screen w-fit flex-col p-2 max-[400px]:w-full">
+            <div className="relative flex min-h-screen w-fit flex-col p-2 max-[400px]:w-full">
                 {profile.isLoading ? (
                     <div className="my-auto flex justify-center text-center">
                         <p>Loading...</p>
@@ -137,15 +142,31 @@ const Game = () => {
                             >
                                 Buy Equipment - 100 credits
                             </Button>
+                            <div className="w-full min-[400px]:hidden">
+                                <Crafting metal={0} energy={0} gilding={0} />
+                            </div>
                         </div>
-                        <div
-                            id="canvas-wrapper"
-                            className="mx-auto max-h-[600px] min-h-[250px] min-w-[800px] rounded-md px-1  max-[400px]:w-full max-[400px]:min-w-0"
-                        >
-                            <GameCanvas
-                                gameHeight={gameHeight}
-                                gameWidth={gameWidth}
-                            />
+                        <div className="flex flex-col  px-2">
+                            <div
+                                id="canvas-wrapper"
+                                className="mx-auto  min-h-[250px] min-w-[800px] rounded-md   max-[400px]:w-full max-[400px]:min-w-0"
+                            >
+                                <GameCanvas
+                                    gameHeight={gameHeight}
+                                    gameWidth={gameWidth}
+                                />
+                            </div>
+                            <div className="mt-2 max-[400px]:hidden">
+                                <Crafting
+                                    metal={profile.data.craftingMaterials.metal}
+                                    energy={
+                                        profile.data.craftingMaterials.energy
+                                    }
+                                    gilding={
+                                        profile.data.craftingMaterials.gilding
+                                    }
+                                />
+                            </div>
                         </div>
                     </div>
                 ) : null}
