@@ -50,6 +50,7 @@ export default class BootScene extends Phaser.Scene {
             "static/images/effects/explosion.png",
             { frameWidth: 32, frameHeight: 32 }
         );
+
         this.load.image(
             PlayerShipSprites.base,
             "static/images/ships/player/1B.png"
@@ -153,6 +154,7 @@ export default class BootScene extends Phaser.Scene {
             }),
             frameRate: 8,
         });
+
         this.scene.start("GameScene", this.profile);
     }
 
