@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "../button";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 export const Navbar = ({ transparent }: { transparent: boolean }) => {
     const [navbarOpen, setNavbarOpen] = React.useState(false);
@@ -11,6 +12,7 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
         enabled: sessionData?.user !== undefined,
     });
     const profile = profileAPI.data;
+    const router = useRouter();
     return (
         <nav
             className={
@@ -20,7 +22,7 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                 " flex flex-wrap items-center justify-between px-2 py-3 "
             }
         >
-            <div className="container mx-auto flex flex-wrap items-center justify-between px-4">
+            <div className="container mx-auto flex flex-wrap items-center justify-end px-4 lg:justify-between">
                 <div className="relative flex w-full justify-between lg:static lg:block lg:w-auto lg:justify-start">
                     <a
                         className={
@@ -46,12 +48,12 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                 </div>
                 <div
                     className={
-                        "w-fit flex-grow items-center bg-white lg:flex lg:bg-transparent lg:shadow-none" +
+                        "w-fit items-center bg-white pl-2 pr-3 pb-2  lg:flex lg:bg-transparent lg:shadow-none" +
                         (navbarOpen ? " block rounded shadow-lg" : " hidden")
                     }
-                    id="example-navbar-warning"
+                    id="navbar"
                 >
-                    <ul className="flex list-none flex-col lg:ml-auto lg:flex-row">
+                    <ul className="flex list-none flex-col justify-end lg:ml-auto lg:flex-row">
                         <li className="flex items-center">
                             <Link
                                 className={
@@ -77,18 +79,27 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                         </li>
 
                         <li className="ml-2 flex items-center">
-                            {sessionData && (
-                                <Link href={profile ? "/game" : "/#register"}>
-                                    <Button variant="outlined" color="yellow">
-                                        {profile ? "Start Game" : "Join"}
-                                    </Button>
-                                </Link>
-                            )}
+                            {sessionData &&
+                                !profileAPI.isLoading &&
+                                router.pathname !== "/game" && (
+                                    <Link
+                                        href={profile ? "/game" : "/#register"}
+                                    >
+                                        <Button
+                                            variant="outlined"
+                                            color="yellow"
+                                        >
+                                            {profile ? "Start Game" : "Join"}
+                                        </Button>
+                                    </Link>
+                                )}
                             <Button
                                 variant="outlined"
                                 onClick={
                                     sessionData
-                                        ? () => signOut()
+                                        ? () => {
+                                              signOut() && router.push("/");
+                                          }
                                         : () => signIn()
                                 }
                             >

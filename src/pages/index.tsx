@@ -7,16 +7,6 @@ import { Button } from "~/components/button";
 
 const Home: NextPage = () => {
     return (
-        // <>
-        //     <div className="container flex min-h-screen flex-col items-center justify-center gap-12 px-4 py-16 ">
-        //         <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-        //             Galactic Hero
-        //         </h1>
-        //         <div className="flex flex-col items-center gap-2">
-        //             <AuthShowcase />
-        //         </div>
-        //     </div>
-        // </>
         <main>
             <div
                 className="relative flex content-center items-center justify-center pt-16 pb-32"
@@ -33,7 +23,7 @@ const Home: NextPage = () => {
                 >
                     <span
                         id="blackOverlay"
-                        className="absolute h-full w-full bg-black opacity-75"
+                        className="absolute h-full w-full bg-black opacity-60"
                     ></span>
                 </div>
                 <div className="container relative mx-auto">
@@ -272,47 +262,6 @@ const Home: NextPage = () => {
                         </div>
                     </div>
                     <AuthShowcase />
-                    {/* <div className="mt-12 flex flex-wrap justify-center">
-                        <div className="w-full px-4 text-center lg:w-3/12">
-                            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white p-3 text-gray-900 shadow-lg">
-                                <i className="fas fa-medal text-xl"></i>
-                            </div>
-                            <h6 className="mt-5 text-xl font-semibold text-white">
-                                Excelent Services
-                            </h6>
-                            <p className="mt-2 mb-4 text-gray-500">
-                                Some quick example text to build on the card
-                                title and make up the bulk of the card's
-                                content.
-                            </p>
-                        </div>
-                        <div className="w-full px-4 text-center lg:w-3/12">
-                            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white p-3 text-gray-900 shadow-lg">
-                                <i className="fas fa-poll text-xl"></i>
-                            </div>
-                            <h5 className="mt-5 text-xl font-semibold text-white">
-                                Grow your market
-                            </h5>
-                            <p className="mt-2 mb-4 text-gray-500">
-                                Some quick example text to build on the card
-                                title and make up the bulk of the card's
-                                content.
-                            </p>
-                        </div>
-                        <div className="w-full px-4 text-center lg:w-3/12">
-                            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white p-3 text-gray-900 shadow-lg">
-                                <i className="fas fa-lightbulb text-xl"></i>
-                            </div>
-                            <h5 className="mt-5 text-xl font-semibold text-white">
-                                Launch time
-                            </h5>
-                            <p className="mt-2 mb-4 text-gray-500">
-                                Some quick example text to build on the card
-                                title and make up the bulk of the card's
-                                content.
-                            </p>
-                        </div>
-                    </div> */}
                 </div>
             </section>
         </main>

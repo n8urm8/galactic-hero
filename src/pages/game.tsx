@@ -85,7 +85,7 @@ const Game = () => {
 
     return (
         <>
-            <div className="relative flex min-h-screen w-fit flex-col p-2 max-[400px]:w-full">
+            <div className="max-[400px]:pt-16 relative flex min-h-screen flex-col bg-blue-800 p-2 pt-10">
                 {profile.isLoading ? (
                     <div className="my-auto flex justify-center text-center">
                         <p>Loading...</p>
@@ -146,10 +146,10 @@ const Game = () => {
                                 <Crafting metal={0} energy={0} gilding={0} />
                             </div>
                         </div>
-                        <div className="flex flex-col  px-2">
+                        <div className="flex flex-col px-2 pt-4">
                             <div
                                 id="canvas-wrapper"
-                                className="mx-auto  min-h-[250px] min-w-[800px] rounded-md   max-[400px]:w-full max-[400px]:min-w-0"
+                                className="mx-auto  min-h-[250px] min-w-[800px] snap-y  snap-mandatory rounded-md  max-[400px]:w-full max-[400px]:min-w-0"
                             >
                                 <GameCanvas
                                     gameHeight={gameHeight}
