@@ -56,6 +56,7 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                     <ul className="flex list-none flex-col justify-end lg:ml-auto lg:flex-row">
                         <li className="flex items-center">
                             <Link
+                                target="_blank"
                                 className={
                                     (transparent
                                         ? "text-gray-800 lg:text-white lg:hover:text-gray-300"
