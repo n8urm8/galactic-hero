@@ -84,8 +84,14 @@ const Game = () => {
     };
 
     return (
-        <>
-            <div className="max-[400px]:pt-16 relative flex min-h-screen flex-col bg-blue-800 p-2 pt-10">
+        <div
+            className="bg-cover bg-fixed"
+            style={{
+                backgroundImage:
+                    "url('static/images/backgrounds/spacefightBG1.jpg')",
+            }}
+        >
+            <div className="max-[400px]:pt-16 relative flex min-h-screen flex-col bg-black bg-opacity-70 p-2 pt-10 ">
                 {profile.isLoading ? (
                     <div className="my-auto flex justify-center text-center">
                         <p>Loading...</p>
@@ -171,7 +177,7 @@ const Game = () => {
                     </div>
                 ) : null}
             </div>
-        </>
+        </div>
     );
 };
 
