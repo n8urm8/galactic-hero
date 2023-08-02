@@ -5,8 +5,10 @@ import { SessionProvider } from "next-auth/react";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import Head from "next/head";
-
+import { MainLayout } from "~/components/layout";
+//className="bg-gradient-to-b from-[#2e026d] to-[#15162c]"
 const MyApp: AppType<{ session: Session | null }> = ({
     Component,
     pageProps: { session, ...pageProps },
@@ -18,9 +20,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
                 <meta name="description" content="Idle, space defender game" />
                 <link rel="icon" href="/favicon.png" />
             </Head>
-            <main className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+            <MainLayout>
                 <Component {...pageProps} />
-            </main>
+            </MainLayout>
         </SessionProvider>
     );
 };
