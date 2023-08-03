@@ -10,7 +10,8 @@ export interface IItemImg {
 
 export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
     const imageStyle = size == "large" ? "w-24 rounded-xl" : "w-8 rounded";
-    const imgURL = spriteSelector[item.sprite as keyof typeof spriteSelector];
+    const imgURL =
+        spriteSelector[item.sprite as keyof typeof spriteSelector][item.rarity];
     const pStyle =
         size == "large"
             ? "absolute right-2 bottom-1"
@@ -18,7 +19,7 @@ export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
     const borderStyle =
         ("shipId" in item && item.shipId) ||
         ("isCurrent" in item && item.isCurrent && size == "small")
-            ? "border-red-400"
+            ? "border-green-400"
             : "";
     return (
         <div

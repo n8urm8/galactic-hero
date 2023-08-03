@@ -27,6 +27,33 @@ const baseEquipment: IEquipment = {
     battery: 1,
 };
 
+export const equipmentCraftingCosts = {
+    T1: {
+        credits: 500,
+        metal: 500,
+        energy: 100,
+        gilding: 100,
+    },
+    T2: {
+        credits: 5000,
+        metal: 5000,
+        energy: 200,
+        gilding: 200,
+    },
+    T3: {
+        credits: 2500,
+        metal: 2500,
+        energy: 400,
+        gilding: 1000,
+    },
+    T4: {
+        credits: 50000,
+        metal: 50000,
+        energy: 1000,
+        gilding: 5000,
+    },
+};
+
 export const getNewEquipment = (
     type: EquipmentType,
     tier: Tier
@@ -130,6 +157,6 @@ function getRandomFromBase(base: number) {
     return getRandomInt(base * 0.5, base * 1.5);
 }
 
-function getRandomInt(min: number, max: number) {
+export function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
 }

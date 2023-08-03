@@ -4,6 +4,7 @@ import { Button } from "../button";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export const Navbar = ({ transparent }: { transparent: boolean }) => {
     const [navbarOpen, setNavbarOpen] = React.useState(false);
@@ -19,20 +20,25 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                 (transparent
                     ? "absolute top-0 z-50 w-full"
                     : "relative bg-white shadow-lg") +
-                " flex flex-wrap items-center justify-between px-2 py-3 "
+                " flex flex-wrap items-center justify-between px-2  "
             }
         >
             <div className="container mx-auto flex flex-wrap items-center justify-end px-4 lg:justify-between">
                 <div className="relative flex w-full justify-between lg:static lg:block lg:w-auto lg:justify-start">
-                    <a
+                    <Link
                         className={
                             (transparent ? "text-white" : "text-gray-800") +
-                            " mr-4 inline-block whitespace-nowrap py-2 text-sm font-bold uppercase leading-relaxed"
+                            " mr-4 inline-block whitespace-nowrap text-sm font-bold uppercase leading-relaxed"
                         }
                         href="/"
                     >
-                        Galactic HERO
-                    </a>
+                        <Image
+                            src={"/static/images/GHLogo.png"}
+                            alt="Galactic Hero"
+                            width={250}
+                            height={50}
+                        />
+                    </Link>
                     <button
                         className="block cursor-pointer rounded border border-solid border-transparent bg-transparent px-3 py-1 text-xl leading-none outline-none focus:outline-none lg:hidden"
                         type="button"

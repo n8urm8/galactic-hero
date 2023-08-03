@@ -36,11 +36,7 @@ const Game = () => {
             enabled: sessionData?.user != undefined,
         }
     );
-    const getRandomEquipmentAPI =
-        api.profile.getRandomT1Equipment.useMutation();
-    const [newEquipment, setNewEquipment] = useState<PlayerEquipment>(
-        {} as PlayerEquipment
-    );
+
     //console.log("current ship", currentShip.data);
     const emitter = EventEmitter.getInstance();
 
@@ -77,12 +73,6 @@ const Game = () => {
         emitter.removeListener(GameEvents.refreshProfile)
     );
 
-    const getNewRandEquipment = async () => {
-        const newEquip = await getRandomEquipmentAPI.mutateAsync();
-        await profile.refetch();
-        setNewEquipment(newEquip);
-    };
-
     return (
         <div
             className="bg-cover bg-fixed"
@@ -91,7 +81,7 @@ const Game = () => {
                     "url('static/images/backgrounds/spacefightBG1.jpg')",
             }}
         >
-            <div className="max-[400px]:pt-16 relative flex min-h-screen flex-col bg-black bg-opacity-70 p-2 pt-10 ">
+            <div className="max-[400px]:pt-12 relative flex min-h-screen flex-col bg-black bg-opacity-70 p-2 pt-10 ">
                 {profile.isLoading ? (
                     <div className="my-auto flex justify-center text-center">
                         <p>Loading...</p>
@@ -110,14 +100,6 @@ const Game = () => {
                   currentShipAPI.data?.ships[0] ? (
                     <div className="relative flex  w-full flex-row gap-2 max-[400px]:max-w-none max-[400px]:flex-col-reverse ">
                         <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[400px]:max-w-none">
-                            <div className="max-[400px]:hidden">
-                                <Image
-                                    src={"/static/images/GHLogo.png"}
-                                    height={250}
-                                    width={250}
-                                    alt="Galactic Hero"
-                                />
-                            </div>
                             <PlayerStats
                                 name={profile.data.name}
                                 waves={profile.data.waves}
@@ -135,42 +117,29 @@ const Game = () => {
                                 equipment={profile.data.equipment}
                                 currentCredits={profile.data.credits}
                             />
-                            <Button
-                                onClick={() =>
-                                    getNewRandEquipment().catch((e) =>
-                                        console.error(e)
-                                    )
-                                }
-                                disabled={
-                                    getRandomEquipmentAPI.isLoading ||
-                                    profile.data.credits < 100
-                                }
-                            >
-                                Buy Equipment - 100 credits
-                            </Button>
-                            <div className="w-full min-[400px]:hidden">
-                                <Crafting metal={0} energy={0} gilding={0} />
+                            <div className="w-full">
+                                <Crafting
+                                    resources={{
+                                        credits: profile.data.credits,
+                                        metal: profile.data.craftingMaterials
+                                            .metal,
+                                        energy: profile.data.craftingMaterials
+                                            .energy,
+                                        gilding:
+                                            profile.data.craftingMaterials
+                                                .gilding,
+                                    }}
+                                />
                             </div>
                         </div>
-                        <div className="flex flex-col px-2 pt-4">
+                        <div className="flex flex-col px-2">
                             <div
                                 id="canvas-wrapper"
-                                className="mx-auto  min-h-[250px] min-w-[800px] snap-y  snap-mandatory rounded-md  max-[400px]:w-full max-[400px]:min-w-0"
+                                className="mx-auto  min-h-[250px] min-w-[800px] snap-y snap-mandatory rounded-md max-[400px]:w-full max-[400px]:min-w-0"
                             >
                                 <GameCanvas
                                     gameHeight={gameHeight}
                                     gameWidth={gameWidth}
-                                />
-                            </div>
-                            <div className="mt-2 max-[400px]:hidden">
-                                <Crafting
-                                    metal={profile.data.craftingMaterials.metal}
-                                    energy={
-                                        profile.data.craftingMaterials.energy
-                                    }
-                                    gilding={
-                                        profile.data.craftingMaterials.gilding
-                                    }
                                 />
                             </div>
                         </div>

@@ -26,16 +26,16 @@ const Home: NextPage = () => {
                         className="absolute h-full w-full bg-black opacity-60"
                     ></span>
                 </div>
-                <div className="container relative mx-auto">
-                    <div className="flex flex-wrap items-center">
-                        <div className="ml-auto mr-auto w-full px-4 text-center lg:w-6/12">
-                            <div className="pr-12">
-                                <h1 className="text-6xl font-bold text-white">
+                <div className="container relative ">
+                    <div className="flex flex-wrap items-center justify-center">
+                        <div className=" w-full px-4 text-center lg:w-6/12">
+                            <div className="">
+                                <h1 className="mb-4 text-6xl font-bold text-white">
                                     Galactic Hero
                                 </h1>
-                                <p className="mt-4 text-lg text-gray-300">
-                                    Idle space defender game
-                                </p>
+                                <Link href="/#startGame">
+                                    <Button color="yellow">Play Now</Button>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -279,7 +279,10 @@ export const AuthShowcase: React.FC = () => {
 
     if (sessionData && profileAPI.isLoading) return <></>;
     return (
-        <div className="mt-4 flex flex-col items-center justify-center gap-4">
+        <div
+            id="startGame"
+            className="mt-4 flex flex-col items-center justify-center gap-4"
+        >
             {sessionData && !profile && (
                 <CreateProfile defaultName={sessionData.user.name || ""} />
             )}

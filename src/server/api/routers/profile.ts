@@ -118,7 +118,7 @@ export const profileRouter = createTRPCRouter({
                                     shootDelay: 300,
                                     shield: 10,
                                     battery: 3,
-                                    sprite: PlayerShipSprites.base,
+                                    sprite: PlayerShipSprites.T1,
                                     isCurrent: true,
                                 },
                             },
@@ -130,23 +130,6 @@ export const profileRouter = createTRPCRouter({
             console.log(profile);
             return profile;
         }),
-
-    // not sure I want this, maybe done through wave completion/purchases
-    // updateCredits: protectedProcedure
-    //     .input(z.object({ amount: z.number() }))
-    //     .mutation(({ ctx, input }) => {
-    //         const userId = ctx.session.user.id;
-    //         const player = ctx.prisma.player.update({
-    //             where: {
-    //                 userId: userId,
-    //             },
-    //             data: {
-    //                 credits: { increment: input.amount },
-    //             },
-    //         });
-
-    //         return player;
-    //     }),
 
     // input old and new ship IDs, determine id verification needed
     updateCurrentShip: protectedProcedure
@@ -381,38 +364,4 @@ export const profileRouter = createTRPCRouter({
                 return "Not enough credits";
             }
         }),
-
-    getRandomT1Equipment: protectedProcedure.mutation(async ({ ctx }) => {
-        const userId = ctx.session.user.id;
-
-        const equipmentType = chooseEquipmentType();
-        const newEquipment = getNewEquipment(equipmentType, "T1");
-
-        const updateInventory = await ctx.prisma.player.update({
-            where: {
-                userId: userId,
-            },
-            data: {
-                equipment: {
-                    create: {
-                        sprite: equipmentType,
-                        type: equipmentType,
-                        level: 0,
-                        bulletDamage: newEquipment.damage,
-                        bulletRange: newEquipment.range,
-                        bulletSpeed: newEquipment.speed,
-                        shootDelay: newEquipment.delay,
-                        shield: newEquipment.shield,
-                        health: newEquipment.health,
-                        battery: newEquipment.battery,
-                    },
-                },
-                credits: { increment: -100 },
-            },
-            include: {
-                equipment: true,
-            },
-        });
-        return updateInventory.equipment[updateInventory.equipment.length - 1];
-    }),
 });

@@ -8,6 +8,7 @@ import {
     PlayerShipWithEquipment,
 } from "~/utils/gameTypes";
 import { ShipConstants } from "~/utils/statFormulas";
+import { PlayerShipSprites } from "~/utils/ships";
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     private bullets: Bullets;
@@ -31,7 +32,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         equipment?: PlayerEquipment[],
         frame?: string | number
     ) {
-        super(scene, x, y, ship.sprite, frame);
+        super(scene, x, y, PlayerShipSprites[ship.rarity], frame);
 
         this.ship = ship;
         if (equipment) {

@@ -45,6 +45,13 @@ export type PlayerShipWithEquipment = Prisma.ShipGetPayload<
 
 export type Tier = "T1" | "T2" | "T3" | "T4";
 export type EquipmentType = "Offensive" | "Defensive" | "Utility";
+export type CraftingType = "ship" | "equipment";
+export type ResourcesType = {
+    credits: number;
+    metal: number;
+    energy: number;
+    gilding: number;
+};
 
 export type WaveSceneProps = {
     loadedEnemies: IWaveEnemy[];

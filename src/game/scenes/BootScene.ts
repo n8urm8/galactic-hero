@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { EventEmitter, GameEvents } from "~/utils/events";
 import { PlayerWithInventory } from "~/utils/gameTypes";
 import { PlayerShipSprites } from "~/utils/ships";
+import { spriteSelector } from "~/utils/spritePaths";
 
 // LOAD PLAYER DATA HERE
 
@@ -51,10 +52,10 @@ export default class BootScene extends Phaser.Scene {
             { frameWidth: 32, frameHeight: 32 }
         );
 
-        this.load.image(
-            PlayerShipSprites.base,
-            "static/images/ships/player/1B.png"
-        );
+        this.load.image(PlayerShipSprites.T1, spriteSelector["ship1"]["T1"]);
+        this.load.image(PlayerShipSprites.T2, spriteSelector["ship1"]["T2"]);
+        this.load.image(PlayerShipSprites.T3, spriteSelector["ship1"]["T3"]);
+        this.load.image(PlayerShipSprites.T4, spriteSelector["ship1"]["T4"]);
         this.load.image("bullet5", "static/images/bullets/bullet5.png");
         this.load.image("bullet5e", "static/images/bullets/bullet5e.png");
 
