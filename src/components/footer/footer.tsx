@@ -37,7 +37,7 @@ export function Footer() {
                             <Link
                                 target="_blank"
                                 className="align-center h-10 w-10 items-center justify-center rounded-full bg-white p-2  font-normal shadow-lg outline-none focus:outline-none"
-                                href="https://discord.gg/2WHatYn9hC"
+                                href="https://discord.gg/YBhxXNhpE7"
                             >
                                 <i className="fa-brands fa-discord"></i>
                             </Link>

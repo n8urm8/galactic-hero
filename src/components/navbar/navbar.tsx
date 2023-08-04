@@ -69,7 +69,7 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                                         : "text-gray-800 hover:text-gray-600") +
                                     " flex items-center px-3 py-4 text-xs font-bold uppercase lg:py-2"
                                 }
-                                href="https://discord.gg/2WHatYn9hC"
+                                href="https://discord.gg/YBhxXNhpE7"
                             >
                                 <i
                                     className={
