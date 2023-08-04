@@ -131,6 +131,20 @@ export const profileRouter = createTRPCRouter({
             return profile;
         }),
 
+    updateGameSession: protectedProcedure
+        .input(z.object({ newSession: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const userId = ctx.session.user.id;
+            const updatedSession = await ctx.prisma.player.update({
+                where: {
+                    userId: userId,
+                },
+                data: {
+                    gameSession: input.newSession,
+                },
+            });
+        }),
+
     // input old and new ship IDs, determine id verification needed
     updateCurrentShip: protectedProcedure
         .input(z.object({ newShipId: z.number() }))

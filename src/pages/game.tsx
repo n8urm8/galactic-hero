@@ -15,19 +15,12 @@ import Image from "next/image";
 import { PlayerEquipment } from "~/utils/gameTypes";
 import { Modal } from "~/components/modal";
 import { ItemButtons } from "~/components/gameMenu/itemButtons";
+import random from "random-bigint";
+import { useRouter } from "next/router";
 //import GHLogo from "/static/images/GHLogo.png";
 
 const Game = () => {
-    const [gameWidth, setGameWith] = useState(800);
-    const [gameHeight, setGameHeight] = useState(600);
-    useEffect(() => {
-        if (window.innerWidth <= 400) {
-            setGameWith(330);
-            setGameHeight(450);
-        }
-    }, []);
-    const rankingAPI = api.waveInfo.waveRankings.useQuery();
-
+    const router = useRouter();
     const { data: sessionData } = useSession();
     const profile = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user != undefined,
@@ -38,8 +31,33 @@ const Game = () => {
             enabled: sessionData?.user != undefined,
         }
     );
+    const rankingAPI = api.waveInfo.waveRankings.useQuery();
+    const gameSessionAPI = api.profile.updateGameSession.useMutation();
+    const [gameWidth, setGameWith] = useState(800);
+    const [gameHeight, setGameHeight] = useState(600);
+    const [currentGameSession, setCurrentGameSession] = useState("");
+    useEffect(() => {
+        if (window.innerWidth <= 400) {
+            setGameWith(330);
+            setGameHeight(450);
+        }
+        const updateGameSession = async () => {
+            const bigint = random(128).toString() as string;
+            await gameSessionAPI.mutateAsync({ newSession: bigint });
+            setCurrentGameSession(bigint);
+        };
+        updateGameSession().catch((err) => console.error(err));
+    }, []);
 
-    //console.log("current ship", currentShip.data);
+    useEffect(() => {
+        if (currentGameSession !== "" && profile.data) {
+            if (currentGameSession !== profile.data.gameSession) {
+                router.push("/");
+            }
+        }
+    }, [profile.data]);
+
+    //console.log("game session", profile.data);
     const emitter = EventEmitter.getInstance();
 
     const waves = api.waveInfo.updateWaveCount.useMutation();

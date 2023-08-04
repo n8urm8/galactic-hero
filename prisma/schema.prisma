@@ -74,6 +74,7 @@ model Player {
   ships     Ship[]
   equipment Equipment[]
   craftingMaterials CraftingMaterials?
+  gameSession String @default("")
 
   @@index([userId])
 }

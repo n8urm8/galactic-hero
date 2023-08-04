@@ -23,21 +23,21 @@ npx prisma migrate dev
 ## ToDo List
 
 -   [x] Player ship targeting enemy ships
--   [ ] Mechanics/logic for Enemy generation
--   [ ] Organize Scene and objects required for waving (battling enemy waves)
+-   [x] Mechanics/logic for Enemy generation
+-   [x] Organize Scene and objects required for waving (battling enemy waves)
 -   [x] Player/Enemy health, bullet damage
 -   [x] Update Sprites (player, shields, enemy, bullets)
--   [ ] Title and login screen
+-   [x] Title and login screen (managed through website)
 -   [ ] User Interface
     -   [x] Start Wave
     -   [ ] Wave Stats (Health, enemies, boss?, resources gained)
-    -   [ ] Edit Ship Equipment
+    -   [x] Edit Ship Equipment
     -   [ ] Equipment Store
-    -   [ ] Leaderboards
+    -   [x] Leaderboards
     -   [ ] Chat Rooms (General, Alliance, Private)
 -   [ ] Database Creation
     -   [x] Player Current Ship and Stats
-    -   [ ] Player Equipment (ships and upgrades)
+    -   [x] Player Equipment (ships and upgrades)
     -   [x] Connections to Phaser
     -   [ ] Alliances
     -   [ ] Messaging

@@ -4,7 +4,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { CreateProfile } from "~/components/profile/CreateProfile";
 import { Button } from "~/components/button";
-
 const Home: NextPage = () => {
     return (
         <main>
