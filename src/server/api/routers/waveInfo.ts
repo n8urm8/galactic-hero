@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+    createTRPCRouter,
+    protectedProcedure,
+    publicProcedure,
+} from "~/server/api/trpc";
 import { getEliteEnemy, getNormalEnemy, getTankEnemy } from "~/utils/enemies";
 import {
     getWaveCraftingReward,
@@ -50,4 +54,34 @@ export const waveInfoRouter = createTRPCRouter({
 
             return { waves, creditReward, craftingRewards };
         }),
+
+    waveRankings: publicProcedure.query(async ({ ctx }) => {
+        const playerRankings = await ctx.prisma.player.findMany({
+            select: {
+                name: true,
+                waves: true,
+            },
+            orderBy: {
+                waves: "desc",
+            },
+        });
+
+        return playerRankings;
+    }),
+
+    // WIP, just find player from general rankings for now
+    // playerWaveRanking: publicProcedure.query(async ({ ctx }) => {
+    //     const userId = ctx.session.user.id;
+    //     const playerRank = await ctx.prisma.$queryRaw`
+    //                 SELECT
+    //                 waves,
+    //                 RANK() OVER (ORDER BY waves DESC) as rank
+    //                 FROM
+    //                 Player
+    //                 WHERE
+    //                 userId = ${userId}
+    //           `;
+
+    //     return playerRank;
+    // }),
 });

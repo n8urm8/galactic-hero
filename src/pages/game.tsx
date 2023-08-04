@@ -26,6 +26,8 @@ const Game = () => {
             setGameHeight(450);
         }
     }, []);
+    const rankingAPI = api.waveInfo.waveRankings.useQuery();
+
     const { data: sessionData } = useSession();
     const profile = api.profile.getProfile.useQuery(undefined, {
         enabled: sessionData?.user != undefined,
@@ -104,6 +106,7 @@ const Game = () => {
                                 name={profile.data.name}
                                 waves={profile.data.waves}
                                 credits={profile.data.credits}
+                                rankings={rankingAPI.data}
                             />
                             <ItemOverview
                                 item={currentShipAPI.data.ships[0]}
