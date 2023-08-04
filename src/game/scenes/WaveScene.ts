@@ -105,7 +105,6 @@ export default class WaveScene extends Phaser.Scene {
                 this.player.damageEnemy
             );
         }
-        //console.log(this.enemies.getChildren());
     }
 
     update(time: number, delta: number) {

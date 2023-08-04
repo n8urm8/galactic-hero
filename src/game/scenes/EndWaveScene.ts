@@ -10,6 +10,7 @@ import {
     PlayerShipWithEquipment,
 } from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
+import { PurpleButton } from "../objects/purpleButton";
 
 // Create wave complete and game over events
 // need wave completion scene before going back to game scene
@@ -41,6 +42,8 @@ export default class EndWaveScene extends Phaser.Scene {
             //this.emitter.emit(GameEvents.getProfile)
         }
         const { width, height } = this.game.canvas;
+        this.cameras.main.setBackgroundColor("rgba(0,0,0,0.1)");
+
         const container = this.add.container(width / 2, height / 2.5);
         const endWaveModal = this.add.image(0, 0, "goldSquare");
         endWaveModal.scaleX = 1.5;
@@ -85,6 +88,15 @@ export default class EndWaveScene extends Phaser.Scene {
             ease: "Elastic",
             easeParams: [1.5, 0.5],
         });
+        const hideWaveBtn = new PurpleButton(
+            this,
+            62,
+            height - 20,
+            "initializing",
+            () => {},
+            undefined,
+            1.2
+        );
     }
 
     update(time: number, delta: number) {
