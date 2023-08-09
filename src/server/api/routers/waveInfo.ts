@@ -6,6 +6,7 @@ import {
     publicProcedure,
 } from "~/server/api/trpc";
 import { getEliteEnemy, getNormalEnemy, getTankEnemy } from "~/utils/enemies";
+import { getCurrentPlayer } from "~/utils/prismaHelpers";
 import {
     getWaveCraftingReward,
     getWaveCreditReward,
@@ -21,6 +22,7 @@ export const waveInfoRouter = createTRPCRouter({
                     userId: userId,
                 },
             });
+            const currentTime = Date.now() / 1000;
             const creditReward = getWaveCreditReward(currentWaves.waves);
             const waves = await ctx.prisma.player.update({
                 where: {
@@ -29,6 +31,7 @@ export const waveInfoRouter = createTRPCRouter({
                 data: {
                     waves: { increment: input.amount },
                     credits: { increment: creditReward },
+                    lastWave: currentTime,
                 },
             });
             const craftingRewards = getWaveCraftingReward(currentWaves.waves);
@@ -54,6 +57,64 @@ export const waveInfoRouter = createTRPCRouter({
 
             return { waves, creditReward, craftingRewards };
         }),
+
+    offlineWaveRewards: protectedProcedure.mutation(async ({ ctx }) => {
+        const userId = ctx.session.user.id;
+        const player = await getCurrentPlayer(userId);
+        if (player.lastWave == 0) return "Not eligible for rewards yet";
+        const currentTime = Date.now() / 1000;
+        const afkHours = (currentTime - player.lastWave) / 3600;
+        if (afkHours < 1) return "Must be afk for at least an hour";
+        const afkWaves = Math.floor(afkHours * 60);
+        const creditReward = getWaveCreditReward(player.waves) * afkWaves;
+        const waves = await ctx.prisma.player.update({
+            where: {
+                userId: userId,
+            },
+            data: {
+                waves: { increment: afkWaves },
+                credits: { increment: creditReward },
+                lastWave: currentTime,
+            },
+        });
+        const craftingRewards = getWaveCraftingReward(
+            Math.floor(player.waves / 10) * 10
+        );
+        if (craftingRewards.metal > 0) {
+            const craftingMaterials = await ctx.prisma.craftingMaterials.upsert(
+                {
+                    where: {
+                        playerId: player.id,
+                    },
+                    update: {
+                        energy: {
+                            increment:
+                                craftingRewards.energy *
+                                Math.floor(afkWaves / 10),
+                        },
+                        metal: {
+                            increment:
+                                craftingRewards.metal *
+                                Math.floor(afkWaves / 10),
+                        },
+                        gilding: {
+                            increment:
+                                craftingRewards.gilding *
+                                Math.floor(afkWaves / 10),
+                        },
+                    },
+                    create: {
+                        player: { connect: { id: player.id } },
+                        energy: craftingRewards.energy,
+                        metal: craftingRewards.metal,
+                        gilding: craftingRewards.gilding,
+                    },
+                }
+            );
+        }
+
+        return { afkWaves, creditReward, craftingRewards };
+    }),
 
     waveRankings: publicProcedure.query(async ({ ctx }) => {
         const playerRankings = await ctx.prisma.player.findMany({

@@ -65,24 +65,30 @@ model VerificationToken {
 }
 
 model Player {
-  id        Int         @id @default(autoincrement())
-  user      User        @relation(fields: [userId], references: [id])
-  userId    String      @unique
-  name      String
-  waves     Int
-  credits   Int
-  ships     Ship[]
-  equipment Equipment[]
+  id                Int                @id @default(autoincrement())
+  user              User               @relation(fields: [userId], references: [id])
+  userId            String             @unique
+  name              String
+  waves             Int
+  credits           Int
+  ships             Ship[]
+  equipment         Equipment[]
   craftingMaterials CraftingMaterials?
-  gameSession String @default("")
+  gameSession       String             @default("")
+  lastWave          Int                @default(0)
+  lastReward        Int                @default(0)
+  sellOrders        MarketOrder[]      @relation("seller")
+  buyOrders         MarketOrder[]      @relation("buyer")
+  alliance  Alliance?
+  allianceId  Int? @unique
 
   @@index([userId])
 }
 
 // add animation sprite possible
 model Ship {
-  id           Int         @id @default(autoincrement())
-  owner        Player      @relation(fields: [playerId], references: [id])
+  id           Int          @id @default(autoincrement())
+  owner        Player       @relation(fields: [playerId], references: [id])
   playerId     Int
   level        Int
   health       Int
@@ -96,16 +102,18 @@ model Ship {
   isCurrent    Boolean
   equipment    Equipment[]
   animation    String?
-  rarity       String      @default("T1")
+  rarity       String       @default("T1")
+  marketOrder  MarketOrder?
+  marketId     Int?         @unique
 
-  @@index([playerId])
+  @@index([playerId, marketId])
 }
 
 model Equipment {
-  id           Int     @id @default(autoincrement())
-  player       Player? @relation(fields: [playerId], references: [id])
+  id           Int          @id @default(autoincrement())
+  player       Player?      @relation(fields: [playerId], references: [id])
   playerId     Int
-  ship         Ship?   @relation(fields: [shipId], references: [id])
+  ship         Ship?        @relation(fields: [shipId], references: [id])
   shipId       Int?
   sprite       String
   type         String
@@ -117,18 +125,69 @@ model Equipment {
   shield       Int
   health       Int
   battery      Int
-  rarity       String  @default("T1")
+  rarity       String       @default("T1")
+  marketOrder  MarketOrder?
+  marketId     Int?         @unique
 
-  @@index([playerId])
-  @@index([shipId])
+  @@index([playerId, shipId, marketId])
 }
 
 model CraftingMaterials {
-  player       Player @relation(fields: [playerId], references: [id])
-  playerId     Int @unique
-  metal         Int @default(0)
-  energy      Int @default(0)
-  gilding     Int @default(0)
+  player   Player? @relation(fields: [playerId], references: [id])
+  playerId Int    @unique
+  metal    Int    @default(0)
+  energy   Int    @default(0)
+  gilding  Int    @default(0)
 
   @@index([playerId])
+}
+
+model Alliance {
+  id Int @id @default(autoincrement())
+  members Player @relation(fields: [playerId], references: [id])
+  playerId Int @unique
+  leader Int
+  officers Int
+  level Int @default(0)
+  name String
+  resources AllianceResources?
+  bonuses AllianceBonuses?
+}
+
+model AllianceResources {
+  alliance Alliance @relation(fields: [allianceId], references: [id])
+  allianceId Int @unique
+  credits Int @default(0)
+  metal    Int    @default(0)
+  energy   Int    @default(0)
+  gilding  Int    @default(0)
+
+  @@index([allianceId])
+}
+
+model AllianceBonuses {
+  alliance Alliance @relation(fields: [allianceId], references: [id])
+  allianceId Int @unique
+  damageBonus Int    @default(0)
+  healthBonus Int    @default(0)
+  creditBonus Int    @default(0)
+
+}
+
+model MarketOrder {
+  id          Int        @id @default(autoincrement())
+  seller      Player     @relation(fields: [sellerId], references: [id], name: "seller")
+  buyer       Player?    @relation(fields: [buyerId], references: [id], name: "buyer")
+  sellerId    Int
+  buyerId     Int
+  equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+  equipmentId Int        @unique
+  shipId      Int        @unique
+  ship        Ship?      @relation(fields: [shipId], references: [id])
+  price       Int
+  listTime    Int
+  buyTime     Int
+
+  @@index([sellerId])
+  @@index([buyerId])
 }

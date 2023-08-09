@@ -7,6 +7,7 @@ import {
     PlayerShip,
     PlayerShipWithEquipment,
     Tier,
+    resourceKeys,
 } from "~/utils/gameTypes";
 import { shipCraftingCosts } from "~/utils/ships";
 import { Button } from "../button";
@@ -29,13 +30,6 @@ export const Crafting: React.FC<ICrafting> = ({ resources }) => {
     const [tier, setTier] = useState<Tier>("T1");
     const [newItem, setNewItem] = useState({});
     const [showItem, setShowItem] = useState(false);
-
-    const resourceKeys = {
-        credits: "Credits",
-        metal: "Kamacite",
-        energy: "Deuterium",
-        gilding: "Platinum",
-    };
 
     const tierKeys = {
         T1: "I",

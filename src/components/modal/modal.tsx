@@ -5,6 +5,7 @@ export interface IModal {
     header: React.ReactNode;
     body: React.ReactNode;
     footer: React.ReactNode;
+    autoShow?: boolean;
 }
 
 export const Modal: React.FC<IModal> = ({
@@ -12,8 +13,9 @@ export const Modal: React.FC<IModal> = ({
     header,
     body,
     footer,
+    autoShow = false,
 }) => {
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(!autoShow ? false : true);
     const modalRef = createRef<HTMLDivElement>();
     useEffect(() => {
         //console.log("modal ref current? ", modalRef.current);

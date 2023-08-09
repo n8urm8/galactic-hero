@@ -4,3 +4,4 @@ export { PlayerStats } from "./playerStats";
 export { Inventory } from "./inventory";
 export { Crafting } from "./crafting";
 export { ItemButtons } from "./itemButtons";
+export { AfkRewards } from "./afkRewards";

@@ -70,3 +70,10 @@ export type CraftingReward = {
     energy: number;
     gilding: number;
 };
+
+export const resourceKeys = {
+    credits: "Credits",
+    metal: "Kamacite",
+    energy: "Deuterium",
+    gilding: "Platinum",
+};

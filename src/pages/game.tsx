@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { AuthShowcase } from ".";
 import { GameCanvas } from "~/game";
 import {
+    AfkRewards,
     Crafting,
     Inventory,
     ItemOverview,
@@ -33,6 +34,7 @@ const Game = () => {
     );
     const rankingAPI = api.waveInfo.waveRankings.useQuery();
     const gameSessionAPI = api.profile.updateGameSession.useMutation();
+
     const [gameWidth, setGameWith] = useState(800);
     const [gameHeight, setGameHeight] = useState(600);
     const [currentGameSession, setCurrentGameSession] = useState("");
@@ -101,7 +103,7 @@ const Game = () => {
                     "url('static/images/backgrounds/spacefightBG1.jpg')",
             }}
         >
-            <div className="max-[400px]:pt-12 relative flex min-h-screen flex-col bg-black bg-opacity-70 p-2 pt-10 ">
+            <div className="relative flex min-h-screen flex-col bg-black bg-opacity-70 p-2 pt-10 max-[400px]:pt-12 ">
                 {profile.isLoading ? (
                     <div className="my-auto flex justify-center text-center">
                         <p>Loading...</p>
@@ -119,6 +121,7 @@ const Game = () => {
                 ) : currentShipAPI.isFetched &&
                   currentShipAPI.data?.ships[0] ? (
                     <div className="relative flex  w-full flex-row gap-2 max-[400px]:max-w-none max-[400px]:flex-col-reverse ">
+                        <AfkRewards />
                         <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[400px]:max-w-none">
                             <PlayerStats
                                 name={profile.data.name}
