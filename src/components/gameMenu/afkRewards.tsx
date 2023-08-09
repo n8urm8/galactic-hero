@@ -15,7 +15,7 @@ export const AfkRewards = () => {
     useEffect(() => {
         const fetchRewards = async () => {
             const rewards = await afkRewardAPI.mutateAsync();
-            console.log(rewards);
+            //console.log(rewards);
             if (typeof rewards == "object") {
                 setReward(rewards);
             }

@@ -91,6 +91,7 @@ const Game = () => {
             console.log("refresh profile");
             const result = await profile.refetch();
             const shipUpdate = await currentShipAPI.refetch();
+            emitter.emit(GameEvents.profileLoaded, result.data);
         },
         emitter.removeListener(GameEvents.refreshProfile)
     );
