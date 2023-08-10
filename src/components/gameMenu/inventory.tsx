@@ -8,6 +8,7 @@ import { Modal } from "../modal";
 import { ItemImg } from "./itemImg";
 import { ItemOverview } from "./itemOverview";
 import { ItemButtons } from "./itemButtons";
+import { gradientPrimary } from "~/styles/cssVariables";
 
 export interface IInventory {
     ships: PlayerShipWithEquipment[];
@@ -22,10 +23,10 @@ export const Inventory: React.FC<IInventory> = ({
 }) => {
     return (
         <div>
-            <p>Inventory</p>
-            <div className="flex flex-col rounded-md border p-2">
+            <p className={`${gradientPrimary} rounded-t-md px-2`}>Inventory</p>
+            <div className="flex flex-col rounded-b-md bg-slate-600  bg-opacity-50 p-2">
                 <p className="text-xs">SHIPS</p>
-                <div className="mb-1 flex h-[72px] max-w-sm flex-row flex-wrap gap-1 overflow-y-auto">
+                <div className="mb-1 flex max-h-[72px] min-h-[36px] max-w-sm flex-row flex-wrap gap-1 overflow-y-auto">
                     {ships.map((ship) => {
                         return (
                             <Modal
@@ -53,7 +54,7 @@ export const Inventory: React.FC<IInventory> = ({
                     })}
                 </div>
                 <p className="text-xs">EQUIPMENT</p>
-                <div className="mb-1 flex h-[72px] max-w-sm flex-row flex-wrap gap-1 overflow-y-auto">
+                <div className="mb-1 flex max-h-[72px] min-h-[36px] max-w-sm flex-row flex-wrap gap-1 overflow-y-auto">
                     {equipment.map((item) => {
                         return (
                             <Modal

@@ -9,7 +9,8 @@ export interface IItemImg {
 }
 
 export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
-    const imageStyle = size == "large" ? "w-24 rounded-xl" : "w-8 rounded";
+    const imageStyle =
+        size == "large" ? "w-24 h-24  rounded-xl" : "w-8 h-8 rounded";
     const imgURL =
         spriteSelector[item.sprite as keyof typeof spriteSelector][item.rarity];
     const pStyle =
@@ -22,10 +23,8 @@ export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
             ? "border-green-400"
             : "";
     return (
-        <div
-            className={`${imageStyle} ${borderStyle} relative h-auto border p-1`}
-        >
-            <img className="w-24" src={imgURL} alt={"item"} />
+        <div className={`${imageStyle} ${borderStyle} relative border p-1`}>
+            <img className=" w-24" src={imgURL} alt={"item"} />
             <p className={pStyle}>{item.level}</p>
         </div>
     );

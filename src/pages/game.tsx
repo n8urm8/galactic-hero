@@ -18,6 +18,7 @@ import { Modal } from "~/components/modal";
 import { ItemButtons } from "~/components/gameMenu/itemButtons";
 import random from "random-bigint";
 import { useRouter } from "next/router";
+import { gradientPrimary } from "~/styles/cssVariables";
 //import GHLogo from "/static/images/GHLogo.png";
 
 const Game = () => {
@@ -121,22 +122,27 @@ const Game = () => {
                     </div>
                 ) : currentShipAPI.isFetched &&
                   currentShipAPI.data?.ships[0] ? (
-                    <div className="relative flex  w-full flex-row gap-2 max-[400px]:max-w-none max-[400px]:flex-col-reverse ">
+                    <div className="relative flex flex-row gap-2 max-[400px]:mb-1 max-[400px]:max-w-none  max-[400px]:flex-col-reverse">
                         <AfkRewards />
                         <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[400px]:max-w-none">
-                            <PlayerStats
-                                name={profile.data.name}
-                                waves={profile.data.waves}
-                                credits={profile.data.credits}
-                                rankings={rankingAPI.data}
-                            />
-                            <ItemOverview
-                                item={currentShipAPI.data.ships[0]}
-                                currentShip={true}
-                                clickable={true}
-                                currentCredits={profile.data.credits}
-                            />
-
+                            <div className=" w-full  rounded-md bg-slate-600 bg-opacity-50">
+                                <div className={`rounded-t-md px-2`}>
+                                    <PlayerStats
+                                        name={profile.data.name}
+                                        waves={profile.data.waves}
+                                        credits={profile.data.credits}
+                                        rankings={rankingAPI.data}
+                                    />
+                                </div>
+                                <div className="p-2">
+                                    <ItemOverview
+                                        item={currentShipAPI.data.ships[0]}
+                                        currentShip={true}
+                                        clickable={true}
+                                        currentCredits={profile.data.credits}
+                                    />
+                                </div>
+                            </div>
                             <Inventory
                                 ships={profile.data.ships}
                                 equipment={profile.data.equipment}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "../modal";
+import { gradientPrimary } from "~/styles/cssVariables";
 
 export interface IPlayerStats {
     name: string;
@@ -17,7 +18,7 @@ export const PlayerStats: React.FC<IPlayerStats> = ({
     const rank = rankings.findIndex((player) => player.name === name) + 1;
 
     return (
-        <div className="flex w-full justify-between rounded-md border p-2">
+        <div className={`flex w-full  justify-between`}>
             <div className="flex flex-col font-semibold">
                 <p>{name}</p>
                 <p>Waves</p>
@@ -33,7 +34,7 @@ export const PlayerStats: React.FC<IPlayerStats> = ({
                                 return (
                                     <div
                                         key={i}
-                                        className="flex justify-between p-1"
+                                        className="flex justify-between"
                                     >
                                         <p>
                                             {i + 1} - {player.name}

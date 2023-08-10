@@ -13,6 +13,8 @@ import { shipCraftingCosts } from "~/utils/ships";
 import { Button } from "../button";
 import { api } from "~/utils/api";
 import { ItemOverview } from "./itemOverview";
+import { Chip } from "../chip";
+import { gradientPrimary } from "~/styles/cssVariables";
 
 export interface ICrafting {
     resources: {
@@ -54,56 +56,52 @@ export const Crafting: React.FC<ICrafting> = ({ resources }) => {
     };
 
     return (
-        <div className="flex min-h-[150px] w-full flex-col  rounded-md border">
+        <div className="flex min-h-[150px] w-full flex-col  rounded-md  bg-slate-600 bg-opacity-50">
             {!showItem ? (
                 <>
-                    <div className="flex flex-row justify-between border-b px-1 text-right text-sm">
-                        <p className="">
-                            {resources.metal} {resourceKeys.metal}
-                        </p>
-                        <p>
-                            {resources.energy} {resourceKeys.energy}
-                        </p>
-                        <p>
-                            {resources.gilding} {resourceKeys.gilding}
-                        </p>
+                    <div className="flex flex-col border-b border-slate-700 text-center text-sm">
+                        <div
+                            className={`grid grid-cols-3 rounded-t-md ${gradientPrimary}`}
+                        >
+                            <p className=" text-white">{resourceKeys.metal}</p>
+                            <p className=" text-white">{resourceKeys.energy}</p>
+                            <p className=" text-white">
+                                {resourceKeys.gilding}
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-3">
+                            <p className="">{resources.metal}</p>
+                            <p>{resources.energy}</p>
+                            <p>{resources.gilding}</p>
+                        </div>
                     </div>
                     <div className="flex flex-row justify-evenly p-1 ">
-                        <p
-                            onClick={() => setCraftingType("ship")}
-                            className={
-                                craftingType == "ship"
-                                    ? "w-24 cursor-pointer border bg-slate-50 text-center text-black hover:bg-slate-50 hover:text-black"
-                                    : "w-24 cursor-pointer border text-center hover:bg-slate-50 hover:text-black"
-                            }
+                        <Chip
+                            size="lg"
+                            action={() => setCraftingType("ship")}
+                            active={craftingType == "ship"}
                         >
                             Ship
-                        </p>
-                        <p
-                            onClick={() => setCraftingType("equipment")}
-                            className={
-                                craftingType == "equipment"
-                                    ? "w-24 cursor-pointer border bg-slate-50 text-center text-black hover:bg-slate-50 hover:text-black"
-                                    : "w-24 cursor-pointer border text-center hover:bg-slate-50 hover:text-black"
-                            }
+                        </Chip>
+                        <Chip
+                            size="lg"
+                            action={() => setCraftingType("equipment")}
+                            active={craftingType == "equipment"}
                         >
                             Equipment
-                        </p>
+                        </Chip>
                     </div>
                     <div className="flex flex-row justify-evenly p-1 ">
                         {Object.keys(tierKeys).map((key) => {
                             return (
-                                <p
-                                    onClick={() => setTier(key as Tier)}
+                                <Chip
+                                    size="sm"
+                                    active={tier == key}
+                                    action={() => setTier(key as Tier)}
                                     key={key}
-                                    className={
-                                        tier == key
-                                            ? "w-12 cursor-pointer border bg-slate-50 text-center text-black hover:bg-slate-50 hover:text-black"
-                                            : "w-12 cursor-pointer border text-center hover:bg-slate-50 hover:text-black"
-                                    }
                                 >
                                     {tierKeys[key]}
-                                </p>
+                                </Chip>
                             );
                         })}
                     </div>
