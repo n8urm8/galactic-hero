@@ -26,7 +26,7 @@ export const PlayerStats: React.FC<IPlayerStats> = ({
             </div>
             <div className="flex flex-col text-right">
                 <Modal
-                    buttonElement={<p>Rank {rank}</p>}
+                    buttonElement={<p className="text-bold">Rank {rank}</p>}
                     header={"Player Rankings"}
                     body={
                         <div className="flex max-h-96 flex-col overflow-y-auto">

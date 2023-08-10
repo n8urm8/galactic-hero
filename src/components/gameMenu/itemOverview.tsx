@@ -133,31 +133,36 @@ export const ItemOverview: React.FC<IItemOverview> = ({
             {"shipId" in item && item.shipId && (
                 <p>Equipped to Ship {item.shipId}</p>
             )}
-            {"equipment" in item && <p className="">Equipment</p>}
-            {"equipment" in item && (
-                <div className="flex min-h-[15px] gap-1 rounded-md border">
-                    {item.equipment.map((item) => (
-                        <Modal
-                            key={item.id}
-                            buttonElement={<ItemImg item={item} size="small" />}
-                            header={name}
-                            body={
-                                <ItemOverview
-                                    item={item}
-                                    currentShip={false}
-                                    clickable={false}
-                                    currentCredits={currentCredits}
-                                />
-                            }
-                            footer={
-                                <ItemButtons
-                                    item={item}
-                                    currentCredits={currentCredits}
-                                />
-                            }
-                        />
-                    ))}
-                </div>
+            {"equipment" in item && item.equipment.length > 0 && (
+                <>
+                    <p className="">Equipment</p>
+
+                    <div className="flex  gap-1 ">
+                        {item.equipment.map((item) => (
+                            <Modal
+                                key={item.id}
+                                buttonElement={
+                                    <ItemImg item={item} size="small" />
+                                }
+                                header={name}
+                                body={
+                                    <ItemOverview
+                                        item={item}
+                                        currentShip={false}
+                                        clickable={false}
+                                        currentCredits={currentCredits}
+                                    />
+                                }
+                                footer={
+                                    <ItemButtons
+                                        item={item}
+                                        currentCredits={currentCredits}
+                                    />
+                                }
+                            />
+                        ))}
+                    </div>
+                </>
             )}
         </div>
     );

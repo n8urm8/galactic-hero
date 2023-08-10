@@ -100,12 +100,12 @@ export default class GameScene extends Phaser.Scene {
     loadProfile = (data: PlayerWithInventory) => {
         this.profile = data;
         for (let i = 0; i < data.ships.length; i++) {
-            console.log("loaded new ship", data.ships[i]);
+            //console.log("loaded new ship", data.ships[i]);
             if (data.ships[i].isCurrent) {
                 this.ship = data.ships[i];
             }
         }
-        console.log("loaded new ship", this.ship);
+        //console.log("loaded new ship", this.ship);
         this.loadEnemies;
     };
 }

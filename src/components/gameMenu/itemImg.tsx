@@ -1,5 +1,10 @@
 import Image from "next/image";
 import React from "react";
+import {
+    gradientPrimary,
+    gradientSecondary,
+    gradientTertiery,
+} from "~/styles/cssVariables";
 import { PlayerEquipment, PlayerShip } from "~/utils/gameTypes";
 import { spriteSelector } from "~/utils/spritePaths";
 
@@ -20,11 +25,18 @@ export const ItemImg: React.FC<IItemImg> = ({ size, item }) => {
     const borderStyle =
         ("shipId" in item && item.shipId) ||
         ("isCurrent" in item && item.isCurrent && size == "small")
-            ? "border-green-400"
+            ? gradientSecondary
             : "";
     return (
-        <div className={`${imageStyle} ${borderStyle} relative border p-1`}>
-            <img className=" w-24" src={imgURL} alt={"item"} />
+        <div
+            className={`${imageStyle} ${borderStyle} relative ${gradientTertiery} `}
+        >
+            <Image
+                className="object-contain p-[2px]"
+                fill
+                src={imgURL}
+                alt={"item"}
+            />
             <p className={pStyle}>{item.level}</p>
         </div>
     );

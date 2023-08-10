@@ -126,7 +126,12 @@ const Game = () => {
                         <AfkRewards />
                         <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[400px]:max-w-none">
                             <div className=" w-full  rounded-md bg-slate-600 bg-opacity-50">
-                                <div className={`rounded-t-md px-2`}>
+                                <div
+                                    className={`rounded-t-md px-2 text-white ${gradientPrimary}`}
+                                >
+                                    Overview
+                                </div>
+                                <div className={` px-2`}>
                                     <PlayerStats
                                         name={profile.data.name}
                                         waves={profile.data.waves}
@@ -134,7 +139,7 @@ const Game = () => {
                                         rankings={rankingAPI.data}
                                     />
                                 </div>
-                                <div className="p-2">
+                                <div className="px-2 pb-2">
                                     <ItemOverview
                                         item={currentShipAPI.data.ships[0]}
                                         currentShip={true}

@@ -1,4 +1,5 @@
 import { createRef, useEffect, useState } from "react";
+import { gradientPrimary } from "~/styles/cssVariables";
 
 export interface IModal {
     buttonElement: React.ReactNode;
@@ -44,28 +45,30 @@ export const Modal: React.FC<IModal> = ({
                             {/*content*/}
                             <div
                                 ref={modalRef}
-                                className="relative flex w-full flex-col rounded-lg border-2 bg-stone-600 shadow-lg outline-none focus:outline-none"
+                                className="relative flex w-full flex-col rounded-md  bg-slate-500 bg-opacity-50 shadow-lg outline-none focus:outline-none"
                             >
                                 {/*header*/}
-                                <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-1">
-                                    <h3 className="pt-2 pl-2 text-xl font-semibold text-white">
+                                <div
+                                    className={`${gradientPrimary} flex items-start justify-between rounded-t-md  px-1`}
+                                >
+                                    <h3 className=" pl-2 text-xl font-semibold text-white">
                                         {header}
                                     </h3>
                                     <button
-                                        className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-white  outline-none focus:outline-none"
+                                        className="float-right ml-auto -mt-1 border-0 bg-transparent px-1 text-3xl font-semibold leading-none text-white  outline-none focus:outline-none"
                                         onClick={() => setShowModal(false)}
                                     >
-                                        <span className="block w-6 bg-transparent text-xl text-white outline-none focus:outline-none">
+                                        <span className="block w-6 bg-transparent text-lg text-white outline-none focus:outline-none">
                                             x
                                         </span>
                                     </button>
                                 </div>
                                 {/*body*/}
-                                <div className="relative flex-auto p-4">
+                                <div className="relative flex-auto p-3">
                                     {body}
                                 </div>
                                 {/*footer*/}
-                                <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-2">
+                                <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-600 p-2 pb-1">
                                     {footer}
                                 </div>
                             </div>

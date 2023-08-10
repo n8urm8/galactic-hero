@@ -1,3 +1,5 @@
+import { gradientTertiery } from "~/styles/cssVariables";
+
 interface IChip {
     active: boolean;
     action: () => void;
@@ -7,7 +9,8 @@ interface IChip {
 
 export const Chip: React.FC<IChip> = ({ active, action, size, children }) => {
     const style = active
-        ? "cursor-pointer rounded-md bg-blue-200 text-center text-black hover:bg-blue-50 hover:text-black"
+        ? `${gradientTertiery} 
+          cursor-pointer rounded-md text-center text-black hover:bg-blue-50 hover:text-black`
         : "cursor-pointer rounded-md border border-slate-500 text-center hover:bg-blue-50 hover:text-black";
     const width =
         size === "lg" ? "w-24 py-1" : size == "sm" ? "w-12" : "w-fit p-1";

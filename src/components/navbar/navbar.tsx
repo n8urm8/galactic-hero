@@ -5,6 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { gradientSecondary } from "~/styles/cssVariables";
 
 export const Navbar = ({ transparent }: { transparent: boolean }) => {
     const [navbarOpen, setNavbarOpen] = React.useState(false);
@@ -25,19 +26,12 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
         >
             <div className="container mx-auto flex flex-wrap items-center justify-end px-4 lg:justify-between">
                 <div className="relative flex w-full justify-between lg:static lg:block lg:w-auto lg:justify-start">
-                    <Link
-                        className={
-                            (transparent ? "text-white" : "text-gray-800") +
-                            " mr-4 inline-block whitespace-nowrap text-sm font-bold uppercase leading-relaxed"
-                        }
-                        href="/"
-                    >
-                        <Image
-                            src={"/static/images/GHLogo.png"}
-                            alt="Galactic Hero"
-                            width={250}
-                            height={50}
-                        />
+                    <Link href="/">
+                        <p
+                            className={`${gradientSecondary} bg-clip-text text-3xl font-extrabold text-transparent lg:-mt-2`}
+                        >
+                            GALACTIC HERO
+                        </p>
                     </Link>
                     <button
                         className="block cursor-pointer rounded border border-solid border-transparent bg-transparent px-3 py-1 text-xl leading-none outline-none focus:outline-none lg:hidden"
@@ -54,13 +48,13 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                 </div>
                 <div
                     className={
-                        "w-fit items-center bg-white pl-2 pr-3 pb-2  lg:flex lg:bg-transparent lg:shadow-none" +
+                        "w-fit items-center bg-white pl-2 pr-3 pb-2 lg:flex lg:bg-transparent lg:shadow-none" +
                         (navbarOpen ? " block rounded shadow-lg" : " hidden")
                     }
                     id="navbar"
                 >
-                    <ul className="flex list-none flex-col justify-end lg:ml-auto lg:flex-row">
-                        <li className="flex items-center">
+                    <ul className="flex list-none flex-col justify-end lg:ml-auto lg:mt-2 lg:flex-row">
+                        <li className="flex items-center ">
                             <Link
                                 target="_blank"
                                 className={
