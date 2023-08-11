@@ -18,10 +18,10 @@ export const Button: React.FC<IButton> = ({
     disabled = false,
     onClick,
 }) => {
-    const filledClassViolet = `${gradientPrimary} hover:bg-gradient-to-tl text-white active:bg-violet-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
-    const outlinedClassViolet = `text-indigo-500 bg-transparent border border-indigo-500 hover:bg-violet-600 hover:text-white active:bg-violet-600 font-bold uppercase text-xs px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
-    const filledClassYellow = `${gradientSecondary} hover:bg-gradient-to-tl text-black active:bg-yellow-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
-    const outlinedClassYellow = `text-yellow-500 bg-transparent border border-yellow-500 hover:bg-yellow-500 hover:text-white active:bg-yellow-600 font-bold uppercase text-xs px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
+    const filledClassViolet = `${gradientPrimary} disabled:bg-none hover:bg-gradient-to-tl text-white active:bg-violet-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
+    const outlinedClassViolet = `text-indigo-500 bg-transparent disabled:text-slate-700 disabled:border-slate-700 border border-indigo-500 hover:bg-indigo-500 hover:text-white active:bg-violet-600 font-bold uppercase text-xs px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
+    const filledClassYellow = `${gradientSecondary} disabled:bg-none hover:bg-gradient-to-tl text-black active:bg-yellow-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
+    const outlinedClassYellow = `text-yellow-500 bg-transparent disabled:text-slate-700 disabled:border-slate-700 border border-yellow-500 hover:bg-yellow-500 hover:text-white active:bg-yellow-600 font-bold uppercase text-xs px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`;
     const variantClass =
         variant == "outlined"
             ? color == "yellow"

@@ -88,15 +88,10 @@ export default class EndWaveScene extends Phaser.Scene {
             ease: "Elastic",
             easeParams: [1.5, 0.5],
         });
-        const hideWaveBtn = new PurpleButton(
-            this,
-            62,
-            height - 20,
-            "initializing",
-            () => {},
-            undefined,
-            1.2
-        );
+        this.emitter.emit(GameEvents.waveInitializing, {
+            endWave: false,
+            gameLoaded: false,
+        });
     }
 
     update(time: number, delta: number) {
@@ -109,6 +104,10 @@ export default class EndWaveScene extends Phaser.Scene {
     }
 
     endWave = () => {
+        this.emitter.emit(GameEvents.waveInitializing, {
+            endWave: true,
+            gameLoaded: false,
+        });
         this.scene.stop();
         this.scene.run("GameScene");
     };
@@ -127,6 +126,10 @@ export default class EndWaveScene extends Phaser.Scene {
             getEliteEnemy(width, wave),
         ];
         this.timer = 200;
+        this.emitter.emit(GameEvents.waveInitializing, {
+            endWave: false,
+            gameLoaded: false,
+        });
         this.scene.stop();
         //console.log('next wave data', enemiesToLoad)
         this.scene.run("WaveScene", {

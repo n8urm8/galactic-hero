@@ -6,6 +6,7 @@ import { AuthShowcase } from ".";
 import { GameCanvas } from "~/game";
 import {
     AfkRewards,
+    ButtonMenu,
     Crafting,
     Inventory,
     ItemOverview,
@@ -178,6 +179,7 @@ const Game = () => {
                                     gameWidth={gameWidth}
                                 />
                             </div>
+                            <ButtonMenu />
                         </div>
                     </div>
                 ) : null}

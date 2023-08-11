@@ -3,7 +3,7 @@ import Player from "../sprites/player";
 import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
-import { EventEmitter } from "~/utils/events";
+import { EventEmitter, GameEvents } from "~/utils/events";
 import {
     IWaveEnemy,
     PlayerShip,
@@ -37,15 +37,15 @@ export default class WaveScene extends Phaser.Scene {
 
     create() {
         const { width, height } = this.game.canvas;
-        const endWaveBtn = this.add
-            .image(62, height - 20, "purpleButton")
-            .setInteractive({ useHandCursor: true })
-            .once("pointerdown", () => {
-                this.scene.stop();
-                this.scene.run("GameScene");
-            });
-        endWaveBtn.scaleX = 1.2;
-        this.add.text(endWaveBtn.x, endWaveBtn.y, "End Wave").setOrigin(0.5);
+        // const endWaveBtn = this.add
+        //     .image(62, height - 20, "purpleButton")
+        //     .setInteractive({ useHandCursor: true })
+        //     .once("pointerdown", () => {
+        //         this.scene.stop();
+        //         this.scene.run("GameScene");
+        //     });
+        // endWaveBtn.scaleX = 1.2;
+        // this.add.text(endWaveBtn.x, endWaveBtn.y, "End Wave").setOrigin(0.5);
 
         // Player
         this.player = this.add.player(width / 2, height / 1.2, this.ship);
@@ -129,6 +129,14 @@ export default class WaveScene extends Phaser.Scene {
             console.log("enemy scum terminated!");
             this.endWave(true);
         }
+
+        this.emitter.on(
+            GameEvents.endWave,
+            () => {
+                this.endWave(false);
+            },
+            this.emitter.removeListener(GameEvents.endWave)
+        );
     }
 
     findClosestEnemy = () => {

@@ -30,22 +30,34 @@ export const AfkRewards = () => {
                     header={"AFK Rewards"}
                     body={
                         <div>
-                            <p>Waves completed: {reward.afkWaves}</p>
-                            <p>Credits earned: {reward.creditReward}</p>
-                            <p>
-                                {resourceKeys.metal} earned:{" "}
-                                {reward.craftingRewards.metal *
-                                    Math.floor(reward.afkWaves / 10)}
+                            <p>Waves completed: </p>
+                            <p className="text-right">
+                                {reward.afkWaves.toFixed(0)}
                             </p>
-                            <p>
-                                {resourceKeys.energy} earned:{" "}
-                                {reward.craftingRewards.energy *
-                                    Math.floor(reward.afkWaves / 10)}
+                            <p>Credits earned: </p>
+                            <p className="text-right">
+                                {reward.creditReward.toFixed(0)}
                             </p>
-                            <p>
-                                {resourceKeys.gilding} earned:{" "}
-                                {reward.craftingRewards.gilding *
-                                    Math.floor(reward.afkWaves / 10)}
+                            <p>{resourceKeys.metal} earned: </p>
+                            <p className="text-right">
+                                {(
+                                    reward.craftingRewards.metal *
+                                    Math.floor(reward.afkWaves / 10)
+                                ).toFixed(0)}
+                            </p>
+                            <p>{resourceKeys.energy} earned: </p>
+                            <p className="text-right">
+                                {(
+                                    reward.craftingRewards.energy *
+                                    Math.floor(reward.afkWaves / 10)
+                                ).toFixed(0)}
+                            </p>
+                            <p>{resourceKeys.gilding} earned: </p>
+                            <p className="text-right">
+                                {(
+                                    reward.craftingRewards.gilding *
+                                    Math.floor(reward.afkWaves / 10)
+                                ).toFixed(0)}
                             </p>
                         </div>
                     }

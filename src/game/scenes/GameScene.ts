@@ -49,17 +49,21 @@ export default class GameScene extends Phaser.Scene {
             .tileSprite(0, 0, 1024, 1024, "starsBackground")
             .setOrigin(0)
             .setAlpha(0.7);
+        this.emitter.emit(GameEvents.waveInitializing, {
+            endWave: false,
+            gameLoaded: true,
+        });
 
         // ui
-        this.startWaveBtn = new PurpleButton(
-            this,
-            62,
-            height - 20,
-            "Start Wave",
-            this.startWave,
-            undefined,
-            1.2
-        );
+        // this.startWaveBtn = new PurpleButton(
+        //     this,
+        //     62,
+        //     height - 20,
+        //     "Start Wave",
+        //     this.startWave,
+        //     undefined,
+        //     1.2
+        // );
     }
 
     update(time: number, delta: number) {
@@ -77,6 +81,11 @@ export default class GameScene extends Phaser.Scene {
             GameEvents.profileLoaded,
             this.loadProfile,
             this.emitter.removeListener(GameEvents.profileLoaded)
+        );
+        this.emitter.on(
+            GameEvents.startWave,
+            this.startWave,
+            this.emitter.removeListener(GameEvents.startWave)
         );
     }
 
