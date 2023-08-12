@@ -3,11 +3,21 @@ import { CraftingType, ResourcesType, Tier } from "./gameTypes";
 import { shipCraftingCosts } from "./ships";
 import { equipmentCraftingCosts } from "./equipment";
 // TODO: add in cost formula based on level and rarity
+const rarityMultiplier = {
+    T1: 1,
+    T2: 10,
+    T3: 50,
+    T4: 100,
+};
+
 export const getEquipmentLevelUpCost = (equipment: Equipment) => {
     const costPerLevel = 100;
     let totalCost = 0;
     for (let i = 0; i <= equipment.level; i++) {
-        totalCost += (equipment.level + 1) * costPerLevel;
+        totalCost +=
+            (equipment.level + 1) *
+            costPerLevel *
+            rarityMultiplier[equipment.rarity];
     }
     return totalCost;
 };
@@ -16,7 +26,8 @@ export const getShipLevelUpCost = (ship: Ship) => {
     const costPerLevel = 100;
     let totalCost = 0;
     for (let i = 0; i <= ship.level; i++) {
-        totalCost += (ship.level + 1) * costPerLevel;
+        totalCost +=
+            (ship.level + 1) * costPerLevel * rarityMultiplier[ship.rarity];
     }
 
     return totalCost;

@@ -50,7 +50,9 @@ export const ButtonMenu = () => {
                 Alliance
             </Button>
             <Button onClick={() => window.alert("coming soon")}>Market</Button>
-            <Button onClick={() => window.alert("coming soon")}>Chat</Button>
+            <Button onClick={() => window.alert("coming soon")}>
+                Vanguard
+            </Button>
         </div>
     );
 };
