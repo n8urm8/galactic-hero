@@ -5,6 +5,7 @@ export class HealthBar {
     private startHP: number;
     private value: number;
     private p: number;
+    private hpText: Phaser.GameObjects.Text;
 
     constructor(scene: Phaser.Scene, x: number, y: number, startHP: number) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
@@ -13,7 +14,8 @@ export class HealthBar {
         this.y = y;
         this.startHP = startHP;
         this.value = startHP;
-        this.p = 1 / 100;
+        this.p = startHP / 100;
+        this.hpText = scene.add.text(x, y + 20, `${startHP} / ${startHP}`);
 
         this.draw();
         scene.add.text(x - 20, y, "HP");
@@ -28,13 +30,14 @@ export class HealthBar {
         }
 
         this.draw();
+        this.hpText.setText(`${this.value.toFixed(0)} / ${this.startHP}`);
 
         return this.value === 0;
     }
 
     draw() {
         this.bar.clear();
-        const startWidth = Math.floor(this.p * this.startHP);
+        const startWidth = 100;
 
         //  BG
         this.bar.fillStyle(0x000000);
@@ -51,7 +54,7 @@ export class HealthBar {
             this.bar.fillStyle(0x00ff00);
         }
 
-        const d = Math.floor(this.p * this.value);
+        const d = Math.floor((startWidth * this.value) / this.startHP);
 
         this.bar.fillRect(this.x + 2, this.y + 2, d, 12);
     }
