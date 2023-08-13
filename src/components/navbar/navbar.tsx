@@ -94,18 +94,20 @@ export const Navbar = ({ transparent }: { transparent: boolean }) => {
                                         </Button>
                                     </Link>
                                 )}
-                            <Button
-                                variant="outlined"
-                                onClick={
-                                    sessionData
-                                        ? () => {
-                                              signOut() && router.push("/");
-                                          }
-                                        : () => signIn()
-                                }
-                            >
-                                {sessionData ? "Sign Out" : "Sign In"}
-                            </Button>
+                            {!profileAPI.isLoading && (
+                                <Button
+                                    variant="outlined"
+                                    onClick={
+                                        sessionData
+                                            ? () => {
+                                                  signOut() && router.push("/");
+                                              }
+                                            : () => signIn()
+                                    }
+                                >
+                                    {sessionData ? "Sign Out" : "Sign In"}
+                                </Button>
+                            )}
                         </li>
                     </ul>
                 </div>

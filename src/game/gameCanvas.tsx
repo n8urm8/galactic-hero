@@ -43,6 +43,7 @@ export const GameCanvas = ({ gameWidth, gameHeight }) => {
                 },
                 width: gameWidth,
                 height: gameHeight,
+
                 // scale: {
                 //     mode: Phaser.Scale.FIT,
                 //     //width: "100%",
@@ -59,7 +60,7 @@ export const GameCanvas = ({ gameWidth, gameHeight }) => {
         <div
             id="game-content"
             key="game-content"
-            className="max-[400px]:max-h-[400px] max-[400px]:min-h-[450px] max-[400px]:max-w-[350px] min-[400px]:mt-2 block h-full max-h-[600px] snap-start rounded-md"
+            className="block h-full max-h-[600px] snap-start rounded-md max-[400px]:max-h-[400px] max-[400px]:min-h-[450px] max-[400px]:max-w-[350px] min-[400px]:mt-2"
         ></div>
     );
 };

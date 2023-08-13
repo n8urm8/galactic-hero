@@ -151,10 +151,10 @@ Phaser.GameObjects.GameObjectFactory.register(
             sprite,
             Phaser.Physics.Arcade.STATIC_BODY
         );
-        sprite.displayWidth = 75;
-        sprite.scaleY = sprite.scaleX;
-        sprite.body.setCircle(sprite.displayWidth / 1.5);
-        sprite.body.setOffset(sprite.displayWidth / 6, sprite.displayWidth / 3);
+
+        //sprite.scaleY = sprite.scaleX;
+        sprite.setScale(75 / sprite.width);
+        sprite.refreshBody();
 
         return sprite;
     }

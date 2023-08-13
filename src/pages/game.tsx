@@ -50,7 +50,8 @@ const Game = () => {
             await gameSessionAPI.mutateAsync({ newSession: bigint });
             setCurrentGameSession(bigint);
         };
-        updateGameSession().catch((err) => console.error(err));
+        process.env.NODE_ENV !== "development" &&
+            updateGameSession().catch((err) => console.error(err));
     }, []);
 
     useEffect(() => {
