@@ -63,7 +63,7 @@ export const waveInfoRouter = createTRPCRouter({
         const player = await getCurrentPlayer(userId);
         if (player.lastWave == 0) return "Not eligible for rewards yet";
         const currentTime = Date.now() / 1000;
-        const afkHours = (currentTime - player.lastWave) / 3600;
+        const afkHours = Math.min(24, (currentTime - player.lastWave) / 3600);
         if (afkHours < 1) return "Must be afk for at least an hour";
         const afkWaves = Math.floor(afkHours * 60);
         const creditReward = getWaveCreditReward(player.waves) * afkWaves;
