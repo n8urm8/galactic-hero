@@ -25,12 +25,21 @@ export const GameCanvas = ({ gameWidth, gameHeight }) => {
             const { default: EndWaveScene } = await import(
                 "../game/scenes/EndWaveScene"
             );
+            const { default: VanguardScene } = await import(
+                "../game/scenes/EndWaveScene"
+            );
 
             const phaserGame = new Phaser.Game({
                 title: "Galatic Hero",
                 type: Phaser.AUTO,
                 parent: "game-content",
-                scene: [BootScene, GameScene, WaveScene, EndWaveScene],
+                scene: [
+                    BootScene,
+                    GameScene,
+                    WaveScene,
+                    EndWaveScene,
+                    VanguardScene,
+                ],
                 backgroundColor: "#000",
                 pixelArt: true,
                 physics: {

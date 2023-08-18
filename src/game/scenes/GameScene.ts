@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import "../sprites/player";
-import { EventEmitter, GameEvents } from "~/utils/events";
+import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
 import {
     IWaveEnemy,
     PlayerShipWithEquipment,
@@ -49,7 +49,7 @@ export default class GameScene extends Phaser.Scene {
             .tileSprite(0, 0, 1024, 1024, "starsBackground")
             .setOrigin(0)
             .setAlpha(0.7);
-        this.emitter.emit(GameEvents.waveInitializing, {
+        this.emitter.emit(SceneEvents.waveInitializing, {
             endWave: false,
             gameLoaded: true,
         });
@@ -83,9 +83,14 @@ export default class GameScene extends Phaser.Scene {
             this.emitter.removeListener(GameEvents.profileLoaded)
         );
         this.emitter.on(
-            GameEvents.startWave,
+            SceneEvents.startWave,
             this.startWave,
-            this.emitter.removeListener(GameEvents.startWave)
+            this.emitter.removeListener(SceneEvents.startWave)
+        );
+        this.emitter.on(
+            SceneEvents.vanguardStarted,
+            this.startVanguard,
+            this.emitter.removeListener(SceneEvents.vanguardStarted)
         );
     }
 
@@ -103,6 +108,11 @@ export default class GameScene extends Phaser.Scene {
             ship: this.ship,
             wave: this.profile.waves,
         });
+        this.backgroundScroll = true;
+    };
+
+    startVanguard = (level: number) => {
+        this.scene.run("VanguardScene", { level: level });
         this.backgroundScroll = true;
     };
 

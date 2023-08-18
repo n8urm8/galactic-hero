@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EventEmitter, GameEvents } from "~/utils/events";
+import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { AuthShowcase } from ".";
@@ -76,7 +76,7 @@ const Game = () => {
     );
 
     emitter.on(
-        GameEvents.waveCompleted,
+        SceneEvents.waveCompleted,
 
         async () => {
             const result = await waves.mutateAsync({ amount: 1 });
@@ -85,7 +85,7 @@ const Game = () => {
                 waves: result.waves,
             });
         },
-        emitter.removeListener(GameEvents.waveCompleted)
+        emitter.removeListener(SceneEvents.waveCompleted)
     );
 
     emitter.on(

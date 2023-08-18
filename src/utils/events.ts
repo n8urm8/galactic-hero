@@ -16,13 +16,8 @@ export class EventEmitter extends EventEmitter3 {
 }
 
 export enum GameEvents {
-    gameLoaded = "gameLoaded",
     getProfile = "getProfile",
     profileLoaded = "profileLoaded",
-    waveCompleted = "waveCompleted",
-    startWave = "startWave",
-    endWave = "endWave",
-    waveInitializing = "waveInitializing",
     waveCountUpdated = "waveCountUpdated",
     creditsUpdated = "creditsUpdated",
     adjustCredits = "adjustCredits",
@@ -33,4 +28,14 @@ export enum GameEvents {
     levelUpEquipment = "levelUpEquipment",
     equipItem = "equipItem",
     refreshProfile = "refreshProfile",
+}
+
+export enum SceneEvents {
+    gameLoaded = "gameLoaded",
+    startWave = "startWave",
+    endWave = "endWave",
+    waveCompleted = "waveCompleted",
+    waveInitializing = "waveInitializing",
+    vanguardStarted = "vanguardStarted",
+    vanguardEnded = "vanguardEnded",
 }

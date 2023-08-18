@@ -3,7 +3,7 @@ import Player from "../sprites/player";
 import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
-import { EventEmitter, GameEvents } from "~/utils/events";
+import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
 import {
     IWaveEnemy,
     PlayerShip,
@@ -131,11 +131,11 @@ export default class WaveScene extends Phaser.Scene {
         }
 
         this.emitter.on(
-            GameEvents.endWave,
+            SceneEvents.endWave,
             () => {
                 this.endWave(false);
             },
-            this.emitter.removeListener(GameEvents.endWave)
+            this.emitter.removeListener(SceneEvents.endWave)
         );
     }
 

@@ -71,9 +71,17 @@ export type CraftingReward = {
     gilding: number;
 };
 
-export const resourceKeys = {
-    credits: "Credits",
-    metal: "Kamacite",
-    energy: "Deuterium",
-    gilding: "Platinum",
-};
+export enum resourceKeys {
+    credits = "Credits",
+    metal = "Kamacite",
+    energy = "Deuterium",
+    gilding = "Platinum",
+}
+
+export enum SceneKeys {
+    boot = "BootScene",
+    game = "GameScene",
+    wave = "WaveScene",
+    endWave = "EndWaveScene",
+    vanguard = "VanguardScene",
+}
