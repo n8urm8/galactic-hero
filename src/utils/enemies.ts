@@ -98,3 +98,23 @@ function getRandomInt(min: number, max: number) {
 function getWaveMod(waves: number) {
     return 1 + waves / 1000;
 }
+
+export function getVanguardBoss(width: number, level: number) {
+    const enemyAmount = 1;
+    const levelMod = level * 10;
+
+    const bossEnemy: IWaveEnemy = {
+        health: getRandomInt(1500, 3000) * levelMod,
+        velocity: 50,
+        startX: [width / 2],
+        startY: -2200,
+        shootDelay: Math.max(50, ((300 - levelMod) / 300) * 300),
+        bulletRange: 300,
+        bulletSpeed: 200 * levelMod,
+        bulletDamage: getRandomInt(20, 50) * levelMod,
+        amount: enemyAmount,
+        sprite: "nairanDreadnought",
+    };
+
+    return bossEnemy;
+}

@@ -18,7 +18,7 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
     private emitter = EventEmitter.getInstance();
 
     constructor(
-        scene: WaveScene,
+        scene: Phaser.Scene,
         health: number,
         startX: number,
         startY: number,
@@ -136,5 +136,9 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
             this.explosion.play("explode");
             this.emitter.emit("enemyKilled");
         }
+    };
+
+    getHealth = () => {
+        return this.health;
     };
 }

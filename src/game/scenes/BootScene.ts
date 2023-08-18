@@ -42,14 +42,21 @@ export default class BootScene extends Phaser.Scene {
         this.load.image("goldSquare", "static/images/ui/goldSquare.png");
         this.load.image("creditsIcon", "static/images/ui/creditsIcon.png");
         this.load.image("menuSlot", "static/images/ui/menuSlot.png");
-        // this.load.spritesheet("uiStatic", "static/images/ui/uiAssets.png", {
-        //     frameWidth: 16,
-        //     frameHeight: 16,
-        // });
+
         this.load.spritesheet(
             "explosion",
             "static/images/effects/explosion.png",
             { frameWidth: 32, frameHeight: 32 }
+        );
+        this.load.spritesheet(
+            "asteroid",
+            "static/images/objects/animations/AsteroidExplode.png",
+            { frameWidth: 96, frameHeight: 96 }
+        );
+        this.load.spritesheet(
+            "nairanDreadnought",
+            "static/images/ships/enemy/animations/NairanDreadnoughtDestruction.png",
+            { frameWidth: 128, frameHeight: 128 }
         );
 
         this.load.image(PlayerShipSprites.T1, spriteSelector["ship1"]["T1"]);
