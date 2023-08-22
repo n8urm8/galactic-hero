@@ -26,7 +26,7 @@ export const GameCanvas = ({ gameWidth, gameHeight }) => {
                 "../game/scenes/EndWaveScene"
             );
             const { default: VanguardScene } = await import(
-                "../game/scenes/EndWaveScene"
+                "../game/scenes/VanguardScene"
             );
 
             const phaserGame = new Phaser.Game({
@@ -45,7 +45,7 @@ export const GameCanvas = ({ gameWidth, gameHeight }) => {
                 physics: {
                     default: "arcade",
                     arcade: {
-                        //debug: true,
+                        debug: true,
                         gravity: { y: 0 },
                         //debugShowVelocity: true,
                     },

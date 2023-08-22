@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import { Button } from "../button";
-import { EventEmitter, GameEvents } from "~/utils/events";
+import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
+import { gradientTertiery } from "~/styles/cssVariables";
 
 export const ButtonMenu = () => {
     const emitter = EventEmitter.getInstance();
 
     const [waving, setWaving] = useState(false);
     const [betweenWaves, setBetweenWaves] = useState(true);
+    const [vanguardLevels, setVanguardLevels] = useState([1, 2]);
+    const [openVanguardMenu, setOpenVanguardMenu] = useState(false);
 
     const handleWaveButton = () => {
         if (!waving) {
-            emitter.emit(GameEvents.startWave);
+            emitter.emit(SceneEvents.startWave);
             setWaving(true);
         } else {
-            emitter.emit(GameEvents.endWave);
+            emitter.emit(SceneEvents.endWave);
             setWaving(false);
         }
     };
 
+    const handleVanguardButton = (level: number) => {
+        setOpenVanguardMenu(false);
+        emitter.emit(SceneEvents.vanguardStarted, { level });
+        setBetweenWaves(true);
+    };
+
     emitter.on(
-        GameEvents.waveInitializing,
+        SceneEvents.waveInitializing,
         (data: { endWave: boolean; gameLoaded: boolean }) => {
             //console.log(data);
             if (data.gameLoaded) {
@@ -30,7 +39,15 @@ export const ButtonMenu = () => {
 
             data.endWave && setWaving(false);
         },
-        emitter.removeListener(GameEvents.waveInitializing)
+        emitter.removeListener(SceneEvents.waveInitializing)
+    );
+
+    emitter.on(
+        SceneEvents.vanguardEnded,
+        () => {
+            setBetweenWaves(false);
+        },
+        emitter.removeListener(SceneEvents.vanguardEnded)
     );
 
     return (
@@ -50,9 +67,31 @@ export const ButtonMenu = () => {
                 Alliance
             </Button>
             <Button onClick={() => window.alert("coming soon")}>Market</Button>
-            <Button onClick={() => window.alert("coming soon")}>
-                Vanguard
-            </Button>
+            <div className="relative">
+                <Button
+                    onClick={() => setOpenVanguardMenu(!openVanguardMenu)}
+                    disabled={betweenWaves}
+                >
+                    Vanguard
+                </Button>
+                <div
+                    className={`${
+                        !openVanguardMenu ? "hidden" : "block"
+                    } ${gradientTertiery} absolute bottom-10 right-2  flex flex-col-reverse rounded-sm text-right `}
+                >
+                    {vanguardLevels.map((lvl) => {
+                        return (
+                            <div
+                                key={lvl}
+                                className="w-full cursor-pointer whitespace-nowrap bg-black bg-opacity-0 px-4 py-2 text-white hover:bg-opacity-10"
+                                onClick={() => handleVanguardButton(lvl)}
+                            >
+                                Level {lvl}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 };

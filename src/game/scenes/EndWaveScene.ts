@@ -3,7 +3,7 @@ import Player from "../sprites/player";
 import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
-import { EventEmitter, GameEvents } from "~/utils/events";
+import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
 import {
     EndWaveSceneProps,
     IWaveEnemy,
@@ -38,7 +38,7 @@ export default class EndWaveScene extends Phaser.Scene {
         if (this.condition == "VICTORY") {
             //console.log("waveCompleted event");
             this.waves += this.waveIncrement;
-            this.emitter.emit(GameEvents.waveCompleted);
+            this.emitter.emit(SceneEvents.waveCompleted);
             //this.emitter.emit(GameEvents.getProfile)
         }
         const { width, height } = this.game.canvas;
@@ -88,7 +88,7 @@ export default class EndWaveScene extends Phaser.Scene {
             ease: "Elastic",
             easeParams: [1.5, 0.5],
         });
-        this.emitter.emit(GameEvents.waveInitializing, {
+        this.emitter.emit(SceneEvents.waveInitializing, {
             endWave: false,
             gameLoaded: false,
         });
@@ -104,7 +104,7 @@ export default class EndWaveScene extends Phaser.Scene {
     }
 
     endWave = () => {
-        this.emitter.emit(GameEvents.waveInitializing, {
+        this.emitter.emit(SceneEvents.waveInitializing, {
             endWave: true,
             gameLoaded: false,
         });
@@ -126,7 +126,7 @@ export default class EndWaveScene extends Phaser.Scene {
             getEliteEnemy(width, wave),
         ];
         this.timer = 200;
-        this.emitter.emit(GameEvents.waveInitializing, {
+        this.emitter.emit(SceneEvents.waveInitializing, {
             endWave: false,
             gameLoaded: false,
         });

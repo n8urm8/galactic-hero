@@ -49,7 +49,7 @@ export default class BootScene extends Phaser.Scene {
             { frameWidth: 32, frameHeight: 32 }
         );
         this.load.spritesheet(
-            "asteroid",
+            "AsteroidExplode",
             "static/images/objects/animations/AsteroidExplode.png",
             { frameWidth: 96, frameHeight: 96 }
         );
@@ -71,6 +71,7 @@ export default class BootScene extends Phaser.Scene {
         this.load.image("enemyElite", "static/images/ships/enemy/4.png");
         this.load.image("enemyBoss", "static/images/ships/enemy/8.png");
         this.load.image("umbralLogo", "static/images/umbralLogo.png");
+        this.load.image("asteroid", "static/images/objects/AsteroidBase.png");
 
         // this.load.image("Offensive", "static/images/equipment/weapon1.png");
         // this.load.image("Defensive", "static/images/equipment/defensive1.png");
@@ -159,6 +160,22 @@ export default class BootScene extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("explosion", {
                 start: 0,
                 end: 5,
+            }),
+            frameRate: 8,
+        });
+        this.anims.create({
+            key: "asteroidExplosion",
+            frames: this.anims.generateFrameNumbers("AsteroidExplode", {
+                start: 0,
+                end: 7,
+            }),
+            frameRate: 8,
+        });
+        this.anims.create({
+            key: "nairanDreadnoughtExplosion",
+            frames: this.anims.generateFrameNumbers("nairanDreadnought", {
+                start: 0,
+                end: 17,
             }),
             frameRate: 8,
         });

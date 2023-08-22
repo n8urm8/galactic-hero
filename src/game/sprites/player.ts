@@ -23,6 +23,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     private healthBar: HealthBar;
     private ship: PlayerShip;
     private equipment: PlayerEquipment[] = [];
+    private isVanguard = false;
+    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
     constructor(
         scene: Phaser.Scene,
@@ -42,6 +44,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.bullets = new Bullets(scene, "bullet5", 20, this.bulletSpeed);
         this.healthBar = new HealthBar(scene, x - 40, y + 55, this.health);
+        this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
 
     updateStats = () => {
@@ -87,6 +90,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 this.enemy.y + 10,
                 true
             );
+        }
+
+        this.setVelocity(0);
+        if (this.cursors.left.isDown && this.isVanguard) {
+            this.setVelocityX(-160);
+            //this.x -= 5;
+        } else if (this.cursors.right.isDown && this.isVanguard) {
+            this.setVelocityX(160);
+            //this.x += 5;
         }
     };
 
@@ -134,6 +146,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     getCurrentHP = () => {
         return this.health;
     };
+
+    setVanguard() {
+        this.isVanguard = true;
+        this.scene.physics.world.enableBody(
+            this,
+            Phaser.Physics.Arcade.DYNAMIC_BODY
+        );
+    }
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
@@ -153,8 +173,10 @@ Phaser.GameObjects.GameObjectFactory.register(
 
         this.scene.physics.world.enableBody(
             sprite,
-            Phaser.Physics.Arcade.STATIC_BODY
+            Phaser.Physics.Arcade.DYNAMIC_BODY
         );
+        sprite.setCollideWorldBounds(true);
+        sprite.setImmovable(true);
 
         //sprite.scaleY = sprite.scaleX;
         sprite.setScale(75 / sprite.width);

@@ -44,6 +44,8 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
         this.body.setMass(10);
         this.body.setCircle(this.width / 2);
         this.setVelocityY(velocity);
+        // need to set as dynamic body for this to work
+        this.setImmovable(true);
         this.bulletRange = bulletRange;
         this.shootDelay = shootDelay;
         this.bulletSpeed = bulletSpeed;

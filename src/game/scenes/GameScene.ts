@@ -5,6 +5,7 @@ import {
     IWaveEnemy,
     PlayerShipWithEquipment,
     PlayerWithInventory,
+    SceneKeys,
 } from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
 import { PurpleButton } from "../objects/purpleButton";
@@ -103,7 +104,7 @@ export default class GameScene extends Phaser.Scene {
     };
 
     startWave = () => {
-        this.scene.run("WaveScene", {
+        this.scene.run(SceneKeys.wave, {
             loadedEnemies: this.enemiesToLoad,
             ship: this.ship,
             wave: this.profile.waves,
@@ -112,7 +113,7 @@ export default class GameScene extends Phaser.Scene {
     };
 
     startVanguard = (level: number) => {
-        this.scene.run("VanguardScene", { level: level });
+        this.scene.run(SceneKeys.vanguard, { ship: this.ship, level: level });
         this.backgroundScroll = true;
     };
 
