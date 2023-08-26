@@ -169,7 +169,7 @@ export default class BootScene extends Phaser.Scene {
                 start: 0,
                 end: 7,
             }),
-            frameRate: 8,
+            frameRate: 16,
         });
         this.anims.create({
             key: "nairanDreadnoughtExplosion",
@@ -177,7 +177,7 @@ export default class BootScene extends Phaser.Scene {
                 start: 0,
                 end: 17,
             }),
-            frameRate: 8,
+            frameRate: 12,
         });
 
         this.scene.start("GameScene", this.profile);

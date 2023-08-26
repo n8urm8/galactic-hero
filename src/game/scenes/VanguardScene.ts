@@ -54,6 +54,7 @@ export default class VanguardScene extends Phaser.Scene {
         // asteroids Group
         this.asteroidGroup = this.add.group({
             defaultKey: "asteroid",
+            classType: Phaser.Physics.Arcade.Sprite,
             maxSize: 100,
         });
         this.time.addEvent({
@@ -109,7 +110,7 @@ export default class VanguardScene extends Phaser.Scene {
             this.endVanguard(true);
         }
 
-        Phaser.Actions.IncY(this.asteroidGroup.getChildren(), 1);
+        // Phaser.Actions.IncY(this.asteroidGroup.getChildren(), 1);
 
         this.asteroidGroup.children.iterate((asteroid) => {
             const a1 = asteroid as Phaser.GameObjects.Sprite;
@@ -141,7 +142,15 @@ export default class VanguardScene extends Phaser.Scene {
     }
 
     findClosestEnemy = () => {
-        return this.boss;
+        return this.boss.active &&
+            Phaser.Math.Distance.Between(
+                this.player.x,
+                this.player.y,
+                this.boss.x,
+                this.boss.y
+            ) < this.player.getBulletRange()
+            ? this.boss
+            : false;
     };
 
     endVanguard = (completed: boolean) => {
@@ -156,14 +165,21 @@ export default class VanguardScene extends Phaser.Scene {
         // });
     };
 
-    activateAsteroid(asteroid: Phaser.GameObjects.Sprite) {
+    activateAsteroid(asteroid: Phaser.Physics.Arcade.Sprite) {
+        this.physics.world.enableBody(
+            asteroid,
+            Phaser.Physics.Arcade.DYNAMIC_BODY
+        );
         asteroid.setActive(true).setVisible(true);
-        this.physics.add.existing(asteroid);
+        asteroid.refreshBody();
+        asteroid.setImmovable(true);
+
+        //this.physics.add.existing(asteroid);
         const newScale = Phaser.Math.FloatBetween(0.5, 1.5);
         asteroid.setScale(newScale);
         //.setTint(Phaser.Display.Color.RandomRGB().color);
         //.play("creep");
-
+        asteroid.setVelocityY(Phaser.Math.Between(80, 160));
         this.physics.add.collider(asteroid, this.player, () =>
             this.damagePlayer(asteroid)
         );
@@ -186,14 +202,21 @@ export default class VanguardScene extends Phaser.Scene {
             return;
         }
 
-        this.activateAsteroid(asteroid);
+        this.activateAsteroid(asteroid as Phaser.Physics.Arcade.Sprite);
     }
 
-    damagePlayer(asteroid: Phaser.GameObjects.Sprite) {
-        //asteroid.play("asteroidExplosion");
-        this.anims.play("asteroidExplosion", asteroid);
-        this.asteroidGroup.killAndHide(asteroid);
-        //asteroid.destroy();
+    damagePlayer(asteroid: Phaser.Physics.Arcade.Sprite) {
+        asteroid.play("asteroidExplosion");
+        asteroid.setVelocityY(0);
+        //this.anims.play("asteroidExplosion", asteroid);
+        //asteroid.setVisible(false);
+        asteroid.on(
+            "animationcomplete",
+            () => {
+                this.asteroidGroup.killAndHide(asteroid);
+            },
+            asteroid.removeAllListeners()
+        );
         const hp = this.ship.health / 10;
         this.player.takeDamage(100);
     }

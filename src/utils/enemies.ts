@@ -107,7 +107,7 @@ export function getVanguardBoss(width: number, level: number) {
         health: getRandomInt(150000, 300000) * levelMod,
         velocity: 50,
         startX: [width / 2],
-        startY: 100,
+        startY: -1000,
         shootDelay: Math.max(50, ((300 - levelMod) / 300) * 300),
         bulletRange: 300,
         bulletSpeed: 200 * levelMod,
