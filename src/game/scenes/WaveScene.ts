@@ -81,7 +81,7 @@ export default class WaveScene extends Phaser.Scene {
                     );
                 }
             });
-        //console.log(this.wave, this.wave % 10 == 0);
+
         if (this.wave % 10 == 0) {
             const bossStats = getBossEnemy(width, this.wave);
             const boss = new EnemyShip(

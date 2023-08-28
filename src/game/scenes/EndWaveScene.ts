@@ -108,8 +108,8 @@ export default class EndWaveScene extends Phaser.Scene {
             endWave: true,
             gameLoaded: false,
         });
-        this.scene.stop();
-        this.scene.run("GameScene");
+        //this.scene.stop();
+        this.scene.start("GameScene");
     };
 
     formatTimer = (ms: number) => {

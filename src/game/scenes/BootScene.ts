@@ -177,7 +177,8 @@ export default class BootScene extends Phaser.Scene {
                 start: 0,
                 end: 17,
             }),
-            frameRate: 12,
+            frameRate: 8,
+            repeat: 0,
         });
 
         this.scene.start("GameScene", this.profile);

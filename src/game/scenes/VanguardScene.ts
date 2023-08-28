@@ -18,6 +18,9 @@ export default class VanguardScene extends Phaser.Scene {
     private emitter = EventEmitter.getInstance();
     private level = 0;
     private timer = 0;
+    private condition = "DEFEAT";
+    private container: Phaser.GameObjects.Container;
+    private updateObjects = true;
 
     captionTextFormat = `Total:    %1
     Max:      %2
@@ -43,10 +46,45 @@ export default class VanguardScene extends Phaser.Scene {
         // console.log('wavescene data:',data)
         this.ship = data.ship;
         this.level = data.level;
+        this.updateObjects = true;
     }
 
     create() {
         const { width, height } = this.game.canvas;
+
+        // end of vanguard ui
+        this.container = this.add
+            .container(width / 2, height / 2.5)
+            .setVisible(false);
+        const endWaveModal = this.add.image(0, 0, "goldSquare");
+        endWaveModal.scaleX = 1.5;
+        const endWaveBtn = this.add
+            .image(0, +40, "purpleButton")
+            .setInteractive({ useHandCursor: true })
+            .once("pointerdown", () => {
+                this.scene.start("GameScene");
+            });
+        endWaveBtn.scaleX = 1.2;
+        const btnText = this.add
+            .text(endWaveBtn.x, endWaveBtn.y, "Complete")
+            .setOrigin(0.5);
+        const conditionText = this.add
+            .text(endWaveModal.x, endWaveModal.y - 30, this.condition, {
+                fontSize: "40px",
+                color: "#fff",
+                shadow: {
+                    fill: true,
+                    blur: 5,
+                    color: "#000000",
+                    offsetY: 2,
+                    offsetX: 2,
+                },
+            })
+            .setOrigin(0.5);
+
+        this.container
+            .add([endWaveModal, endWaveBtn, conditionText, btnText])
+            .setDepth(1);
 
         // Player
         this.player = this.add.player(width / 2, height / 1.2, this.ship);
@@ -64,6 +102,7 @@ export default class VanguardScene extends Phaser.Scene {
         });
 
         const bossStats = getVanguardBoss(width, this.level);
+        //console.log(bossStats);
         this.boss = new EnemyShip(
             this,
             bossStats.health,
@@ -78,13 +117,13 @@ export default class VanguardScene extends Phaser.Scene {
             this.player,
             true
         );
+
         //this.enemies.add(boss);
         this.physics.add.collider(
             this.boss,
             this.player.getBullets(),
             this.player.damageEnemy
         );
-        this.caption = this.add.text(16, 16, "", this.captionStyle);
     }
 
     update(time: number, delta: number) {
@@ -97,20 +136,20 @@ export default class VanguardScene extends Phaser.Scene {
             target && this.player.setEnemy(target);
             this.timer = 0;
         }
-
-        this.player.update(time, delta);
+        if (this.updateObjects) {
+            this.player.update(time, delta);
+            this.boss.update(time, delta);
+        }
 
         if (this.player.getCurrentHP() <= 0) {
-            console.log("looooossssseeerrrrr");
+            //console.log("looooossssseeerrrrr");
             this.endVanguard(false);
         }
 
         if (this.boss.getHealth() <= 0) {
-            console.log("enemy scum terminated!");
+            //console.log("enemy scum terminated!");
             this.endVanguard(true);
         }
-
-        // Phaser.Actions.IncY(this.asteroidGroup.getChildren(), 1);
 
         this.asteroidGroup.children.iterate((asteroid) => {
             const a1 = asteroid as Phaser.GameObjects.Sprite;
@@ -119,26 +158,6 @@ export default class VanguardScene extends Phaser.Scene {
             }
             a1.angle += 1;
         });
-
-        this.caption.setText(
-            Phaser.Utils.String.Format(this.captionTextFormat, [
-                this.asteroidGroup.getLength(),
-                this.asteroidGroup.maxSize,
-                this.asteroidGroup.countActive(true),
-                this.asteroidGroup.countActive(false),
-                this.asteroidGroup.getTotalUsed(),
-                this.asteroidGroup.getTotalFree(),
-                this.asteroidGroup.isFull(),
-            ])
-        );
-
-        // this.emitter.on(
-        //     GameEvents.endWave,
-        //     () => {
-        //         this.endWave(false);
-        //     },
-        //     this.emitter.removeListener(GameEvents.endWave)
-        // );
     }
 
     findClosestEnemy = () => {
@@ -154,10 +173,25 @@ export default class VanguardScene extends Phaser.Scene {
     };
 
     endVanguard = (completed: boolean) => {
-        const condition = completed ? "VICTORY" : "DEFEAT";
-        console.log("vanguard complete!", condition);
-        this.scene.stop();
-        this.scene.run("GameScene");
+        // need to figure out how to stop boss and player interactions
+        this.condition = completed ? "VICTORY" : "DEFEAT";
+        console.log("vanguard complete!", this.condition);
+        if (completed) {
+            // insert api to get rewards and update vanguard level
+            //this.boss.play("nairanDreadnoughtExplosion");
+            this.updateObjects = false;
+            this.anims.on(
+                "animationcomplete",
+                () => {
+                    this.showEndMenu();
+                },
+                this.boss.removeAllListeners()
+            );
+        } else {
+            this.updateObjects = false;
+            this.showEndMenu();
+        }
+
         // this.scene.start("EndWaveScene", {
         //     condition: condition,
         //     ship: this.ship,
@@ -170,15 +204,13 @@ export default class VanguardScene extends Phaser.Scene {
             asteroid,
             Phaser.Physics.Arcade.DYNAMIC_BODY
         );
+        this.add.existing(asteroid);
         asteroid.setActive(true).setVisible(true);
-        asteroid.refreshBody();
         asteroid.setImmovable(true);
 
-        //this.physics.add.existing(asteroid);
         const newScale = Phaser.Math.FloatBetween(0.5, 1.5);
         asteroid.setScale(newScale);
-        //.setTint(Phaser.Display.Color.RandomRGB().color);
-        //.play("creep");
+
         asteroid.setVelocityY(Phaser.Math.Between(80, 160));
         this.physics.add.collider(asteroid, this.player, () =>
             this.damagePlayer(asteroid)
@@ -187,17 +219,15 @@ export default class VanguardScene extends Phaser.Scene {
 
     addAsteroid() {
         const { width } = this.game.canvas;
-        // Random position above screen
+
         const x = Phaser.Math.Between(0, width);
         const y = Phaser.Math.Between(-64, 0);
 
-        // Find first inactive sprite in group or add new sprite, and set position
         const asteroid: Phaser.GameObjects.Sprite = this.asteroidGroup.get(
             x,
             y
         );
 
-        // None free or already at maximum amount of sprites in group
         if (!asteroid) {
             return;
         }
@@ -208,16 +238,29 @@ export default class VanguardScene extends Phaser.Scene {
     damagePlayer(asteroid: Phaser.Physics.Arcade.Sprite) {
         asteroid.play("asteroidExplosion");
         asteroid.setVelocityY(0);
-        //this.anims.play("asteroidExplosion", asteroid);
-        //asteroid.setVisible(false);
+        this.asteroidGroup.remove(asteroid);
+
         asteroid.on(
             "animationcomplete",
             () => {
-                this.asteroidGroup.killAndHide(asteroid);
+                this.asteroidGroup.add(asteroid);
+                asteroid.destroy(true);
             },
             asteroid.removeAllListeners()
         );
         const hp = this.ship.health / 10;
-        this.player.takeDamage(100);
+        this.player.takeDamage(hp);
     }
+
+    private showEndMenu = () => {
+        const { height } = this.game.canvas;
+        this.container.setVisible(true);
+        this.tweens.add({
+            targets: this.container,
+            y: height / 2,
+            duration: 600,
+            ease: "Elastic",
+            easeParams: [1.5, 0.5],
+        });
+    };
 }

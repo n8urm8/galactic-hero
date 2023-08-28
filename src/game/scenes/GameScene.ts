@@ -112,8 +112,12 @@ export default class GameScene extends Phaser.Scene {
         this.backgroundScroll = true;
     };
 
-    startVanguard = (level: number) => {
-        this.scene.run(SceneKeys.vanguard, { ship: this.ship, level: level });
+    startVanguard = (data: { level: number }) => {
+        //console.log("gamescene level", data.level);
+        this.scene.run(SceneKeys.vanguard, {
+            ship: this.ship,
+            level: data.level,
+        });
         this.backgroundScroll = true;
     };
 

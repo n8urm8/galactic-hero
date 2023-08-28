@@ -117,12 +117,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     };
 
     takeDamage = (power: number) => {
-        const damage =
-            power -
-            Math.max(
-                (power / this.shield) * ShipConstants.shieldDamageDivisor,
-                power / 10
-            );
+        const damage = Math.max(power - this.shield, power / 10);
+        //console.log(damage);
         this.health -= damage;
         this.healthBar.decrease(damage);
         if (this.health <= 0) {
