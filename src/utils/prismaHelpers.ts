@@ -9,6 +9,7 @@ export const getCurrentPlayer = async (userId: string) => {
             equipment: true,
             ships: true,
             craftingMaterials: true,
+            vanguard: true,
         },
     });
     return player;

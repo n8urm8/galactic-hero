@@ -81,6 +81,7 @@ model Player {
   buyOrders         MarketOrder[]      @relation("buyer")
   alliance  Alliance?
   allianceId  Int? @unique
+  vanguard  Vanguard?
 
   @@index([userId])
 }
@@ -190,4 +191,13 @@ model MarketOrder {
 
   @@index([sellerId])
   @@index([buyerId])
+}
+
+model Vanguard {
+  player   Player? @relation(fields: [playerId], references: [id])
+  playerId Int    @unique
+  level    Int    @default(1)
+
+  @@index([playerId])
+
 }

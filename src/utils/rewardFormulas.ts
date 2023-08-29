@@ -20,3 +20,13 @@ export function getWaveCraftingReward(wave: number) {
 
     return reward;
 }
+
+export function getVanguardReward(level: number) {
+    const reward: CraftingReward = {} as CraftingReward;
+
+    reward.energy = level * (level / 1000 + 1);
+    reward.metal = 5 * level * (level / 1000 + 1);
+    reward.gilding = (level / 2) * (level / 1000 + 1);
+
+    return reward;
+}

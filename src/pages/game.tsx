@@ -36,6 +36,7 @@ const Game = () => {
     );
     const rankingAPI = api.waveInfo.waveRankings.useQuery();
     const gameSessionAPI = api.profile.updateGameSession.useMutation();
+    const vanguardAPI = api.vanguard.completeVanguard.useMutation();
 
     const [gameWidth, setGameWith] = useState(800);
     const [gameHeight, setGameHeight] = useState(600);
@@ -73,6 +74,15 @@ const Game = () => {
         GameEvents.getProfile,
         loadProfile,
         emitter.removeListener(GameEvents.getProfile)
+    );
+    //vanguard
+    emitter.on(
+        SceneEvents.vanguardEnded,
+        async (data: { level: number }) => {
+            await vanguardAPI.mutateAsync({ level: data.level });
+            await profile.refetch();
+        },
+        emitter.removeListener(SceneEvents.vanguardEnded)
     );
 
     emitter.on(

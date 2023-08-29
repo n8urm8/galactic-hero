@@ -3,7 +3,7 @@ import Player from "../sprites/player";
 import "../sprites/player";
 import { EnemyShip } from "../sprites/enemy";
 import { api } from "~/utils/api";
-import { EventEmitter, GameEvents } from "~/utils/events";
+import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
 import { IWaveEnemy, PlayerShipWithEquipment } from "~/utils/gameTypes";
 import { getBossEnemy, getVanguardBoss } from "~/utils/enemies";
 
@@ -178,15 +178,10 @@ export default class VanguardScene extends Phaser.Scene {
         console.log("vanguard complete!", this.condition);
         if (completed) {
             // insert api to get rewards and update vanguard level
+            this.emitter.emit(SceneEvents.vanguardEnded, { level: this.level });
             //this.boss.play("nairanDreadnoughtExplosion");
             this.updateObjects = false;
-            this.anims.on(
-                "animationcomplete",
-                () => {
-                    this.showEndMenu();
-                },
-                this.boss.removeAllListeners()
-            );
+            this.showEndMenu();
         } else {
             this.updateObjects = false;
             this.showEndMenu();

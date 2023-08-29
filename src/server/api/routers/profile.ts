@@ -123,6 +123,7 @@ export const profileRouter = createTRPCRouter({
                                 },
                             },
                             craftingMaterials: {},
+                            vanguard: {},
                         },
                     },
                 },
