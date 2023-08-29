@@ -20,7 +20,6 @@ import { ItemButtons } from "~/components/gameMenu/itemButtons";
 import random from "random-bigint";
 import { useRouter } from "next/router";
 import { gradientPrimary } from "~/styles/cssVariables";
-//import GHLogo from "/static/images/GHLogo.png";
 
 const Game = () => {
     const router = useRouter();
@@ -37,6 +36,7 @@ const Game = () => {
     const rankingAPI = api.waveInfo.waveRankings.useQuery();
     const gameSessionAPI = api.profile.updateGameSession.useMutation();
     const vanguardAPI = api.vanguard.completeVanguard.useMutation();
+    const waves = api.waveInfo.updateWaveCount.useMutation();
 
     const [gameWidth, setGameWith] = useState(800);
     const [gameHeight, setGameHeight] = useState(600);
@@ -63,10 +63,8 @@ const Game = () => {
         }
     }, [profile.data]);
 
-    //console.log("game session", profile.data);
     const emitter = EventEmitter.getInstance();
 
-    const waves = api.waveInfo.updateWaveCount.useMutation();
     const loadProfile = () => {
         emitter.emit(GameEvents.profileLoaded, profile.data);
     };
@@ -75,14 +73,17 @@ const Game = () => {
         loadProfile,
         emitter.removeListener(GameEvents.getProfile)
     );
+
     //vanguard
     emitter.on(
-        SceneEvents.vanguardEnded,
+        SceneEvents.vanguardComplete,
         async (data: { level: number }) => {
-            await vanguardAPI.mutateAsync({ level: data.level });
+            const level = data.level;
+            const vgResult = await vanguardAPI.mutateAsync({ level });
             await profile.refetch();
+            // emitter.emit(SceneEvents.vanguardEnded);
         },
-        emitter.removeListener(SceneEvents.vanguardEnded)
+        emitter.removeListener(SceneEvents.vanguardComplete)
     );
 
     emitter.on(
@@ -190,7 +191,9 @@ const Game = () => {
                                     gameWidth={gameWidth}
                                 />
                             </div>
-                            <ButtonMenu />
+                            <ButtonMenu
+                                vanguardLevel={profile.data.vanguard.level}
+                            />
                         </div>
                     </div>
                 ) : null}

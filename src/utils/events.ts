@@ -38,4 +38,5 @@ export enum SceneEvents {
     waveInitializing = "waveInitializing",
     vanguardStarted = "vanguardStarted",
     vanguardEnded = "vanguardEnded",
+    vanguardComplete = "vanguardComplete",
 }

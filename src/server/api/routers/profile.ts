@@ -23,20 +23,7 @@ export const profileRouter = createTRPCRouter({
     // leaderboards - unprotected?
     getProfile: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.session.user.id;
-        const profile = ctx.prisma.player.findUnique({
-            where: {
-                userId: userId,
-            },
-            include: {
-                ships: {
-                    include: {
-                        equipment: true,
-                    },
-                },
-                equipment: true,
-                craftingMaterials: true,
-            },
-        });
+        const profile = getCurrentPlayer(userId);
         return profile;
     }),
 

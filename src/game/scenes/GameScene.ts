@@ -8,8 +8,6 @@ import {
     SceneKeys,
 } from "~/utils/gameTypes";
 import { getTankEnemy, getNormalEnemy, getEliteEnemy } from "~/utils/enemies";
-import { PurpleButton } from "../objects/purpleButton";
-import { Equipment } from "@prisma/client";
 
 export default class GameScene extends Phaser.Scene {
     private player!: Phaser.Physics.Arcade.Sprite;

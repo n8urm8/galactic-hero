@@ -7,7 +7,11 @@ export const getCurrentPlayer = async (userId: string) => {
         },
         include: {
             equipment: true,
-            ships: true,
+            ships: {
+                include: {
+                    equipment: true,
+                },
+            },
             craftingMaterials: true,
             vanguard: true,
         },

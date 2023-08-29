@@ -130,7 +130,7 @@ export class EnemyShip extends Phaser.Physics.Arcade.Sprite {
 
     takeDamage = (power: number) => {
         this.health -= power;
-        console.log("enemy took damage", this.health, power);
+        //console.log("enemy took damage", this.health, power);
         if (this.health <= 0) {
             this.disableBody(true, true);
             this.explosion.setPosition(this.x, this.y);

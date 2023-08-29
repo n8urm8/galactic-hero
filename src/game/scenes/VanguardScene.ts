@@ -19,24 +19,9 @@ export default class VanguardScene extends Phaser.Scene {
     private level = 0;
     private timer = 0;
     private condition = "DEFEAT";
+    private conditionText: Phaser.GameObjects.Text;
     private container: Phaser.GameObjects.Container;
     private updateObjects = true;
-
-    captionTextFormat = `Total:    %1
-    Max:      %2
-    Active:   %3
-    Inactive: %4
-    Used:     %5
-    Free:     %6
-    Full:     %7`;
-
-    captionStyle = {
-        fill: "#7fdbff",
-        fontFamily: "monospace",
-        lineSpacing: 4,
-    };
-
-    caption;
 
     constructor() {
         super("VanguardScene");
@@ -68,7 +53,7 @@ export default class VanguardScene extends Phaser.Scene {
         const btnText = this.add
             .text(endWaveBtn.x, endWaveBtn.y, "Complete")
             .setOrigin(0.5);
-        const conditionText = this.add
+        this.conditionText = this.add
             .text(endWaveModal.x, endWaveModal.y - 30, this.condition, {
                 fontSize: "40px",
                 color: "#fff",
@@ -83,7 +68,7 @@ export default class VanguardScene extends Phaser.Scene {
             .setOrigin(0.5);
 
         this.container
-            .add([endWaveModal, endWaveBtn, conditionText, btnText])
+            .add([endWaveModal, endWaveBtn, this.conditionText, btnText])
             .setDepth(1);
 
         // Player
@@ -107,7 +92,8 @@ export default class VanguardScene extends Phaser.Scene {
             this,
             bossStats.health,
             bossStats.startX[0],
-            bossStats.startY,
+            0,
+            //bossStats.startY,
             bossStats.sprite,
             bossStats.velocity,
             bossStats.bulletRange,
@@ -139,16 +125,14 @@ export default class VanguardScene extends Phaser.Scene {
         if (this.updateObjects) {
             this.player.update(time, delta);
             this.boss.update(time, delta);
-        }
+            if (this.player.getCurrentHP() <= 0) {
+                //console.log("looooossssseeerrrrr");
+                this.endVanguard(false);
+            }
 
-        if (this.player.getCurrentHP() <= 0) {
-            //console.log("looooossssseeerrrrr");
-            this.endVanguard(false);
-        }
-
-        if (this.boss.getHealth() <= 0) {
-            //console.log("enemy scum terminated!");
-            this.endVanguard(true);
+            if (this.boss.getHealth() <= 0) {
+                this.endVanguard(true);
+            }
         }
 
         this.asteroidGroup.children.iterate((asteroid) => {
@@ -175,10 +159,15 @@ export default class VanguardScene extends Phaser.Scene {
     endVanguard = (completed: boolean) => {
         // need to figure out how to stop boss and player interactions
         this.condition = completed ? "VICTORY" : "DEFEAT";
-        console.log("vanguard complete!", this.condition);
+        this.conditionText.setText(this.condition);
+
+        //console.log("vanguard complete!", this.condition, completed);
         if (completed) {
             // insert api to get rewards and update vanguard level
-            this.emitter.emit(SceneEvents.vanguardEnded, { level: this.level });
+            this.emitter.emit(SceneEvents.vanguardComplete, {
+                level: this.level,
+            });
+            //this.emitter.emit(SceneEvents.waveCompleted);
             //this.boss.play("nairanDreadnoughtExplosion");
             this.updateObjects = false;
             this.showEndMenu();
@@ -186,12 +175,6 @@ export default class VanguardScene extends Phaser.Scene {
             this.updateObjects = false;
             this.showEndMenu();
         }
-
-        // this.scene.start("EndWaveScene", {
-        //     condition: condition,
-        //     ship: this.ship,
-        //     wave: this.wave,
-        // });
     };
 
     activateAsteroid(asteroid: Phaser.Physics.Arcade.Sprite) {
@@ -241,7 +224,7 @@ export default class VanguardScene extends Phaser.Scene {
                 this.asteroidGroup.add(asteroid);
                 asteroid.destroy(true);
             },
-            asteroid.removeAllListeners()
+            asteroid.removeListener("animationcomplete")
         );
         const hp = this.ship.health / 10;
         this.player.takeDamage(hp);

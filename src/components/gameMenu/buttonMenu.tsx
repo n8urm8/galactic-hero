@@ -3,12 +3,16 @@ import { Button } from "../button";
 import { EventEmitter, GameEvents, SceneEvents } from "~/utils/events";
 import { gradientTertiery } from "~/styles/cssVariables";
 
-export const ButtonMenu = () => {
+interface IButtonMenu {
+    vanguardLevel: number;
+}
+
+export const ButtonMenu: React.FC<IButtonMenu> = ({ vanguardLevel }) => {
     const emitter = EventEmitter.getInstance();
 
     const [waving, setWaving] = useState(false);
     const [betweenWaves, setBetweenWaves] = useState(true);
-    const [vanguardLevels, setVanguardLevels] = useState([1, 2]);
+    //const [vanguardLevels, setVanguardLevels] = useState([1, 2]);
     const [openVanguardMenu, setOpenVanguardMenu] = useState(false);
 
     const handleWaveButton = () => {
@@ -42,13 +46,13 @@ export const ButtonMenu = () => {
         emitter.removeListener(SceneEvents.waveInitializing)
     );
 
-    emitter.on(
-        SceneEvents.vanguardEnded,
-        () => {
-            setBetweenWaves(false);
-        },
-        emitter.removeListener(SceneEvents.vanguardEnded)
-    );
+    // emitter.on(
+    //     SceneEvents.vanguardEnded,
+    //     () => {
+    //         setBetweenWaves(false);
+    //     },
+    //     emitter.removeListener(SceneEvents.vanguardEnded)
+    // );
 
     return (
         <div className="flex gap-1 py-1">
@@ -77,19 +81,21 @@ export const ButtonMenu = () => {
                 <div
                     className={`${
                         !openVanguardMenu ? "hidden" : "block"
-                    } ${gradientTertiery} absolute bottom-10 right-2  flex flex-col-reverse rounded-sm text-right `}
+                    } ${gradientTertiery} absolute bottom-10 right-2 flex  max-h-[120px] flex-col-reverse overflow-y-auto rounded-sm text-right `}
                 >
-                    {vanguardLevels.map((lvl) => {
-                        return (
-                            <div
-                                key={lvl}
-                                className="w-full cursor-pointer whitespace-nowrap bg-black bg-opacity-0 px-4 py-2 text-white hover:bg-opacity-10"
-                                onClick={() => handleVanguardButton(lvl)}
-                            >
-                                Level {lvl}
-                            </div>
-                        );
-                    })}
+                    {Array.from({ length: vanguardLevel }, (_, i) => i + 1)
+                        .reverse()
+                        .map((lvl) => {
+                            return (
+                                <div
+                                    key={lvl}
+                                    className="w-full cursor-pointer whitespace-nowrap bg-black bg-opacity-0 px-4 py-2 text-white hover:bg-opacity-10"
+                                    onClick={() => handleVanguardButton(lvl)}
+                                >
+                                    Level {lvl}
+                                </div>
+                            );
+                        })}
                 </div>
             </div>
         </div>

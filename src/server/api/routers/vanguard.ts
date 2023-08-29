@@ -15,9 +15,15 @@ export const vanguardRouter = createTRPCRouter({
             const userId = ctx.session.user.id;
             const level = input.level;
             const currentPlayer = await getCurrentPlayer(userId);
-
-            if (currentPlayer.vanguard.level < level)
+            if (currentPlayer.vanguard == null) {
+                await ctx.prisma.vanguard.create({
+                    data: {
+                        player: { connect: { id: currentPlayer.id } },
+                    },
+                });
+            } else if (currentPlayer.vanguard.level < level) {
                 return "Vanguard Level Error";
+            }
 
             if (currentPlayer.vanguard.level === level) {
                 const player = await ctx.prisma.player.update({
