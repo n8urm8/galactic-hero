@@ -1,4 +1,4 @@
-import Phaser, { Physics } from "phaser";
+import Phaser, { GameObjects, Physics } from "phaser";
 import { HealthBar } from "../objects/healthBar";
 import { Bullets } from "./bullet";
 import { EnemyShip } from "./enemy";
@@ -25,6 +25,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     private equipment: PlayerEquipment[] = [];
     private isVanguard = false;
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    private pointer;
 
     constructor(
         scene: Phaser.Scene,
@@ -45,6 +46,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.bullets = new Bullets(scene, "bullet5", 20, this.bulletSpeed);
         this.healthBar = new HealthBar(scene, x - 40, y + 55, this.health);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
+        this.pointer = this.scene.input.activePointer;
     }
 
     updateStats = () => {
@@ -99,6 +101,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         } else if (this.cursors.right.isDown && this.isVanguard) {
             this.setVelocityX(160);
             //this.x += 5;
+        }
+
+        if (this.scene.input.activePointer.isDown && this.isVanguard) {
+            const pointer = this.scene.input.activePointer;
+            pointer.x > this.x && this.setVelocityX(160);
+            pointer.x < this.x && this.setVelocityX(-160);
         }
     };
 
