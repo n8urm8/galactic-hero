@@ -70,7 +70,7 @@ model Player {
   userId            String             @unique
   name              String
   waves             Int
-  credits           Int
+  credits           BigInt
   ships             Ship[]
   equipment         Equipment[]
   craftingMaterials CraftingMaterials?
