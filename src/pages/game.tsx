@@ -42,8 +42,8 @@ const Game = () => {
     const [gameHeight, setGameHeight] = useState(600);
     const [currentGameSession, setCurrentGameSession] = useState("");
     useEffect(() => {
-        if (window.innerWidth <= 400) {
-            setGameWith(330);
+        if (window.innerWidth <= 910) {
+            setGameWith(Math.max(330, window.innerWidth - 30));
             setGameHeight(450);
         }
         const updateGameSession = async () => {
@@ -135,9 +135,9 @@ const Game = () => {
                     </div>
                 ) : currentShipAPI.isFetched &&
                   currentShipAPI.data?.ships[0] ? (
-                    <div className="relative flex flex-row gap-2 max-[400px]:mb-1 max-[400px]:max-w-none  max-[400px]:flex-col-reverse">
+                    <div className="relative flex flex-row gap-2 max-[910px]:mb-1 max-[910px]:max-w-none  max-[910px]:flex-col-reverse">
                         <AfkRewards />
-                        <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[400px]:max-w-none">
+                        <div className="flex h-full max-w-[350px] flex-col items-center justify-center gap-2 bg-transparent p-2 max-[910px]:max-w-none">
                             <div className=" w-full  rounded-md bg-slate-600 bg-opacity-50">
                                 <div
                                     className={`rounded-t-md px-2 text-white ${gradientPrimary}`}
@@ -184,7 +184,7 @@ const Game = () => {
                         <div className="flex flex-col px-2">
                             <div
                                 id="canvas-wrapper"
-                                className="mx-auto  min-h-[250px] min-w-[800px] snap-y snap-mandatory rounded-md max-[400px]:w-full max-[400px]:min-w-0"
+                                className="mx-auto  min-h-[250px] min-w-[800px] snap-y snap-mandatory rounded-md max-[910px]:w-full max-[910px]:min-w-0"
                             >
                                 <GameCanvas
                                     gameHeight={gameHeight}

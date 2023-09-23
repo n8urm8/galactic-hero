@@ -16,7 +16,7 @@ export function getTankEnemy(width: number, wave: number): IWaveEnemy {
             getRandomStartX(width)
         ),
         startY: -50,
-        shootDelay: 400 / waveMod,
+        shootDelay: Math.max(250, 400 / waveMod),
         bulletRange: 200,
         bulletSpeed: 100,
         bulletDamage: getRandomInt(1, 5) * waveMod,
@@ -38,7 +38,7 @@ export function getNormalEnemy(width: number, wave: number): IWaveEnemy {
             getRandomStartX(width)
         ),
         startY: -100,
-        shootDelay: 500 / waveMod,
+        shootDelay: Math.max(300, 500 / waveMod),
         bulletRange: 250,
         bulletSpeed: 100,
         bulletDamage: getRandomInt(1, 10) * waveMod,
@@ -60,7 +60,7 @@ export function getEliteEnemy(width: number, wave: number): IWaveEnemy {
             getRandomStartX(width)
         ),
         startY: -150,
-        shootDelay: 600 / waveMod,
+        shootDelay: Math.max(350, 600 / waveMod),
         bulletRange: 300,
         bulletSpeed: 100,
         bulletDamage: getRandomInt(5, 15) * waveMod,
@@ -80,7 +80,7 @@ export function getBossEnemy(width: number, wave: number): IWaveEnemy {
         velocity: 50,
         startX: [width / 2],
         startY: -200,
-        shootDelay: 300 / waveMod,
+        shootDelay: Math.max(150, 300 / waveMod),
         bulletRange: 300,
         bulletSpeed: 200 * waveMod,
         bulletDamage: getRandomInt(20, 50) * waveMod,

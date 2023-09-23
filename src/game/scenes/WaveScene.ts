@@ -12,9 +12,6 @@ import {
 } from "~/utils/gameTypes";
 import { getBossEnemy } from "~/utils/enemies";
 
-// Create wave complete and game over events
-// need wave completion scene before going back to game scene
-
 export default class WaveScene extends Phaser.Scene {
     private player!: Player;
     private enemies!: Phaser.GameObjects.Group;
@@ -37,15 +34,6 @@ export default class WaveScene extends Phaser.Scene {
 
     create() {
         const { width, height } = this.game.canvas;
-        // const endWaveBtn = this.add
-        //     .image(62, height - 20, "purpleButton")
-        //     .setInteractive({ useHandCursor: true })
-        //     .once("pointerdown", () => {
-        //         this.scene.stop();
-        //         this.scene.run("GameScene");
-        //     });
-        // endWaveBtn.scaleX = 1.2;
-        // this.add.text(endWaveBtn.x, endWaveBtn.y, "End Wave").setOrigin(0.5);
 
         // Player
         this.player = this.add.player(width / 2, height / 1.2, this.ship);
@@ -187,6 +175,6 @@ export default class WaveScene extends Phaser.Scene {
             ship: this.ship,
             wave: this.wave,
         });
-        this.scene.stop();
+        //this.scene.stop();
     };
 }
