@@ -18,25 +18,25 @@ export type BaseShipStats = {
 
 export const shipCraftingCosts = {
     T1: {
-        credits: 1000,
+        credits: BigInt(1000),
         metal: 1000,
         energy: 500,
         gilding: 500,
     },
     T2: {
-        credits: 10000,
+        credits: BigInt(10000),
         metal: 10000,
         energy: 1000,
         gilding: 1000,
     },
     T3: {
-        credits: 50000,
+        credits: BigInt(50000),
         metal: 50000,
         energy: 2000,
         gilding: 5000,
     },
     T4: {
-        credits: 100000,
+        credits: BigInt(100000),
         metal: 100000,
         energy: 5000,
         gilding: 10000,

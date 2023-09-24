@@ -6,7 +6,7 @@ export interface IPlayerStats {
     name: string;
     rankings: { name: string; waves: number }[];
     waves: number;
-    credits: number;
+    credits: BigInt;
 }
 
 export const PlayerStats: React.FC<IPlayerStats> = ({
@@ -16,7 +16,6 @@ export const PlayerStats: React.FC<IPlayerStats> = ({
     credits,
 }) => {
     const rank = rankings.findIndex((player) => player.name === name) + 1;
-
     return (
         <div className={`flex w-full  justify-between`}>
             <div className="flex flex-col font-semibold">
@@ -49,7 +48,7 @@ export const PlayerStats: React.FC<IPlayerStats> = ({
                 />
 
                 <p>{waves}</p>
-                <p>{credits}</p>
+                <p>{credits.toLocaleString()}</p>
             </div>
         </div>
     );

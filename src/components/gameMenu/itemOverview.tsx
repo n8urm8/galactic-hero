@@ -13,7 +13,7 @@ import { ItemButtons } from "./itemButtons";
 export interface IItemOverview {
     item: PlayerShipWithEquipment | PlayerEquipment;
     currentShip: boolean;
-    currentCredits: number;
+    currentCredits: BigInt;
     clickable?: boolean;
 }
 
@@ -108,7 +108,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                             footer={
                                 <ItemButtons
                                     item={item}
-                                    currentCredits={currentCredits}
+                                    currentCredits={currentCredits.valueOf()}
                                 />
                             }
                         />
@@ -156,7 +156,7 @@ export const ItemOverview: React.FC<IItemOverview> = ({
                                 footer={
                                     <ItemButtons
                                         item={item}
-                                        currentCredits={currentCredits}
+                                        currentCredits={currentCredits.valueOf()}
                                     />
                                 }
                             />

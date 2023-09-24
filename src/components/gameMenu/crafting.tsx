@@ -18,7 +18,7 @@ import { gradientPrimary } from "~/styles/cssVariables";
 
 export interface ICrafting {
     resources: {
-        credits: number;
+        credits: BigInt;
         metal: number;
         energy: number;
         gilding: number;

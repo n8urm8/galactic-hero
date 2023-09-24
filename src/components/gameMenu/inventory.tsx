@@ -13,7 +13,7 @@ import { gradientPrimary } from "~/styles/cssVariables";
 export interface IInventory {
     ships: PlayerShipWithEquipment[];
     equipment: PlayerEquipment[];
-    currentCredits: number;
+    currentCredits: BigInt;
 }
 
 export const Inventory: React.FC<IInventory> = ({

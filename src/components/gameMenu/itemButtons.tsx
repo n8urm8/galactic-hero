@@ -11,7 +11,7 @@ import { Equipment, Ship } from "@prisma/client";
 
 interface IItemButtons {
     item: PlayerEquipment | PlayerShipWithEquipment;
-    currentCredits: number;
+    currentCredits: BigInt;
 }
 
 export const ItemButtons: React.FC<IItemButtons> = ({
@@ -75,7 +75,7 @@ export const ItemButtons: React.FC<IItemButtons> = ({
     const lvlCost = isShip
         ? getShipLevelUpCost(item as Ship)
         : getEquipmentLevelUpCost(item as Equipment);
-    const haveFunds = currentCredits >= lvlCost;
+    const haveFunds = currentCredits.valueOf() >= lvlCost;
     const disabled =
         levelUpShipAPI.isLoading ||
         equipShipAPI.isLoading ||
