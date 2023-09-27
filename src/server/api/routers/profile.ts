@@ -109,7 +109,13 @@ export const profileRouter = createTRPCRouter({
                                     isCurrent: true,
                                 },
                             },
-                            craftingMaterials: {},
+                            craftingMaterials: {
+                                create: {
+                                    energy: 0,
+                                    metal: 0,
+                                    gilding: 0,
+                                },
+                            },
                             vanguard: {},
                         },
                     },
